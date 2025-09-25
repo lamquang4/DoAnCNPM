@@ -20,9 +20,9 @@ jobs:
           cache: maven
 
       - name: Build Product Service
-        run: mvn clean install
+        run: mvn clean verify
         working-directory: ./product_service
 
       - name: Build User Service
-        run: mvn clean install
+        run: mvn clean verify
         working-directory: ./user_service
