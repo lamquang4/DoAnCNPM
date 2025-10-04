@@ -4,7 +4,6 @@ import com.foodfast.order_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
