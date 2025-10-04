@@ -8,10 +8,10 @@
 		<version>3.5.6</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.foodfast</groupId>
-	<artifactId>user_service</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>order_service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>user_service</name>
+	<name>order_service</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
