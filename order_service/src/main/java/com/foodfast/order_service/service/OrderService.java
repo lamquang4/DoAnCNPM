@@ -1,10 +1,8 @@
 package com.foodfast.order_service.service;
-
 import com.foodfast.order_service.model.Order;
 import com.foodfast.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 

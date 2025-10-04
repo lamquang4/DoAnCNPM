@@ -1,5 +1,4 @@
 package com.foodfast.order_service.repository;
-
 import com.foodfast.order_service.model.Order;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
