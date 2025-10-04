@@ -1,19 +1,17 @@
 package com.foodfast.order_service.controller;
 import com.foodfast.order_service.model.Order;
 import com.foodfast.order_service.service.OrderService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequestMapping("/api/orders")
-@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping
-    public Order createOrder(@RequestBody Order order) {
-        return orderService.createOrder(order);
+    public OrderController(OrderService orderService) {
+            this.orderService = orderService;
     }
 
     @GetMapping
@@ -22,18 +20,30 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public Order getOrderById(@PathVariable String id) {
-        return orderService.getOrderById(id);
+  public ResponseEntity<Order> getOrderById(@PathVariable String id) {
+        return orderService.getOrderById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public Order updateOrderStatus(@PathVariable String id,
-                                   @RequestParam String status) {
-        return orderService.updateOrderStatus(id, status);
+    @PostMapping
+    public Order createOrder(@RequestBody Order order) {
+        return orderService.createOrder(order);
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable String id, @RequestParam Integer status) {
+        Order updated = orderService.updateOrderStatus(id, status);
+        if (updated != null) {
+            return ResponseEntity.ok(updated);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable String id) {
+    public ResponseEntity<Void> deleteOrder(@PathVariable String id) {
         orderService.deleteOrder(id);
+        return ResponseEntity.noContent().build();
     }
+    
 }
