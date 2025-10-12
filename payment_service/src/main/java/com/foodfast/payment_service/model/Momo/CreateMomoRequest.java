@@ -1,4 +1,4 @@
-package com.foodfast.payment_service.model;
+package com.foodfast.payment_service.model.Momo;
 import lombok.Builder;
 import lombok.Data;
 

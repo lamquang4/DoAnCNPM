@@ -1,6 +1,7 @@
 package com.foodfast.payment_service.controller;
 import org.springframework.web.bind.annotation.*;
-import com.foodfast.payment_service.model.CreateMomoResponse;
+
+import com.foodfast.payment_service.model.Momo.CreateMomoResponse;
 import com.foodfast.payment_service.service.MomoService;
 
 @RestController

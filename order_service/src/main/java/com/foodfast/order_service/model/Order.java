@@ -22,10 +22,13 @@ public class Order {
     private String id;
 
     private String userId;
+    private String fullname;
+    private String phone;
+    private String address;
     private BigDecimal total;
     private List<OrderItem> items;
+    private Integer paymethod; // 0: cod, 1: momo
     private Integer status; // 0: processing, 1: delivery, 2: done
-
     @CreatedDate
     @Field("createdAt")
     private Instant createdAt;

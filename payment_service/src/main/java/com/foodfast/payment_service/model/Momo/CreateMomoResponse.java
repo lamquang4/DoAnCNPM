@@ -1,9 +1,9 @@
-package com.foodfast.payment_service.model;
+package com.foodfast.payment_service.model.Momo;
 import lombok.Data;
 
 @Data
 public class CreateMomoResponse {
-    private int resultCode;
+    private int resultCode; // 0: success
     private String message;
     private String payUrl;
     private String deeplink;

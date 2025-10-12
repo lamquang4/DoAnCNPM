@@ -5,8 +5,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.foodfast.payment_service.client.MomoApi;
-import com.foodfast.payment_service.model.CreateMomoRequest;
-import com.foodfast.payment_service.model.CreateMomoResponse;
+import com.foodfast.payment_service.model.Momo.CreateMomoRequest;
+import com.foodfast.payment_service.model.Momo.CreateMomoResponse;
 
 @Service
 public class MomoService {
@@ -86,6 +86,4 @@ private String signHmacSHA256(String data, String key) throws Exception {
     }
     return hexString.toString();
 }
-
-
 }

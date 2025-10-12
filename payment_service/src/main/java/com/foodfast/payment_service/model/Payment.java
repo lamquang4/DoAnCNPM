@@ -20,25 +20,9 @@ public class Payment {
     @Id
     private String id;
 
-   private String orderId;
-    private String userId;
-
-    private String requestId;     // Mã request gửi đến cổng thanh toán
-    private String transId;       // Mã giao dịch do cổng trả về
-    private BigDecimal amount;
-    private String currency;      // "VND", "USD", ...
-    private String status; 
-
-    private String provider;      // "MOMO", "PAYPAL", "VNPAY", "COD"
-    private String method;        // "WALLET", "CARD", "BANK", "CASH"
-
-    private Integer resultCode;   // Mã kết quả từ cổng thanh toán
-    private String message;       // Thông báo hoặc mô tả lỗi
-    private String signature;     // Chữ ký để kiểm tra
-    private Boolean verified;     // Đã xác minh chữ ký hợp lệ chưa
-
-    private Map<String, Object> rawResponse; 
-
+    private String orderId;
+    private Integer status; // 0: pending, 1: paid
+    private BigDecimal amount; // số tiền
     @CreatedDate
     @Field("createdAt")
     private Instant createdAt;
