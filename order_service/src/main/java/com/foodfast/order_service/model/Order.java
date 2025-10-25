@@ -20,7 +20,7 @@ public class Order {
 
     @Id
     private String id;
-
+    private String orderCOde;
     private String userId;
     private String fullname;
     private String phone;

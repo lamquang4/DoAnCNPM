@@ -1,11 +1,11 @@
 package com.foodfast.payment_service.controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.foodfast.payment_service.model.Momo.CreateMomoResponse;
+import com.foodfast.payment_service.dto.Momo.MomoResponse;
 import com.foodfast.payment_service.service.MomoService;
 
 @RestController
-@RequestMapping("/api/momo")
+@RequestMapping("/api/payment/momo")
 public class MomoController {
 
     private MomoService momoService;
@@ -15,9 +15,10 @@ public class MomoController {
     }
 
     // tạo mã qr Momo để thanh toán
-    @PostMapping("/create")
-    public CreateMomoResponse createPayment() {
-        return momoService.createMomoQR();
+    @PostMapping("/qr/{orderCode}")
+    public ResponseEntity<MomoResponse> payWithMomo(@PathVariable String orderCode) throws Exception {
+        MomoResponse response = momoService.createPayment(orderCode);
+        return ResponseEntity.ok(response);
     }
 
 }
