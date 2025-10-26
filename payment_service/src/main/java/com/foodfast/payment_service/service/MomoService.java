@@ -1,12 +1,14 @@
 package com.foodfast.payment_service.service;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.foodfast.payment_service.client.MomoApi;
-import com.foodfast.payment_service.model.Momo.CreateMomoRequest;
-import com.foodfast.payment_service.model.Momo.CreateMomoResponse;
+import org.springframework.web.client.RestTemplate;
+import com.foodfast.payment_service.dto.Momo.MomoRequest;
+import com.foodfast.payment_service.dto.Momo.MomoResponse;
 
 @Service
 public class MomoService {
@@ -20,38 +22,45 @@ private String accessKey;
 @Value("${momo.secret-key}")
 private String secretKey;
 
+@Value("${momo.url}")
+private String momoUrl;
+
 @Value("${momo.redirect-url}")
 private String redirectUrl;
 
 @Value("${momo.ipn-url}")
 private String ipnUrl;
 
+    @Value("${momo.refund-url}")
+    private String refundUrl;
 
-private MomoApi momoApi;
+   private final RestTemplate restTemplate = new RestTemplate();
 
-public MomoService (MomoApi momoApi){
-    this.momoApi = momoApi;
-}
-
-public CreateMomoResponse createMomoQR() {
-    try {
-        long timestamp = System.currentTimeMillis();
-        int random = (int)(Math.random() * 10000);
-        String orderId = "ORD" + timestamp + random;
-        String requestId = "REQ" + timestamp + random;
-        String orderInfo = "Thanh toán đơn hàng " + orderId;
-        String requestType = "captureWallet";
+ public MomoResponse createPayment(String orderCode) throws Exception {
+        String requestId = UUID.randomUUID().toString();
+        String orderId = orderCode;
+        String amount = "100000";
+        String orderInfo = "Thanh toan don hang " + orderId;
         String extraData = "";
-        long amount = 100000;
 
-        String rawSignature = String.format(
-                "accessKey=%s&amount=%d&extraData=%s&ipnUrl=%s&orderId=%s&orderInfo=%s&partnerCode=%s&redirectUrl=%s&requestId=%s&requestType=%s",
-                accessKey, amount, extraData, ipnUrl, orderId, orderInfo, partnerCode, redirectUrl, requestId, requestType
-        );
+        // Chuỗi để ký
+        String rawSignature =
+                "accessKey=" + accessKey +
+                "&amount=" + amount +
+                "&extraData=" + extraData +
+                "&ipnUrl=" + ipnUrl +
+                "&orderId=" + orderId +
+                "&orderInfo=" + orderInfo +
+                "&partnerCode=" + partnerCode +
+                "&redirectUrl=" + redirectUrl +
+                "&requestId=" + requestId +
+                "&requestType=captureWallet";
 
+        // Tạo chữ ký HMAC SHA256
         String signature = signHmacSHA256(rawSignature, secretKey);
 
-        CreateMomoRequest request = CreateMomoRequest.builder()
+        // Tạo request
+        MomoRequest request = MomoRequest.builder()
                 .partnerCode(partnerCode)
                 .accessKey(accessKey)
                 .requestId(requestId)
@@ -61,16 +70,19 @@ public CreateMomoResponse createMomoQR() {
                 .redirectUrl(redirectUrl)
                 .ipnUrl(ipnUrl)
                 .extraData(extraData)
-                .requestType(requestType)
+                .requestType("captureWallet")
+                .lang("vi")
                 .signature(signature)
                 .build();
 
-        return momoApi.createPayment(request);
+        MomoResponse response = restTemplate.postForObject(
+                momoUrl,
+                request,
+                MomoResponse.class
+        );
 
-    } catch (Exception e) {
-        throw new RuntimeException("Lỗi thanh toán MoMo: " + e.getMessage(), e);
+        return response;
     }
-}
 
 private String signHmacSHA256(String data, String key) throws Exception {
     Mac hmacSHA256 = Mac.getInstance("HmacSHA256");
