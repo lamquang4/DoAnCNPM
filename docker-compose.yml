@@ -96,6 +96,57 @@ services:
     networks:
       - foodfast-net
 
+  cart-service:
+    build: ./backend/cart_service
+    container_name: cart-service
+    restart: always
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
+      mongo-db:
+        condition: service_healthy
+    networks:
+      - foodfast-net
+
+  drone-service:
+    build: ./backend/drone_service
+    container_name: drone-service
+    restart: always
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
+      mongo-db:
+        condition: service_healthy
+    networks:
+      - foodfast-net
+
+  delivery-service:
+    build: ./backend/delivery_service
+    container_name: delivery-service
+    restart: always
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
+      mongo-db:
+        condition: service_healthy
+    networks:
+      - foodfast-net
+
 volumes:
   mongo-data:
 
