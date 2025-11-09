@@ -1,0 +1,61 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # --- 1. Checkout code ---
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # --- 2. Setup JDK 17 ---
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      # --- 3. Build Backend Microservices ---
+      - name: Build Eureka Server
+        working-directory: ./backend/eureka_server
+        run: mvn clean install -DskipTests
+
+      - name: Build Product Service
+        working-directory: ./backend/product_service
+        run: mvn clean install -DskipTests
+
+      - name: Build Order Service
+        working-directory: ./backend/order_service
+        run: mvn clean install -DskipTests
+
+      - name: Build Payment Service
+        working-directory: ./backend/payment_service
+        run: mvn clean install -DskipTests
+
+      - name: Build User Service
+        working-directory: ./backend/user_service
+        run: mvn clean install -DskipTests
+
+      # --- 4. Build & Push Docker Images ---
+      - name: Build & Push Docker images
+        run: |
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/eureka-server ./backend/eureka_server
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/product-service ./backend/product_service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/order-service ./backend/order_service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/payment-service ./backend/payment_service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/user-service ./backend/user_service
+
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/eureka-server
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/product-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/order-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/payment-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/user-service
