@@ -1,15 +1,15 @@
-package com.foodfast.order_service.dto;
+package com.foodfast.cart_service.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
-    private String id;
-    private String name;
+public class CartItemDTO {
+    private String idProduct;
+    private Integer quantity;
+    private String name; 
     private BigDecimal price;
     private BigDecimal stock;
 }

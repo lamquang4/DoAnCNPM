@@ -1,4 +1,4 @@
-package com.foodfast.order_service.dto;
+package com.foodfast.cart_service.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,3 +13,4 @@ public class ProductDTO {
     private BigDecimal price;
     private BigDecimal stock;
 }
+

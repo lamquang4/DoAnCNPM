@@ -43,6 +43,18 @@ jobs:
         working-directory: ./backend/user_service
         run: mvn clean install -DskipTests
 
+      - name: Build Cart Service
+        working-directory: ./backend/cart_service
+        run: mvn clean install -DskipTests
+
+      - name: Build Drone Service
+        working-directory: ./backend/drone_service
+        run: mvn clean install -DskipTests
+
+      - name: Build Delivery Service
+        working-directory: ./backend/delivery_service
+        run: mvn clean install -DskipTests
+
       # --- 4. Build & Push Docker Images ---
       - name: Build & Push Docker images
         run: |
@@ -53,9 +65,15 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/order-service ./backend/order_service
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/payment-service ./backend/payment_service
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/user-service ./backend/user_service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/cart-service ./backend/cart_service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/drone-service ./backend/drone_service
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/delivery-service ./backend/delivery_service
 
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/eureka-server
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/product-service
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/order-service
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/payment-service
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/user-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/cart-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/drone-service
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/delivery-service

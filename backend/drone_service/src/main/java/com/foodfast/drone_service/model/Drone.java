@@ -1,5 +1,4 @@
-package com.foodfast.product_service.model;
-import java.math.BigDecimal;
+package com.foodfast.drone_service.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
@@ -9,12 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "product")
-public class Product {
+@Document(collection = "drone")
+public class Drone {
     @Id
     private String id;
-    private String name;
-    private BigDecimal price;
-    private BigDecimal stock;
-
+    private String model;
+    private double capacity;
+    private double battery;
+    private Integer status;
 }

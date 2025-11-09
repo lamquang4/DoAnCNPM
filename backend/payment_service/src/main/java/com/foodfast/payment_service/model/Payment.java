@@ -22,6 +22,7 @@ public class Payment {
     private String orderId;
     private Integer status; // 0: pending, 1: paid
     private BigDecimal amount; // số tiền
+    private String paymethod;
     @CreatedDate
     @Field("createdAt")
     private Instant createdAt;
