@@ -1,0 +1,104 @@
+version: "3.8"
+services:
+  mongo-db:
+    image: mongo:5.0
+    container_name: mongo-db
+    restart: always
+    ports:
+      - "27020:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - foodfast-net
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  eureka-server:
+    build: ./backend/eureka_server
+    container_name: eureka-server
+    restart: always
+    ports:
+      - "8761:8761"
+    networks:
+      - foodfast-net
+    depends_on:
+      mongo-db:
+        condition: service_healthy
+
+  user-service:
+    build: ./backend/user_service
+    container_name: user-service
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
+      mongo-db:
+        condition: service_healthy
+    networks:
+      - foodfast-net
+
+  product-service:
+    build: ./backend/product_service
+    container_name: product-service
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
+      mongo-db:
+        condition: service_healthy
+    networks:
+      - foodfast-net
+
+  order-service:
+    build: ./backend/order_service
+    container_name: order-service
+    restart: always
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
+      mongo-db:
+        condition: service_healthy
+    networks:
+      - foodfast-net
+
+  payment-service:
+    build: ./backend/payment_service
+    container_name: payment-service
+    restart: always
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
+      mongo-db:
+        condition: service_healthy
+    networks:
+      - foodfast-net
+
+volumes:
+  mongo-data:
+
+networks:
+  foodfast-net:
+    driver: bridge
