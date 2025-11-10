@@ -7,7 +7,7 @@ import com.foodfast.cart_service.dto.ProductDTO;
 
 @FeignClient(name = "product-service")
 public interface ProductClient {
-    @GetMapping("/api/products/{id}")
+    @GetMapping("/api/product/{id}")
     ProductDTO getProductById(@PathVariable("id") String id);
 }
 
