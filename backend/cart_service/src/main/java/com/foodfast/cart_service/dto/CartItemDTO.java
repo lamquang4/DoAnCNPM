@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartItemDTO {
-    private String idProduct;
+    private String productId;
     private Integer quantity;
+        private String image; 
     private String name; 
     private BigDecimal price;
-    private BigDecimal stock;
 }

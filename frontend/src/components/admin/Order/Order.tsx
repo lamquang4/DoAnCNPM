@@ -5,28 +5,10 @@ import InputSearch from "../InputSearch";
 import Loading from "../../Loading";
 import { Link } from "react-router-dom";
 import useGetOrders from "../../../hooks/admin/useGetOrders";
-import useUpdateStatusOrder from "../../../hooks/admin/useUpdateStatusOrder";
 
 function Order() {
-  const {
-    orders,
-    mutate,
-    isLoading,
-    totalItems,
-    totalPages,
-    limit,
-    currentPage,
-  } = useGetOrders();
-  const { updateStatusOrder, isLoading: isLoadingUpdate } =
-    useUpdateStatusOrder();
-
-  const handleUpdateStatus = async (id: string, status: number) => {
-    if (!id && !status) {
-      return;
-    }
-    await updateStatusOrder(id, status);
-    mutate();
-  };
+  const { orders, isLoading, totalItems, totalPages, limit, currentPage } =
+    useGetOrders();
 
   return (
     <>
@@ -83,40 +65,15 @@ function Order() {
                   </td>
 
                   <td className="p-[1rem]">
-                    <select
-                      name="status"
-                      disabled={isLoadingUpdate}
-                      onChange={(e) =>
-                        handleUpdateStatus(order.id, parseInt(e.target.value))
-                      }
-                      value={order.status}
-                      className="border border-gray-300 p-[6px_10px] text-[0.9rem] outline-none focus:border-gray-400  "
-                    >
-                      {order.status === -1 && (
-                        <option value="-1">Chờ thanh toán</option>
-                      )}
-                      {order.status === 0 && (
-                        <>
-                          <option value="0">Đang xử lý</option>
-                          <option value="1">Đang giao</option>
-                          <option value="3">Hủy</option>
-                        </>
-                      )}
-                      {order.status === 1 && (
-                        <>
-                          <option value="1">Đang giao</option>
-                          <option value="2">Giao thành công</option>
-                          <option value="3">Hủy</option>
-                        </>
-                      )}
-
-                      {order.status === 2 && (
-                        <>
-                          <option value="2">Giao thành công</option>
-                        </>
-                      )}
-                      {order.status === 3 && <option value="3">Hủy</option>}
-                    </select>
+                    {order.status === 0
+                      ? "Đang xử lý"
+                      : order.status === 1
+                      ? "Đang giao"
+                      : order.status === 2
+                      ? "Giao thành công"
+                      : order.status === 3
+                      ? "Đã hủy"
+                      : ""}
                   </td>
                   <td className="p-[1rem]  ">
                     <div className="flex items-center gap-[15px]">

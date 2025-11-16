@@ -37,7 +37,7 @@ export interface Order {
 }
 
 export interface ProductBuy {
-  idProduct: string;
+  productId: string;
   image: string;
   name: string;
   quantity: number;
@@ -75,13 +75,14 @@ export interface Location {
 }
 
 export interface Drone {
-  id: string;
-  restaurant: Restaurant;
+  id?: string;
+  restaurantId: string;
+  restaurantName?: string;
   model: string;
   capacity: number;
   battery: number;
   range?: number;
-  status: number;
+  status?: number;
   createdAt?: string;
 }
 
@@ -96,7 +97,7 @@ export interface Delivery {
 }
 
 export interface Restaurant {
-  id: string;
+  id?: string;
   name: string;
   speaddress: string;
   ward: string;

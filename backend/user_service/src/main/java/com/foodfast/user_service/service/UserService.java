@@ -49,16 +49,35 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User createUser(User user) {
-        if (user.getPassword() != null && !user.getPassword().isBlank()) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-         user.setStatus(1);
-        return userRepository.save(user);
+  public User createUser(User user) {
+    if (userRepository.existsByEmail(user.getEmail())) {
+        throw new IllegalArgumentException("Email đã tồn tại");
     }
+
+    if (userRepository.existsByPhone(user.getPhone())) {
+        throw new IllegalArgumentException("Số điện thoại đã tồn tại");
+    }
+
+    if (user.getPassword() != null && !user.getPassword().isBlank()) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    }
+
+    user.setStatus(1);
+    return userRepository.save(user);
+}
 
 public User updateUser(String id, User user) {
     return userRepository.findById(id).map(existingUser -> {
+
+        if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail()) 
+            && userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email đã tồn tại");
+        }
+
+        if (user.getPhone() != null && !user.getPhone().equals(existingUser.getPhone()) 
+            && userRepository.existsByPhone(user.getPhone())) {
+            throw new IllegalArgumentException("Số điện thoại đã tồn tại");
+        }
 
         if (user.getRole() != null) {
             existingUser.setRole(user.getRole());
@@ -76,6 +95,7 @@ public User updateUser(String id, User user) {
         return userRepository.save(existingUser);
     }).orElse(null);
 }
+
 
 
 }

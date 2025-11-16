@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import useGetDrone from "../../../hooks/admin/useGetDrone";
+import useGetRestaurantBranches from "../../../hooks/admin/useGetRestaurantBranches";
+import useUpdateDrone from "../../../hooks/admin/useUpdateDrone";
 function EditDrone() {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [data, setData] = useState({
     model: "",
     capacity: "",
@@ -9,6 +14,30 @@ function EditDrone() {
     battery: "",
     restaurantId: "",
   });
+
+  const { restaurants } = useGetRestaurantBranches();
+  const { drone, isLoading, mutate } = useGetDrone(id as string);
+  const { updateDrone, isLoading: isLoadingUpdate } = useUpdateDrone(
+    id as string
+  );
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!drone) {
+      toast.error("Drone không tìm thấy");
+      navigate("/admin/drones");
+      return;
+    }
+
+    setData({
+      model: drone?.model || "",
+      capacity: drone?.capacity?.toString() || "",
+      range: drone?.range?.toString() || "",
+      battery: drone?.battery?.toString() || "",
+      restaurantId: drone?.restaurantId || "",
+    });
+  }, [isLoading, drone, navigate]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -24,37 +53,20 @@ function EditDrone() {
     e.preventDefault();
 
     try {
+      await updateDrone({
+        model: data.model,
+        capacity: Number(data.capacity),
+        range: Number(data.range),
+        battery: Number(data.battery),
+        restaurantId: data.restaurantId,
+      });
+
+      mutate();
     } catch (err: any) {
-      toast.error(err?.response?.data?.msg);
+      toast.error(err?.response?.data?.message);
     }
   };
-  const isLoading = false;
-  const restaurants = [
-    {
-      id: "R001",
-      name: "Chi nhánh Hà Nội",
-      speaddress: "12 Lê Duẩn",
-      ward: "Hoàn Kiếm",
-      city: "Hà Nội",
-      status: 1,
-      location: {
-        latitude: 21.0278,
-        longitude: 105.8342,
-      },
-    },
-    {
-      id: "R002",
-      name: "Chi nhánh Sài Gòn",
-      speaddress: "22 Nguyễn Huệ",
-      ward: "Bến Nghé",
-      city: "TP. Hồ Chí Minh",
-      status: 1,
-      location: {
-        latitude: 10.7758,
-        longitude: 106.7004,
-      },
-    },
-  ];
+
   return (
     <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-full">
       <form className="flex flex-col gap-7 w-full" onSubmit={handleSubmit}>
@@ -154,7 +166,7 @@ function EditDrone() {
             type="submit"
             className="p-[6px_10px] bg-teal-500 text-white text-[0.9rem] font-medium text-center hover:bg-teal-600 rounded-sm"
           >
-            {isLoading ? "Đang cập nhật..." : "Cập nhật"}
+            {isLoadingUpdate ? "Đang cập nhật..." : "Cập nhật"}
           </button>
 
           <Link

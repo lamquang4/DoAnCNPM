@@ -22,7 +22,6 @@ public class Delivery {
     private String droneId;
     private String restaurantId;       // nhà hàng
     private Location currentLocation; // vị trí hiện tại drone trong lúc giao
-    private Integer status;// 0: Đang rảnh, 1: Đang giao, 2: Giao thành công , -1: Đang về
     @CreatedDate
     @Field("createdAt")
     private Instant createdAt;

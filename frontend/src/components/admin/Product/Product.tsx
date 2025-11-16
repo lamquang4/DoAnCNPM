@@ -1,39 +1,36 @@
 import { VscTrash } from "react-icons/vsc";
 import { LiaEdit } from "react-icons/lia";
 import { IoMdAddCircle } from "react-icons/io";
-import { FaRegEyeSlash } from "react-icons/fa";
 import Image from "../../Image";
 import Pagination from "../Pagination";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
 import Loading from "../../Loading";
 import InputSearch from "../InputSearch";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import useGetProducts from "../../../hooks/admin/useGetProducts";
+import useDeleteProduct from "../../../hooks/admin/useDeleteProduct";
 function Product() {
-  const products = [
-    {
-      id: "p1",
-      name: "Cơm gà viên Nanban",
-      image: "/assets/products/com-ga-vien-nanban.png",
-      price: 120000,
-      status: 1,
-    },
-    {
-      id: "p2",
-      name: "Gà miếng",
-      image: "/assets/products/ga-mieng.png",
-      price: 45000,
-      status: 1,
-    },
-  ];
+  const { products, mutate, isLoading, totalItems, currentPage, totalPages, limit } =
+    useGetProducts();
+  const { deleteProduct, isLoading: isLoadingDelete } = useDeleteProduct();
 
-  const isLoading = false;
-
+  const handleDelete = async (id: string) => {
+    if (!id) {
+      return;
+    }
+    try {
+      await deleteProduct(id);
+      mutate();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+      mutate();
+    }
+  };
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
         <div className="flex justify-between items-center">
-          <h2 className=" text-[#74767d]">Đồ ăn</h2>
+          <h2 className=" text-[#74767d]">Đồ ăn ({totalItems})</h2>
 
           <Link
             to={"/admin/add-product"}
@@ -104,23 +101,13 @@ function Product() {
 
                     <td className="p-[1rem]  ">
                       <div className="flex items-center gap-[15px]">
-                        <button>
-                          {product.status === 1 ? (
-                            <FaRegEyeSlash
-                              size={22}
-                              className="text-[#74767d]"
-                            />
-                          ) : (
-                            <MdOutlineRemoveRedEye
-                              size={22}
-                              className="text-[#74767d]"
-                            />
-                          )}
-                        </button>
                         <Link to={`/admin/edit-product/${product.id}`}>
                           <LiaEdit size={22} className="text-[#076ffe]" />
                         </Link>
-                        <button>
+                        <button
+                          disabled={isLoadingDelete}
+                          onClick={() => handleDelete(product.id!)}
+                        >
                           <VscTrash size={22} className="text-[#d9534f]" />
                         </button>
                       </div>
@@ -146,14 +133,12 @@ function Product() {
         </table>
       </div>
 
-      {/*
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         limit={limit}
         totalItems={totalItems}
       />
-  */}
     </>
   );
 }

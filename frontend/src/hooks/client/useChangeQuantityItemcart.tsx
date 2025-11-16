@@ -4,15 +4,15 @@ import { useState } from "react";
 export function useChangeQuantityItemCart() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const changeQuantity = async (id: string, quantity: number) => {
+  const changeQuantity = async (userId: string, productId: string, quantity: number) => {
     setIsLoading(true);
-    if (!id) {
+    if (!userId) {
       return;
     }
     try {
       const url = `${
         import.meta.env.VITE_BACKEND_URL
-      }/api/cart/item/${id}?quantity=${quantity}`;
+      }/cart/${userId}?productId=${productId}&quantity=${quantity}`;
       await axios.put(url);
     } catch (err: any) {
       console.error("Lỗi:", err);

@@ -34,7 +34,6 @@ public ResponseEntity<?> getUsersByRole(
     ));
 }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
         return userService.getUserById(id)

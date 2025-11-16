@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import useGetProvincesVN from "../../../hooks/useGetProvincesVN";
 import useGeocodeAddress from "../../../hooks/useGeocodeAddress";
 import LeafletMap from "../../LeafletMap";
-import type { Restaurant } from "../../../types/type";
+import useGetActiveRestaurants from "../../../hooks/useGetActiveRestaurants";
+import useAddRestaurantBranch from "../../../hooks/admin/useAddRestaurantBranch";
 
 function AddRestaurantBranch() {
   const [data, setData] = useState({
@@ -15,36 +16,8 @@ function AddRestaurantBranch() {
     status: "",
   });
 
-  const restaurants: Restaurant[] = [
-    {
-      id: "1",
-      name: "FoodFast chi nhánh 1",
-      speaddress: "12 Nguyễn Huệ",
-      ward: "Bến Nghé",
-      city: "Hồ Chí Minh",
-      location: { latitude: 10.77986, longitude: 106.68734 },
-      status: 1,
-    },
-    {
-      id: "2",
-      name: "FoodFast chi nhánh 2",
-      speaddress: "150 Võ Văn Tần",
-      ward: "Phường 6",
-      city: "Hồ Chí Minh",
-      location: { latitude: 10.85278, longitude: 106.75852 },
-      status: 1,
-    },
-    {
-      id: "3",
-      name: "FoodFast chi nhánh 3",
-      speaddress: "22 Võ Văn Ngân",
-      ward: "Linh Chiểu",
-      city: "Thủ Đức",
-      location: { latitude: 10.86968, longitude: 106.80352 },
-      status: 1,
-    },
-  ];
-
+  const { restaurants } = useGetActiveRestaurants();
+  const { addRestaurantBranch, isLoading } = useAddRestaurantBranch();
   const { provinces } = useGetProvincesVN();
 
   const selectedProvince = useMemo(
@@ -72,12 +45,32 @@ function AddRestaurantBranch() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!lat || !lng) {
+      toast.error("Địa chỉ không tìm thấy");
+      return;
+    }
+
     try {
+      await addRestaurantBranch({
+        name: data.name,
+        speaddress: data.speaddress,
+        ward: data.ward,
+        city: data.city,
+        location: { latitude: lat, longitude: lng },
+        status: Number(data.status),
+      });
+
+      setData({
+        name: "",
+        speaddress: "",
+        ward: "",
+        city: "",
+        status: "",
+      });
     } catch (err: any) {
-      toast.error(err?.response?.data?.msg);
+      toast.error(err?.response?.data?.message);
     }
   };
-  const isLoading = false;
 
   return (
     <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-full">

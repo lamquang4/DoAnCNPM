@@ -8,74 +8,34 @@ import Loading from "../../Loading";
 import Pagination from "../Pagination";
 import toast from "react-hot-toast";
 import type { Drone } from "../../../types/type";
-import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
+import useGetDrones from "../../../hooks/admin/useGetDrones";
+import useDeleteDrone from "../../../hooks/admin/useDeleteDrone";
 function Drone() {
-  const isLoading = false;
-  const drones: Drone[] = [
-    {
-      id: "D001",
-      model: "DJI Mavic Pro",
-      capacity: 5,
-      battery: 85,
-      range: 15,
-      status: 1,
-      createdAt: "2025-01-10",
-      restaurant: {
-        id: "R001",
-        name: "Chi nhánh Hà Nội",
-        speaddress: "12 Lê Duẩn",
-        ward: "Hoàn Kiếm",
-        city: "Hà Nội",
-        status: 1,
-        location: {
-          latitude: 21.0278,
-          longitude: 105.8342,
-        },
-      },
-    },
-    {
-      id: "D002",
-      model: "DJI Phantom 4",
-      capacity: 8,
-      battery: 65,
-      range: 15,
-      status: 1,
-      createdAt: "2025-01-11",
-      restaurant: {
-        id: "R002",
-        name: "Chi nhánh Sài Gòn",
-        speaddress: "22 Nguyễn Huệ",
-        ward: "Bến Nghé",
-        city: "TP. Hồ Chí Minh",
-        status: 1,
-        location: {
-          latitude: 10.7758,
-          longitude: 106.7004,
-        },
-      },
-    },
-    {
-      id: "D003",
-      model: "Autel EVO II",
-      capacity: 10,
-      battery: 40,
-      range: 15,
-      status: 0,
-      createdAt: "2025-01-15",
-      restaurant: {
-        id: "R003",
-        name: "Chi nhánh Đà Nẵng",
-        speaddress: "88 Trần Phú",
-        ward: "Hải Châu 1",
-        city: "Đà Nẵng",
-        status: 1,
-        location: {
-          latitude: 16.0471,
-          longitude: 108.2068,
-        },
-      },
-    },
-  ];
+  const {
+    drones,
+    isLoading,
+    mutate,
+    totalItems,
+    totalPages,
+    currentPage,
+    limit,
+  } = useGetDrones();
+
+  const { deleteDrone, isLoading: isLoadingDelete } = useDeleteDrone();
+
+  const handleDelete = async (id: string) => {
+    if (!id) {
+      return;
+    }
+    try {
+      await deleteDrone(id);
+      mutate();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+      mutate();
+    }
+  };
+
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
@@ -100,7 +60,7 @@ function Drone() {
           <thead>
             <tr className="bg-[#E9EDF2] text-left">
               <th className="p-[1rem]">Model</th>
-              <th className="p-[1rem]">Địa chỉ nhà hàng</th>
+              <th className="p-[1rem]">Chi nhánh nhà hàng</th>
               <th className="p-[1rem]">Sức chứa (kg)</th>
               <th className="p-[1rem]"> Quãng đường bay tối đa (km)</th>
               <th className="p-[1rem]">Pin (%)</th>
@@ -122,10 +82,7 @@ function Drone() {
                 <tr key={drone.id} className="hover:bg-[#f2f3f8]">
                   <td className="p-[1rem] font-semibold">{drone.model}</td>
 
-                  <td className="p-[1rem]">
-                    {drone.restaurant.name} -
-                    {` ${drone.restaurant.speaddress}, ${drone.restaurant.ward}, ${drone.restaurant.city}`}
-                  </td>
+                  <td className="p-[1rem]">{drone.restaurantName}</td>
                   <td className="p-[1rem]">{drone.capacity}kg</td>
                   <td className="p-[1rem]">{drone.range}km</td>
                   <td className="p-[1rem]">{drone.battery}%</td>
@@ -146,18 +103,14 @@ function Drone() {
 
                   <td className="p-[1rem]">
                     <div className="flex items-center gap-[15px]">
-                      <button>
-                        <HiOutlineWrenchScrewdriver
-                          size={20}
-                          className="text-[#74767d]"
-                        />
-                      </button>
-
                       <Link to={`/admin/edit-drone/${drone.id}`}>
                         <LiaEdit size={22} className="text-[#076ffe]" />
                       </Link>
 
-                      <button>
+                      <button
+                        disabled={isLoadingDelete}
+                        onClick={() => handleDelete(drone.id!)}
+                      >
                         <VscTrash size={22} className="text-[#d9534f]" />
                       </button>
                     </div>
@@ -182,14 +135,12 @@ function Drone() {
         </table>
       </div>
 
-      {/*
-    <Pagination
+      <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         limit={limit}
         totalItems={totalItems}
       />
-  */}
     </>
   );
 }

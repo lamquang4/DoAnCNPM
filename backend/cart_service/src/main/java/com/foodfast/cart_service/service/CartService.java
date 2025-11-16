@@ -32,17 +32,23 @@ public CartDTO getCartByUserId(String userId) {
 
     List<CartItemDTO> items = cart.getItems().stream().map(item -> {
         ProductDTO product = productClient.getProductById(item.getIdProduct());
+
+        if (product == null) {
+            throw new RuntimeException("Sản phẩm không tồn tại với id: " + item.getIdProduct());
+        }
+
         return new CartItemDTO(
-                item.getIdProduct(),
-                item.getQuantity(),
-                product.getName(),
-                product.getPrice(),
-                product.getStock()
+                product.getId(),     
+                item.getQuantity(),   
+                product.getImage(),   
+                product.getName(),  
+                product.getPrice()  
         );
     }).collect(Collectors.toList());
 
     return new CartDTO(cart.getId(), cart.getUserId(), items);
 }
+
 
     // Thêm sản phẩm vào giỏ (tạo giỏ nếu chưa có)
  public CartDTO addProductToCart(String userId, String productId, int quantity) {
@@ -79,7 +85,6 @@ public CartDTO getCartByUserId(String userId) {
 
         cartRepository.save(cart);
 
-        // Trả về DTO với thông tin sản phẩm
         return getCartByUserId(userId);
     }
 

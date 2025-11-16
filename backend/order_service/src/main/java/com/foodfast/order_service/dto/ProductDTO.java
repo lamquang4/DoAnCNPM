@@ -10,6 +10,6 @@ import java.math.BigDecimal;
 public class ProductDTO {
     private String id;
     private String name;
-    private BigDecimal price;
-    private BigDecimal stock;
+    private String image;
+   private BigDecimal price; 
 }

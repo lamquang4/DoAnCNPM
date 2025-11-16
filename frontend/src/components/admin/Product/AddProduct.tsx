@@ -3,15 +3,16 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useInputImage } from "../../../hooks/admin/useInputImage";
+import useAddProduct from "../../../hooks/admin/useAddProduct";
 
-function AddFood() {
-  const isLoading = false;
+function AddProduct() {
   const [data, setData] = useState({
     name: "",
     price: 1,
-    discount: 0,
     status: "",
   });
+
+  const { addProduct, isLoading } = useAddProduct();
 
   const max = 1;
 
@@ -42,14 +43,28 @@ function AddFood() {
       return;
     }
 
-    if (!selectedFiles) {
+    if (!selectedFiles || selectedFiles.length === 0) {
       toast.error("Vui lòng thêm ít nhất một hình sản phẩm");
       return;
     }
 
     try {
+      const formData = new FormData();
+
+      formData.append("product[name]", data.name);
+      formData.append("product[price]", data.price.toString());
+      formData.append("product[status]", data.status);
+
+      selectedFiles.forEach((file) => {
+        formData.append("image", file);
+      });
+
+      await addProduct(formData);
+      toast.success("Thêm sản phẩm thành công");
+
       setPreviewImages([]);
       setSelectedFiles([]);
+      setData({ name: "", price: 1, status: "" });
     } catch (err: any) {
       toast.error(err?.response?.data?.message);
     }
@@ -145,4 +160,4 @@ function AddFood() {
   );
 }
 
-export default AddFood;
+export default AddProduct;

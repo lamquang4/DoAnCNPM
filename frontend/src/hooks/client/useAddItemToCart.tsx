@@ -5,12 +5,12 @@ import toast from "react-hot-toast";
 export function useAddItemToCart() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const addItem = async (userId: string, bookId: string, quantity: number) => {
+  const addItem = async (userId: string, productId: string, quantity: number) => {
     setIsLoading(true);
     try {
       const url = `${
         import.meta.env.VITE_BACKEND_URL
-      }/api/cart?userId=${userId}&bookId=${bookId}&quantity=${quantity}`;
+      }/cart/${userId}?productId=${productId}&quantity=${quantity}`;
       await axios.post(url);
       toast.success("Thêm vào giỏ hàng thành công");
     } catch (err: any) {

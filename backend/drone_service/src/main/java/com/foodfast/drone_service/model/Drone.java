@@ -22,8 +22,8 @@ public class Drone {
     private String model;
     private double capacity; // khối lượng kg tối đa drone có thể vận chuyển
     private double battery; // số pin còn lại
-    private double range; // Khoảng cách km tối đa drone có thể bay
-    private Integer status; // 0 là đang rảnh, 1 đang giao, 2 giao thành công, 3 đang bay về, 4 bảo trì
+    private double range; // quãng đường bay tối đa km
+    private Integer status; // 0: Đang rảnh, 1: Đang giao, 2: Giao thành công
         @CreatedDate
     @Field("createdAt")
     private Instant createdAt;

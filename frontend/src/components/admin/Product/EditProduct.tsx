@@ -6,23 +6,19 @@ import ImageViewer from "../../ImageViewer";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useInputImage } from "../../../hooks/admin/useInputImage";
+import useGetProduct from "../../../hooks/admin/useGetProduct";
+import useUpdateProduct from "../../../hooks/admin/useUpdateProduct";
 
 function EditProduct() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const isLoadingUpdate = false;
-  const product = {
-    id: "p1",
-    name: "Cơm gà viên Nanban",
-    image: "/assets/products/com-ga-vien-nanban.png",
-    price: 120000,
-    status: 1,
-  };
-
+  const { product, isLoading, mutate } = useGetProduct(id as string);
+  const { updateProduct, isLoading: isLoadingUpdate } = useUpdateProduct(
+    id as string
+  );
   const [data, setData] = useState({
     name: "",
     price: 1,
-    discount: 0,
     status: "",
   });
   const [openViewer, setOpenViewer] = useState<boolean>(false);
@@ -39,24 +35,27 @@ function EditProduct() {
     handleRemovePreviewImage,
   } = useInputImage(max);
 
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!product) {
+      toast.error("Sản phẩm không tìm thấy");
+      navigate("/admin/products");
+      return;
+    }
+
+    setData({
+      name: product?.name || "",
+      price: product?.price || 1,
+      status: product?.status?.toString() || "",
+    });
+  }, [isLoading, product, navigate]);
+
   const handleOpenViewer = (image: string) => {
     setViewerImage(image);
     setOpenViewer(true);
   };
 
-  /*
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (!product) {
-      toast.error("Đồ ăn không tìm thấy");
-      navigate("/admin/products");
-      return;
-    }
-
-    setData({});
-  }, [isLoading, product, navigate]);
-  */
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -79,8 +78,22 @@ function EditProduct() {
     try {
       const formData = new FormData();
 
+      formData.append("product[name]", data.name);
+      formData.append("product[price]", data.price.toString());
+      formData.append("product[status]", data.status);
+
+      if (selectedFiles && selectedFiles.length > 0) {
+        selectedFiles.forEach((file) => {
+          formData.append("image", file); 
+        });
+      }
+
+      await updateProduct(formData);
+
       setPreviewImages([]);
       setSelectedFiles([]);
+
+      mutate();
     } catch (err: any) {
       toast.error(err?.response?.data?.message);
     }
@@ -106,12 +119,17 @@ function EditProduct() {
                 <div
                   className="w-[150px] border border-gray-300 cursor-pointer"
                   onClick={() => {
-                    if (product.image) handleOpenViewer(product.image);
+                    if (product?.image)
+                      handleOpenViewer(
+                        `${import.meta.env.VITE_BACKEND_URL}${product.image}`
+                      );
                   }}
                 >
                   <Image
-                    source={product.image}
-                    alt={product.name}
+                    source={`${import.meta.env.VITE_BACKEND_URL}${
+                      product?.image
+                    }`}
+                    alt={product!.name}
                     className="w-full h-full"
                     loading="lazy"
                   />

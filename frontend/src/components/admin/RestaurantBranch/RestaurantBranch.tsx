@@ -4,59 +4,41 @@ import { Link } from "react-router-dom";
 import { VscTrash } from "react-icons/vsc";
 import { LiaEdit } from "react-icons/lia";
 import { IoMdAddCircle } from "react-icons/io";
-import { TbLock, TbLockOpen } from "react-icons/tb";
 import Loading from "../../Loading";
 import Pagination from "../Pagination";
 import toast from "react-hot-toast";
-import type { Restaurant } from "../../../types/type";
+import useGetRestaurantBranches from "../../../hooks/admin/useGetRestaurantBranches";
+import useDeleteRestaurantBranch from "../../../hooks/admin/useDeleteRestaurantBranch";
 function RestaurantBranch() {
-  const isLoading = false;
-  const restaurants: Restaurant[] = [
-    {
-      id: "1",
-      name: "FoodFast Branch 1",
-      speaddress: "12 Nguyễn Huệ",
-      ward: "Bến Nghé",
-      city: "Hồ Chí Minh",
-      location: {
-        latitude: 10.77986,
-        longitude: 106.68734,
-      },
-      status: 1,
-      createdAt: "2024-01-10T10:30:00Z",
-    },
-    {
-      id: "2",
-      name: "FoodFast Branch 2",
-      speaddress: "150 Võ Văn Tần",
-      ward: "Phường 6",
-      city: "Hồ Chí Minh",
-      location: {
-        latitude: 10.85278,
-        longitude: 106.75852,
-      },
-      status: 1,
-      createdAt: "2024-01-12T09:10:00Z",
-    },
-    {
-      id: "3",
-      name: "FoodFast Branch 3",
-      speaddress: "22 Võ Văn Ngân",
-      ward: "Linh Chiểu",
-      city: "Thủ Đức",
-      location: {
-        latitude: 10.86968,
-        longitude: 106.80352,
-      },
-      status: 1,
-      createdAt: "2024-01-15T14:45:00Z",
-    },
-  ];
+  const {
+    restaurants,
+    mutate,
+    isLoading,
+    currentPage,
+    totalItems,
+    totalPages,
+    limit,
+  } = useGetRestaurantBranches();
+  const { deleteRestaurantBranch, isLoading: isLoadingDelete } =
+    useDeleteRestaurantBranch();
+
+  const handleDelete = async (id: string) => {
+    if (!id) {
+      return;
+    }
+    try {
+      await deleteRestaurantBranch(id);
+      mutate();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+      mutate();
+    }
+  };
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
         <div className="flex justify-between items-center">
-          <h2 className=" text-[#74767d]">Chi nhánh nhà hàng ({})</h2>
+          <h2 className=" text-[#74767d]">Chi nhánh nhà hàng ({totalItems})</h2>
 
           <Link
             to={"/admin/add-restaurant-branch"}
@@ -101,21 +83,16 @@ function RestaurantBranch() {
                   </td>
                   <td className="p-[1rem]  ">
                     <div className="flex items-center gap-[15px]">
-                      <button>
-                        {restaurant.status === 1 ? (
-                          <TbLock size={22} className="text-[#74767d]" />
-                        ) : (
-                          <TbLockOpen size={22} className="text-[#74767d]" />
-                        )}
-                      </button>
-
                       <Link
                         to={`/admin/edit-restaurant-branch/${restaurant.id}`}
                       >
                         <LiaEdit size={22} className="text-[#076ffe]" />
                       </Link>
 
-                      <button>
+                      <button
+                        disabled={isLoadingDelete}
+                        onClick={() => handleDelete(restaurant.id!)}
+                      >
                         <VscTrash size={22} className="text-[#d9534f]" />
                       </button>
                     </div>
@@ -140,14 +117,12 @@ function RestaurantBranch() {
         </table>
       </div>
 
-      {/*
-    <Pagination
+      <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         limit={limit}
         totalItems={totalItems}
       />
-  */}
     </>
   );
 }

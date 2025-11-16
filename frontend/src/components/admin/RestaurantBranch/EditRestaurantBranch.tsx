@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useGeocodeAddress from "../../../hooks/useGeocodeAddress";
 import useGetProvincesVN from "../../../hooks/useGetProvincesVN";
 import LeafletMap from "../../LeafletMap";
-import type { Restaurant } from "../../../types/type";
+import useGetActiveRestaurants from "../../../hooks/useGetActiveRestaurants";
+import useGetRestaurantBranch from "../../../hooks/admin/useGetRestaurantBranch";
+import useUpdateRestaurantBranch from "../../../hooks/admin/useUpdateRestaurantBranch";
 
 function EditRestaurantBranch() {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [data, setData] = useState({
     name: "",
     speaddress: "",
@@ -15,37 +19,31 @@ function EditRestaurantBranch() {
     status: "",
   });
 
-  const restaurants: Restaurant[] = [
-    {
-      id: "1",
-      name: "FoodFast chi nhánh 1",
-      speaddress: "12 Nguyễn Huệ",
-      ward: "Bến Nghé",
-      city: "Hồ Chí Minh",
-      location: { latitude: 10.77986, longitude: 106.68734 },
-      status: 1,
-    },
-    {
-      id: "2",
-      name: "FoodFast chi nhánh 2",
-      speaddress: "150 Võ Văn Tần",
-      ward: "Phường 6",
-      city: "Hồ Chí Minh",
-      location: { latitude: 10.85278, longitude: 106.75852 },
-      status: 1,
-    },
-    {
-      id: "3",
-      name: "FoodFast chi nhánh 3",
-      speaddress: "22 Võ Văn Ngân",
-      ward: "Linh Chiểu",
-      city: "Thủ Đức",
-      location: { latitude: 10.86968, longitude: 106.80352 },
-      status: 1,
-    },
-  ];
-
+  const { restaurants } = useGetActiveRestaurants();
+  const { restaurant, isLoading, mutate } = useGetRestaurantBranch(
+    id as string
+  );
+  const { updateRestaurantBranch, isLoading: isLoadingUpdate } =
+    useUpdateRestaurantBranch(id as string);
   const { provinces } = useGetProvincesVN();
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (!restaurant) {
+      toast.error("Sản phẩm không tìm thấy");
+      navigate("/admin/restaurants");
+      return;
+    }
+
+    setData({
+      name: restaurant?.name || "",
+      speaddress: restaurant?.speaddress || "",
+      city: restaurant?.city || "",
+      ward: restaurant?.ward || "",
+      status: restaurant?.status?.toString() || "",
+    });
+  }, [isLoading, restaurant, navigate]);
 
   const selectedProvince = useMemo(
     () => provinces?.find((p) => p.province === data.city),
@@ -72,12 +70,25 @@ function EditRestaurantBranch() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!lat || !lng) {
+      toast.error("Địa chỉ không tìm thấy");
+      return;
+    }
+
     try {
+      await updateRestaurantBranch({
+        name: data.name,
+        speaddress: data.speaddress,
+        ward: data.ward,
+        city: data.city,
+        location: { latitude: lat, longitude: lng },
+        status: Number(data.status),
+      });
+      mutate();
     } catch (err: any) {
-      toast.error(err?.response?.data?.msg);
+      toast.error(err?.response?.data?.message);
     }
   };
-  const isLoading = false;
 
   return (
     <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-full">
@@ -204,7 +215,7 @@ function EditRestaurantBranch() {
             type="submit"
             className="p-[6px_10px] bg-teal-500 text-white text-[0.9rem] font-medium text-center hover:bg-teal-600 rounded-sm"
           >
-            {isLoading ? "Đang cập nhật..." : "Cập nhật"}
+            {isLoadingUpdate ? "Đang cập nhật..." : "Cập nhật"}
           </button>
 
           <Link

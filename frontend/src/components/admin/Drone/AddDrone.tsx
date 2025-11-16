@@ -1,6 +1,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import useGetRestaurantBranches from "../../../hooks/admin/useGetRestaurantBranches";
+import useAddDrone from "../../../hooks/admin/useAddDrone";
 
 function AddDrone() {
   const [data, setData] = useState({
@@ -10,6 +12,9 @@ function AddDrone() {
     battery: "",
     restaurantId: "",
   });
+
+  const { restaurants } = useGetRestaurantBranches();
+  const { addDrone, isLoading } = useAddDrone();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -25,37 +30,26 @@ function AddDrone() {
     e.preventDefault();
 
     try {
+      await addDrone({
+        model: data.model,
+        capacity: Number(data.capacity),
+        range: Number(data.range),
+        battery: Number(data.battery),
+        restaurantId: data.restaurantId,
+      });
+
+      setData({
+        model: "",
+        capacity: "",
+        range: "",
+        battery: "",
+        restaurantId: "",
+      });
     } catch (err: any) {
-      toast.error(err?.response?.data?.msg);
+      toast.error(err?.response?.data?.message);
     }
   };
-  const isLoading = false;
-  const restaurants = [
-    {
-      id: "R001",
-      name: "Chi nhánh Hà Nội",
-      speaddress: "12 Lê Duẩn",
-      ward: "Hoàn Kiếm",
-      city: "Hà Nội",
-      status: 1,
-      location: {
-        latitude: 21.0278,
-        longitude: 105.8342,
-      },
-    },
-    {
-      id: "R002",
-      name: "Chi nhánh Sài Gòn",
-      speaddress: "22 Nguyễn Huệ",
-      ward: "Bến Nghé",
-      city: "TP. Hồ Chí Minh",
-      status: 1,
-      location: {
-        latitude: 10.7758,
-        longitude: 106.7004,
-      },
-    },
-  ];
+
   return (
     <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-full">
       <form className="flex flex-col gap-7 w-full" onSubmit={handleSubmit}>

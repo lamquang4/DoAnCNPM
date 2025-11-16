@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import useGetOrder from "../../../hooks/admin/useGetOrder";
-import type { Drone, Order } from "../../../types/type";
 import DeliveryMap from "../../DeliveryMap";
+import useGetAvailableDrones from "../../../hooks/useGetAvailableDrones";
+import useGetRestaurantBranches from "../../../hooks/admin/useGetRestaurantBranches";
 
 function OrderDetail() {
   const navigate = useNavigate();
@@ -19,50 +20,15 @@ function OrderDetail() {
     restaurantId: "",
   });
 
-  // const { order, isLoading } = useGetOrder(id as string);
-  const isLoading = false;
+  const { order, isLoading } = useGetOrder(id as string);
+  const { drones } = useGetAvailableDrones();
+  const { restaurants } = useGetRestaurantBranches();
   const steps = [
     { label: "Chờ xử lý", icon: <LuArchive size={24} /> },
     { label: "Đã sẵn sàng", icon: <LuCheck size={24} /> },
     { label: "Đang giao", icon: <LuTruck size={24} /> },
     { label: "Giao thành công", icon: <LuStar size={24} /> },
   ];
-
-  const order: Order = {
-    id: "order_001",
-    orderCode: "FF123456",
-    userId: "user_001",
-    fullname: "Nguyen Van A",
-    phone: "0912345678",
-    speaddress: "123 Nguyễn Huệ",
-    city: "Hồ Chí Minh",
-    ward: "Bến Nghé",
-    location: {
-      latitude: 10.77986,
-      longitude: 106.68734,
-    },
-    accountEmail: "nguyenvana@example.com",
-    paymethod: "cash", // hoặc "card"
-    items: [
-      {
-        idProduct: "prod_001",
-        image: "/assets/products/com-ga-vien-nanban.png",
-        name: "Burger Bò",
-        quantity: 2,
-        price: 50000,
-      },
-      {
-        idProduct: "prod_002",
-        image: "/assets/products/com-ga-vien-nanban.png",
-        name: "Khoai Tây Chiên",
-        quantity: 1,
-        price: 20000,
-      },
-    ],
-    status: 2,
-    total: 120000,
-    createdAt: new Date().toISOString(),
-  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -73,96 +39,6 @@ function OrderDetail() {
       [name]: value,
     });
   };
-
-  const restaurants = [
-    {
-      id: "R001",
-      name: "Chi nhánh Hà Nội",
-      speaddress: "12 Lê Duẩn",
-      ward: "Hoàn Kiếm",
-      city: "Hà Nội",
-      status: 1,
-      location: {
-        latitude: 21.0278,
-        longitude: 105.8342,
-      },
-    },
-    {
-      id: "R002",
-      name: "Chi nhánh Sài Gòn",
-      speaddress: "22 Nguyễn Huệ",
-      ward: "Bến Nghé",
-      city: "TP. Hồ Chí Minh",
-      status: 1,
-      location: {
-        latitude: 10.7758,
-        longitude: 106.7004,
-      },
-    },
-  ];
-
-  const drones: Drone[] = [
-    {
-      id: "D001",
-      model: "DJI Mavic Pro",
-      capacity: 5,
-      battery: 85,
-      status: 1,
-      createdAt: "2025-01-10",
-      restaurant: {
-        id: "R001",
-        name: "Chi nhánh Hà Nội",
-        speaddress: "12 Lê Duẩn",
-        ward: "Hoàn Kiếm",
-        city: "Hà Nội",
-        status: 1,
-        location: {
-          latitude: 21.0278,
-          longitude: 105.8342,
-        },
-      },
-    },
-    {
-      id: "D002",
-      model: "DJI Phantom 4",
-      capacity: 8,
-      battery: 65,
-      status: 1,
-      createdAt: "2025-01-11",
-      restaurant: {
-        id: "R002",
-        name: "Chi nhánh Sài Gòn",
-        speaddress: "22 Nguyễn Huệ",
-        ward: "Bến Nghé",
-        city: "TP. Hồ Chí Minh",
-        status: 1,
-        location: {
-          latitude: 10.7758,
-          longitude: 106.7004,
-        },
-      },
-    },
-    {
-      id: "D003",
-      model: "Autel EVO II",
-      capacity: 10,
-      battery: 40,
-      status: 0,
-      createdAt: "2025-01-15",
-      restaurant: {
-        id: "R003",
-        name: "Chi nhánh Đà Nẵng",
-        speaddress: "88 Trần Phú",
-        ward: "Hải Châu 1",
-        city: "Đà Nẵng",
-        status: 1,
-        location: {
-          latitude: 16.0471,
-          longitude: 108.2068,
-        },
-      },
-    },
-  ];
 
   useEffect(() => {
     if (isLoading) return;
@@ -301,7 +177,7 @@ function OrderDetail() {
                           <option value="">Chọn drone</option>
                           {drones.map((drone) => (
                             <option value={drone.id} key={drone.id}>
-                              {drone.model} - {drone.restaurant.name}
+                              {drone.model} - {drone.restaurantName}
                             </option>
                           ))}
                         </select>
@@ -318,7 +194,7 @@ function OrderDetail() {
                       </button>
                     </div>
 
-                    <DeliveryMap order={order} restaurant={restaurants[0]} />
+                    <DeliveryMap order={order!} restaurant={restaurants[0]} />
                   </form>
                 </div>
 

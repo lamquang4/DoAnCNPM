@@ -4,14 +4,14 @@ import { useState } from "react";
 export function useRemoveItemCart() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const removeItem = async (id: string) => {
+  const removeItem = async (userId: string, productId: string) => {
     setIsLoading(true);
-    if (!id) {
+    if (!userId) {
       return;
     }
 
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}/api/cart/item/${id}`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/cart/${userId}?productId=${productId}`;
       await axios.delete(url);
     } catch (err: any) {
       console.error("Lỗi:", err);

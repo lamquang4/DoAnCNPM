@@ -1,34 +1,23 @@
 package com.foodfast.delivery_service.controller;
-import java.util.List;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.foodfast.delivery_service.model.Delivery;
 import com.foodfast.delivery_service.service.DeliveryService;
 
 @RestController
 @RequestMapping("/api/delivery")
 public class DeliveryController {
+
     private final DeliveryService deliveryService;
+
     public DeliveryController(DeliveryService deliveryService){
         this.deliveryService = deliveryService;
     }
 
-    // Lấy tất cả delivery
-    @GetMapping
-    public List<Delivery> getAllDeliveries() {
-        return deliveryService.getAllDeliveries();
-    }
-
-    // Lấy delivery theo ID
-    @GetMapping("/{id}")
-    public Optional<Delivery> getDeliveryById(@PathVariable String id) {
-        return deliveryService.getDeliveryById(id);
+    // Lấy delivery theo orderId
+    @GetMapping("/order/{orderId}")
+    public Optional<Delivery> getDeliveryByOrderId(@PathVariable String orderId) {
+        return deliveryService.getDeliveryByOrderId(orderId);
     }
 
     // Tạo delivery mới
@@ -42,5 +31,4 @@ public class DeliveryController {
     public Delivery updateDelivery(@PathVariable String id, @RequestBody Delivery delivery) {
         return deliveryService.updateDelivery(id, delivery);
     }
-    
 }
