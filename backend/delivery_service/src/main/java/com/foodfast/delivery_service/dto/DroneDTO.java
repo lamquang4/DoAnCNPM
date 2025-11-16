@@ -12,5 +12,6 @@ public class DroneDTO {
     private String model;
     private double capacity;
     private double battery;
+    private double range;
     private Integer status;
 }

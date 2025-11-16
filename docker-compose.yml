@@ -16,6 +16,18 @@ services:
       timeout: 5s
       retries: 5
 
+  api-gateway:
+    build: ./backend/api_gateway
+    container_name: api-gateway
+    ports:
+      - "8090:8090"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
+    networks:
+      - foodfast-net
+
   eureka-server:
     build: ./backend/eureka_server
     container_name: eureka-server
@@ -35,7 +47,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/user_db
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
@@ -52,7 +64,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/product_db
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
@@ -69,7 +81,7 @@ services:
     ports:
       - "8082:8082"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/order_db
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
@@ -86,7 +98,7 @@ services:
     ports:
       - "8083:8083"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/payment_db
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
@@ -103,7 +115,7 @@ services:
     ports:
       - "8085:8085"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/cart_db
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
@@ -120,7 +132,7 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/drone_db
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
@@ -137,7 +149,24 @@ services:
     ports:
       - "8086:8086"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/delivery_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
+      mongo-db:
+        condition: service_healthy
+    networks:
+      - foodfast-net
+
+  restaurant-service:
+    build: ./backend/restaurant_service
+    container_name: restaurant-service
+    restart: always
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/restaurant_db
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:

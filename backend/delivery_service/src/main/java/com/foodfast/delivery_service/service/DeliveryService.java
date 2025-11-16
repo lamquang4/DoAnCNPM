@@ -49,8 +49,7 @@ public class DeliveryService {
                 .map(existing -> {
                     existing.setOrderId(newDelivery.getOrderId());
                     existing.setDroneId(newDelivery.getDroneId());
-                    existing.setOrigin(newDelivery.getOrigin());
-                    existing.setDestination(newDelivery.getDestination());
+                    existing.setRestaurantId(newDelivery.getRestaurantId());
                     existing.setCurrentLocation(newDelivery.getCurrentLocation());
                     existing.setStatus(newDelivery.getStatus());
                     return deliveryRepository.save(existing);

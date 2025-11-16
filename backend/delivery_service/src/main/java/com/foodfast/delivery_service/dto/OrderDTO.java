@@ -16,6 +16,7 @@ public class OrderDTO {
     private String address;
     private BigDecimal total;
     private List<OrderItemDTO> items;
+    private LocationDTO location;
     private Integer paymethod; // 0: cod, 1: momo
     private Integer status;
     private String createdAt; 

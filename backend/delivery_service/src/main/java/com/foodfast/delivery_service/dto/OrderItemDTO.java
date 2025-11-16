@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class OrderItemDTO {
     private String idProduct;
+    private String image;
+    private String name;
     private Integer quantity;
     private BigDecimal price;
 }

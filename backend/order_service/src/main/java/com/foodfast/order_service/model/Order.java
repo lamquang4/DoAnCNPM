@@ -19,15 +19,18 @@ public class Order {
 
     @Id
     private String id;
-    private String orderCOde;
+    private String orderCode;
     private String userId;
     private String fullname;
     private String phone;
-    private String address;
+    private String speaddress; 
+    private String ward;
+    private String city; 
     private BigDecimal total;
+     private Location location;
     private List<OrderItem> items;
-    private Integer paymethod; // 0: cod, 1: momo
-    private Integer status; // 0: processing, 1: delivery, 2: done
+    private String paymethod;
+    private Integer status; // 0: Đang xử lý, 1: Đã sẵn sàng, 2: Đang giao, 3: Giao thành công, 4: Đã hủy
     @CreatedDate
     @Field("createdAt")
     private Instant createdAt;
