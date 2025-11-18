@@ -1,7 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import useGetRestaurantBranches from "../../../hooks/admin/useGetRestaurantBranches";
+import useGetRestaurants from "../../../hooks/admin/useGetRestaurants.tsx";
 import useAddDrone from "../../../hooks/admin/useAddDrone";
 
 function AddDrone() {
@@ -13,7 +13,7 @@ function AddDrone() {
     restaurantId: "",
   });
 
-  const { restaurants } = useGetRestaurantBranches();
+  const { restaurants } = useGetRestaurants();
   const { addDrone, isLoading } = useAddDrone();
 
   const handleChange = (

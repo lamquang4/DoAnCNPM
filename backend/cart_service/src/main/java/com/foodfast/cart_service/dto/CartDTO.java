@@ -1,4 +1,5 @@
 package com.foodfast.cart_service.dto;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,3 +12,4 @@ public class CartDTO {
     private String userId;
     private List<CartItemDTO> items;
 }
+

@@ -7,7 +7,6 @@ import { IoMdAddCircle } from "react-icons/io";
 import Loading from "../../Loading";
 import Pagination from "../Pagination";
 import toast from "react-hot-toast";
-import type { Drone } from "../../../types/type";
 import useGetDrones from "../../../hooks/admin/useGetDrones";
 import useDeleteDrone from "../../../hooks/admin/useDeleteDrone";
 function Drone() {

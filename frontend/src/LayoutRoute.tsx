@@ -5,7 +5,6 @@ import HomePage from "./pages/client/HomePage";
 import OrderPage from "./pages/client/OrderPage";
 import OrderDetailPage from "./pages/client/OrderDetailPage";
 import LoginAdminPage from "./pages/admin/LoginAdminPage";
-import AccountAdminPage from "./pages/admin/AccountAdminPage";
 import AdminPage from "./pages/admin/AdminPage";
 import AddAdminPage from "./pages/admin/AddAdminPage";
 import EditAdminPage from "./pages/admin/EditAdminPage";
@@ -20,18 +19,13 @@ import OrderDetailAdminPage from "./pages/admin/OrderDetailAdminPage";
 import OrderResultPage from "./pages/client/OrderResultPage";
 import PaymentPage from "./pages/admin/PaymentPage";
 import ProductPage from "./pages/admin/ProductPage";
-import AddProductPage from "./pages/admin/AddProductPage";
-import EditProductPage from "./pages/admin/EditProductPage";
-import RestaurantPage from "./pages/admin/RestaurantPage";
-import AddRestaurantPage from "./pages/admin/AddRestaurantPage";
-import EditRestaurantPage from "./pages/admin/EditRestaurantPage";
+import RestaurantOwnerPage from "./pages/admin/RestaurantOwnerPage";
+import AddRestaurantOwnerPage from "./pages/admin/AddRestaurantOwnerPage";
+import EditRestaurantOwnerPage from "./pages/admin/EditRestaurantOwnerPage";
 import DronePage from "./pages/admin/DronePage";
 import AddDronePage from "./pages/admin/AddDronePage";
 import EditDronePage from "./pages/admin/EditDronePage";
-import AddRestaurantBranchPage from "./pages/admin/AddRestaurantBranchPage";
-import RestaurantBranchPage from "./pages/admin/RestaurantBranchPage";
-import EditRestaurantBranchPage from "./pages/admin/EditRestaurantBranchPage";
-import AccountPage from "./pages/client/AccountPage";
+import RestaurantPage from "./pages/admin/RestaurantPage";
 
 function LayoutRoute() {
   return (
@@ -54,14 +48,6 @@ function LayoutRoute() {
         }
       />
 
-      <Route
-        path="/account"
-        element={
-          <PrivateRoute type="client" allowedRoles={[3]} redirectPath="/">
-            <AccountPage />
-          </PrivateRoute>
-        }
-      />
       <Route
         path="/order"
         element={
@@ -97,50 +83,28 @@ function LayoutRoute() {
           </PublicRoute>
         }
       />
-      <Route
-        path="/admin/account"
-        element={
-          <PrivateRoute
-            type="admin"
-            allowedRoles={[]}
-            redirectPath="/admin/login"
-          >
-            <AccountAdminPage />
-          </PrivateRoute>
-        }
-      />
 
       <Route path="/admin/products" element={<ProductPage />} />
-      <Route path="/admin/add-product" element={<AddProductPage />} />
+
+      <Route path="/admin/restaurant-owners" element={<RestaurantOwnerPage />} />
+      <Route path="/admin/add-restaurant-owner" element={<AddRestaurantOwnerPage />} />
       <Route
-        path="/admin/edit-product/:id"
-        element={
-          <PrivateRoute
-            type="admin"
-            allowedRoles={[]}
-            redirectPath="/admin/login"
-          >
-            <EditProductPage />
-          </PrivateRoute>
-        }
-      />
-      <Route path="/admin/restaurants" element={<RestaurantPage />} />
-      <Route path="/admin/add-restaurant" element={<AddRestaurantPage />} />
-      <Route
-        path="/admin/edit-restaurant/:id"
+        path="/admin/edit-restaurant-owner/:id"
         element={
           <PrivateRoute
             type="admin"
             allowedRoles={[0]}
             redirectPath="/admin/login"
           >
-            <EditRestaurantPage />
+            <EditRestaurantOwnerPage />
           </PrivateRoute>
         }
       />
+
       <Route path="/admin/admins" element={<AdminPage />} />
       <Route path="/admin/add-admin" element={<AddAdminPage />} />
       <Route path="/admin/edit-admin/:id" element={<EditAdminPage />} />
+      
       <Route path="/admin/customers" element={<CustomerPage />} />
       <Route path="/admin/add-customer" element={<AddCustomerPage />} />
       <Route
@@ -171,26 +135,7 @@ function LayoutRoute() {
         }
       />
 
-      <Route
-        path="/admin/restaurant-branches"
-        element={<RestaurantBranchPage />}
-      />
-      <Route
-        path="/admin/add-restaurant-branch"
-        element={<AddRestaurantBranchPage />}
-      />
-      <Route
-        path="/admin/edit-restaurant-branch/:id"
-        element={
-          <PrivateRoute
-            type="admin"
-            allowedRoles={[0]}
-            redirectPath="/admin/login"
-          >
-            <EditRestaurantBranchPage />
-          </PrivateRoute>
-        }
-      />
+      <Route path="/admin/restaurant" element={<RestaurantPage />} />
 
       <Route path="/admin/orders" element={<OrderAdminPage />} />
       <Route path="/admin/order/:id" element={<OrderDetailAdminPage />} />

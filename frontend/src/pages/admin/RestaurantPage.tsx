@@ -1,7 +1,7 @@
 import Restaurant from "../../components/admin/Restaurant/Restaurant";
 import LayoutPage from "../../components/admin/LayoutPage";
 
-function RestaurantPage() {
+function RestaurantBranchPage() {
   return (
     <LayoutPage>
       <Restaurant />
@@ -9,4 +9,4 @@ function RestaurantPage() {
   );
 }
 
-export default RestaurantPage;
+export default RestaurantBranchPage;

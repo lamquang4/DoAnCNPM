@@ -1,14 +1,16 @@
 package com.foodfast.order_service.dto;
-import java.util.List;
-import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class OrderDTO {
     private String id;
     private String orderCode;
@@ -20,8 +22,8 @@ public class OrderDTO {
     private LocationDTO location;
     private String paymethod;
     private Integer status;
-    private Double total;
-    private String accountEmail;
+    private BigDecimal total;
     private LocalDateTime createdAt;
-    private List<OrderDetailDTO> items;
+    private List<OrderItemDTO> items;
+        private DeliveryDTO delivery;
 }

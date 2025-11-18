@@ -1,5 +1,7 @@
 package main.java.com.foodfast.user_service.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,4 +16,5 @@ public class UserDTO {
     private String phone;
     private Integer role;
     private Integer status;
+    private LocalDateTime createdAt;
 }

@@ -13,50 +13,17 @@ import com.foodfast.cart_service.repository.CartRepository;
 
 @Service
 public class CartService {
+
     private final CartRepository cartRepository;
     private final ProductClient productClient;
+
     public CartService(CartRepository cartRepository, ProductClient productClient) {
         this.cartRepository = cartRepository;
         this.productClient = productClient;
     }
 
-      // Lấy giỏ hàng theo userId
-public CartDTO getCartByUserId(String userId) {
-    Cart cart = cartRepository.findByUserId(userId)
-            .orElseGet(() -> {
-                Cart newCart = new Cart();
-                newCart.setUserId(userId);
-                newCart.setItems(new ArrayList<>());
-                return cartRepository.save(newCart);
-            });
-
-    List<CartItemDTO> items = cart.getItems().stream().map(item -> {
-        ProductDTO product = productClient.getProductById(item.getIdProduct());
-
-        if (product == null) {
-            throw new RuntimeException("Sản phẩm không tồn tại với id: " + item.getIdProduct());
-        }
-
-        return new CartItemDTO(
-                product.getId(),     
-                item.getQuantity(),   
-                product.getImage(),   
-                product.getName(),  
-                product.getPrice()  
-        );
-    }).collect(Collectors.toList());
-
-    return new CartDTO(cart.getId(), cart.getUserId(), items);
-}
-
-
-    // Thêm sản phẩm vào giỏ (tạo giỏ nếu chưa có)
- public CartDTO addProductToCart(String userId, String productId, int quantity) {
-        if (quantity < 1) {
-            throw new IllegalArgumentException("Số lượng mua phải lớn hơn 0");
-        }
-
-        // Lấy giỏ hàng
+    // Lấy giỏ hàng theo userId
+    public CartDTO getCartByUserId(String userId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
@@ -65,13 +32,44 @@ public CartDTO getCartByUserId(String userId) {
                     return cartRepository.save(newCart);
                 });
 
-        // Kiểm tra sản phẩm tồn tại
+        List<CartItemDTO> items = cart.getItems().stream().map(item -> {
+            ProductDTO product = productClient.getProductById(item.getIdProduct());
+
+            if (product == null) {
+                throw new RuntimeException("Sản phẩm không tồn tại với id: " + item.getIdProduct());
+            }
+
+            return new CartItemDTO(
+                    product.getId(),
+                    product.getName(), 
+                    product.getImage(),
+                    product.getPrice(), 
+                    item.getQuantity()    
+            );
+        }).collect(Collectors.toList());
+
+        return new CartDTO(cart.getId(), cart.getUserId(), items);
+    }
+
+    // Thêm sản phẩm vào giỏ (tạo giỏ nếu chưa có)
+    public CartDTO addProductToCart(String userId, String productId, int quantity) {
+        if (quantity < 1) {
+            throw new IllegalArgumentException("Số lượng mua phải lớn hơn 0");
+        }
+
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseGet(() -> {
+                    Cart newCart = new Cart();
+                    newCart.setUserId(userId);
+                    newCart.setItems(new ArrayList<>());
+                    return cartRepository.save(newCart);
+                });
+
         ProductDTO product = productClient.getProductById(productId);
         if (product == null) {
             throw new RuntimeException("Sản phẩm không tồn tại");
         }
 
-        // Kiểm tra sản phẩm đã có trong giỏ chưa
         CartItem existingItem = cart.getItems().stream()
                 .filter(i -> i.getIdProduct().equals(productId))
                 .findFirst()
@@ -84,12 +82,11 @@ public CartDTO getCartByUserId(String userId) {
         }
 
         cartRepository.save(cart);
-
         return getCartByUserId(userId);
     }
 
     // Cập nhật số lượng sản phẩm trong giỏ
-   public CartDTO updateProductQuantity(String userId, String productId, int quantity) {
+    public CartDTO updateProductQuantity(String userId, String productId, int quantity) {
         if (quantity < 1) {
             throw new IllegalArgumentException("Số lượng mua phải lớn hơn 0");
         }

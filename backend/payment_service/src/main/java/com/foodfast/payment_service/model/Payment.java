@@ -20,6 +20,7 @@ public class Payment {
     private String id;
 
     private String orderId;
+    private String transactionId;
     private Integer status; // 0: pending, 1: paid
     private BigDecimal amount; // số tiền
     private String paymethod;

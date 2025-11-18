@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import useGetDrone from "../../../hooks/admin/useGetDrone";
-import useGetRestaurantBranches from "../../../hooks/admin/useGetRestaurantBranches";
+import useGetRestaurants from "../../../hooks/admin/useGetRestaurants.tsx";
 import useUpdateDrone from "../../../hooks/admin/useUpdateDrone";
 function EditDrone() {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ function EditDrone() {
     restaurantId: "",
   });
 
-  const { restaurants } = useGetRestaurantBranches();
+  const { restaurants } = useGetRestaurants();
   const { drone, isLoading, mutate } = useGetDrone(id as string);
   const { updateDrone, isLoading: isLoadingUpdate } = useUpdateDrone(
     id as string

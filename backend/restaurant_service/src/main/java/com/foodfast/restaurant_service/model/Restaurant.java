@@ -22,6 +22,7 @@ public class Restaurant {
     private String speaddress; 
     private String ward;
     private String city;
+    private String ownerId; // chủ nhà hàng của collection user
     private Location location; 
     private int status;
     @CreatedDate

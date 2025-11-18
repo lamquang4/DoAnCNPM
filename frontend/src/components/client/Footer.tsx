@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Image from "../Image";
 function Footer() {
   return (
     <footer className="bg-gray-50 border-t border-gray-200 px-[15px]">
@@ -7,15 +6,10 @@ function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 py-8">
           <div className="col-span-full lg:col-span-1  space-y-4">
             <Link to={"/"}>
-              <Image
-                source={"/assets/logo.png"}
-                alt={"logo"}
-                className={"w-[80px]"}
-                loading="eager"
-              />
+              <h2>Foodfast</h2>
             </Link>
             <p className=" text-gray-500">
-              KFC nhận đặt hàng trực tuyến và giao hàng tận nơi bằng drone.
+              Foodfast nhận đặt hàng trực tuyến và giao hàng tận nơi bằng drone.
             </p>
           </div>
 

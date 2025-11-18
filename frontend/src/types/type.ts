@@ -2,7 +2,7 @@ export interface User {
   id?: string;
   fullname: string;
   email: string;
-  phone?: string;
+  phone: string;
   password?: string;
   status?: number;
   role?: number;
@@ -15,48 +15,49 @@ export interface Product {
   image: string;
   price: number;
   status: number;
+  restaurantId: string;
+  restaurantName: string;
   createdAt?: string;
 }
 
 export interface Order {
   id: string;
   orderCode: string;
-  userId: string;
   fullname: string;
   phone: string;
   speaddress: string;
   city: string;
   ward: string;
   location: Location;
-  accountEmail: string;
   paymethod: string;
-  items: ProductBuy[];
   status: number;
   total: number;
   createdAt: string;
+  items: OrderItem[];
+  delivery?: Delivery;
 }
 
-export interface ProductBuy {
+export interface OrderItem {
   productId: string;
-  image: string;
   name: string;
-  quantity: number;
+  image: string;
   price: number;
+  quantity: number;
 }
 
 export interface Payment {
-  id?: string;
+  id: string;
   orderId: string;
-  orderCode: string;
-  paymethod: string;
-  amount: number;
   transactionId: string;
+  paymethod: string;
+  orderCode: string;
+  amount: number;
   status: number;
   createdAt: string;
 }
 
-export interface ProductInCart {
-  idProduct: string;
+export interface CartItem {
+  productId: string;
   image: string;
   name: string;
   price: string;
@@ -66,7 +67,7 @@ export interface ProductInCart {
 export interface Cart {
   id?: string;
   user?: string;
-  items: ProductInCart[];
+  items: CartItem[];
 }
 
 export interface Location {
@@ -81,18 +82,22 @@ export interface Drone {
   model: string;
   capacity: number;
   battery: number;
-  range?: number;
+  range: number;
   status?: number;
   createdAt?: string;
 }
 
 export interface Delivery {
-  id: string;
+  id?: string;
   orderId: string;
+  orderCode: string;
+  destination?: Location;
   droneId: string;
+  model?: string;
   restaurantId: string;
+  restaurantName?: string;
+  restaurantLocation?: Location;
   currentLocation: Location;
-  status: number;
   createdAt?: string;
 }
 
@@ -103,6 +108,8 @@ export interface Restaurant {
   ward: string;
   city: string;
   location: Location;
+  userId: string;
+  fullname?: string;
   status: number;
   createdAt?: string;
 }

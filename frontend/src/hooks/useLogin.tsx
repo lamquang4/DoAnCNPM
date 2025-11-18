@@ -15,16 +15,16 @@ export default function useLogin() {
 
       const isAdminPage = window.location.pathname.startsWith("/admin");
 
-      if (!isAdminPage && role >= 0 && role <= 2) {
+      if (!isAdminPage && role === 0) {
         toast.error(
-          "Bạn không thể đăng nhập bằng tài khoản quản trị viên vào trang khách hàng"
+          "Bạn không thể đăng nhập bằng tài khoản quản trị viên hoặc chủ nhà hàng ở trang khách hàng"
         );
         return;
       }
 
-      if (isAdminPage && role === 3) {
+      if (isAdminPage && (role === 2 || role === 1)) {
         toast.error(
-          "Bạn không thể đăng nhập bằng tài khoản khách hàng vào trang quản trị"
+          "Bạn không thể đăng nhập bằng tài khoản khách hàng ở trang này"
         );
         return;
       }

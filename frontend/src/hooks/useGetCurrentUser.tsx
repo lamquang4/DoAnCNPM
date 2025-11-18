@@ -4,12 +4,14 @@ import Cookies from "js-cookie";
 import type { User } from "../types/type";
 
 const fetcher =
-  (type: "admin" | "client") =>
+  (type: "admin" | "client" | "restaurant") =>
   async (url: string): Promise<User> => {
     const token =
       type === "admin"
         ? Cookies.get("token-admin")
-        : Cookies.get("token-client");
+        : type === "client"
+        ? Cookies.get("token-client")
+        : Cookies.get("token-restaurant");
 
     const res = await axios.get(url, {
       headers: {
@@ -20,7 +22,7 @@ const fetcher =
     return res.data;
   };
 
-export default function useCurrentUser(type: "admin" | "client") {
+export default function useGetCurrentUser(type: "admin" | "client" | "restaurant") {
   const url = null;
 
   const { data, error, isLoading, mutate } = useSWR<User>(url, fetcher(type));

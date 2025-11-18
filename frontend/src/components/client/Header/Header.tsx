@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Image from "../../Image";
 import ProfileMenu from "./ProfileMenu";
 import { CiShoppingCart } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
@@ -63,12 +62,7 @@ function Header() {
         <div className=" py-[20px] px-[15px] relative">
           <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center">
             <Link to={"/"}>
-              <Image
-                source={"/assets/logo.png"}
-                alt={"logo"}
-                className={"w-[80px]"}
-                loading="eager"
-              />
+              <h2>Foodfast</h2>
             </Link>
 
             <nav className="hidden lg:block">

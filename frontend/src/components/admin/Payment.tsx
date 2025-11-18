@@ -3,7 +3,6 @@ import Loading from "../Loading";
 import InputSearch from "./InputSearch";
 import useGetPayments from "../../hooks/admin/useGetPayments";
 import Pagination from "./Pagination";
-import FilterDropDownMenu from "./FilterDropDownMenu";
 
 function Payment() {
   const { payments, isLoading, totalItems, totalPages, currentPage, limit } =
@@ -35,13 +34,7 @@ function Payment() {
               <th className="p-[1rem]  ">Mã giao dịch</th>
               <th className="p-[1rem]  ">Phương thức thanh toán</th>
               <th className="p-[1rem]  ">Số tiền</th>
-              <th className="p-[1rem]   relative">
-                <FilterDropDownMenu
-                  title="Tình trạng"
-                  array={array}
-                  paramName="status"
-                />
-              </th>
+              <th className="p-[1rem]   relative">Tình trạng</th>
               <th className="p-[1rem]  ">Ngày tạo</th>
             </tr>
           </thead>

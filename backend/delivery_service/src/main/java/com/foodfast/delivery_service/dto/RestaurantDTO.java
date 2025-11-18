@@ -1,5 +1,6 @@
 package com.foodfast.delivery_service.dto;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,9 @@ public class RestaurantDTO {
     private String ward;
     private String city;
     private LocationDTO location;
-    private int status;
+    private String ownerId;
+    private String fullname; // họ tên chủ nhà hàng
+    private Integer status;
+    private LocalDateTime createdAt;
 }
+

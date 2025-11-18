@@ -23,6 +23,7 @@ public class Product {
     private String image;
     private BigDecimal price;
 private Integer status; // 1 là hiện, 0 là ẩn
+    private String restaurantId;
        @CreatedDate
     @Field("createdAt")
     private Instant createdAt;
