@@ -6,7 +6,7 @@ function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 py-8">
           <div className="col-span-full lg:col-span-1  space-y-4">
             <Link to={"/"}>
-              <h2>Foodfast</h2>
+              <h2 className="text-[#C62028]">Foodfast</h2>
             </Link>
             <p className=" text-gray-500">
               Foodfast nhận đặt hàng trực tuyến và giao hàng tận nơi bằng drone.

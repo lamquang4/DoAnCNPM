@@ -101,12 +101,7 @@ function CheckoutForm() {
     <section className="my-[40px] px-[15px] text-black">
       <div className="mx-auto max-w-[1200px] w-full">
         <Link to={"/"}>
-          <Image
-            source={"/assets/logo.png"}
-            alt={"logo"}
-            className={"w-[80px]"}
-            loading="eager"
-          />
+          <h2>Foodfast</h2>
         </Link>
 
         <hr className="border-gray-300 my-[15px]" />

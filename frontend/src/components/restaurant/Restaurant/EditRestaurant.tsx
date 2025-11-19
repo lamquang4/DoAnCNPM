@@ -4,8 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import useGeocodeAddress from "../../../hooks/useGeocodeAddress";
 import useGetProvincesVN from "../../../hooks/useGetProvincesVN";
 import LeafletMap from "../../LeafletMap";
-import useGetActiveRestaurants from "../../../hooks/client/useGetActiveRestaurants";
-import useGetRestaurant from "../../../hooks/admin/useGetRestaurant";
+import useGetRestaurant from "../../../hooks/restaurant/useGetRestaurant";
 import useUpdateRestaurant from "../../../hooks/restaurant/useUpdateRestaurant";
 
 function EditRestaurant() {
@@ -19,7 +18,6 @@ function EditRestaurant() {
     status: "",
   });
 
-  const { restaurants } = useGetActiveRestaurants();
   const { restaurant, isLoading, mutate } = useGetRestaurant(id as string);
   const { updateRestaurant, isLoading: isLoadingUpdate } = useUpdateRestaurant(
     id as string
@@ -31,7 +29,7 @@ function EditRestaurant() {
 
     if (!restaurant) {
       toast.error("Sản phẩm không tìm thấy");
-      navigate("/admin/restaurants");
+      navigate("/restaurant/restaurants");
       return;
     }
 
@@ -82,6 +80,7 @@ function EditRestaurant() {
         city: data.city,
         location: { latitude: lat, longitude: lng },
         status: Number(data.status),
+        userId: "abc",
       });
       mutate();
     } catch (err: any) {
@@ -92,7 +91,7 @@ function EditRestaurant() {
   return (
     <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-full">
       <form className="flex flex-col gap-7 w-full" onSubmit={handleSubmit}>
-        <h2 className="text-[#74767d]">Chỉnh sửa chi nhánh nhà hàng</h2>
+        <h2 className="text-[#74767d]">Chỉnh sửa nhà hàng</h2>
 
         <div className="flex gap-[25px] w-full flex-col">
           <div className="md:p-[25px] p-[15px] bg-white rounded-md flex flex-col gap-[20px] w-full">
@@ -181,12 +180,7 @@ function EditRestaurant() {
                   : "border-2 border-red-500"
               }`}
             >
-              <LeafletMap
-                lat={lat}
-                lng={lng}
-                fullAddress={fullAddress}
-                restaurants={restaurants}
-              />
+              <LeafletMap lat={lat} lng={lng} fullAddress={fullAddress} />
             </div>
 
             <div className="flex flex-col gap-1">
@@ -218,7 +212,7 @@ function EditRestaurant() {
           </button>
 
           <Link
-            to="/admin/restaurants"
+            to="/restaurant/restaurants"
             className="p-[6px_10px] bg-red-500 text-white text-[0.9rem] text-center hover:bg-red-600 rounded-sm"
           >
             Trở về

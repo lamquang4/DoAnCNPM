@@ -1,7 +1,7 @@
 import LayoutPage from "../../components/admin/LayoutPage";
 import Product from "../../components/admin/Product/Product";
 
-function BookPage() {
+function ProductPage() {
   return (
     <LayoutPage>
       <Product />
@@ -9,4 +9,4 @@ function BookPage() {
   );
 }
 
-export default BookPage;
+export default ProductPage;

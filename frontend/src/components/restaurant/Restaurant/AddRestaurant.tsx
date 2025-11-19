@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import useGetProvincesVN from "../../../hooks/useGetProvincesVN";
 import useGeocodeAddress from "../../../hooks/useGeocodeAddress";
 import LeafletMap from "../../LeafletMap";
-import useGetActiveRestaurants from "../../../hooks/client/useGetActiveRestaurants";
 import useAddRestaurant from "../../../hooks/restaurant/useAddRestaurant";
 
 function AddRestaurant() {
@@ -16,7 +15,6 @@ function AddRestaurant() {
     status: "",
   });
 
-  const { restaurants } = useGetActiveRestaurants();
   const { addRestaurant, isLoading } = useAddRestaurant();
   const { provinces } = useGetProvincesVN();
 
@@ -58,6 +56,7 @@ function AddRestaurant() {
         city: data.city,
         location: { latitude: lat, longitude: lng },
         status: Number(data.status),
+        userId: "abc"
       });
 
       setData({
@@ -75,7 +74,7 @@ function AddRestaurant() {
   return (
     <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-full">
       <form className="flex flex-col gap-7 w-full" onSubmit={handleSubmit}>
-        <h2 className="text-[#74767d]">Thêm nhánh nhà hàng</h2>
+        <h2 className="text-[#74767d]">Thêm nhà hàng</h2>
 
         <div className="flex gap-[25px] w-full flex-col">
           <div className="md:p-[25px] p-[15px] bg-white rounded-md flex flex-col gap-[20px] w-full">
@@ -164,12 +163,7 @@ function AddRestaurant() {
                   : "border-2 border-red-500"
               }`}
             >
-              <LeafletMap
-                lat={lat}
-                lng={lng}
-                fullAddress={fullAddress}
-                restaurants={restaurants}
-              />
+              <LeafletMap lat={lat} lng={lng} fullAddress={fullAddress} />
             </div>
 
             <div className="flex flex-col gap-1">
@@ -201,7 +195,7 @@ function AddRestaurant() {
           </button>
 
           <Link
-            to="/admin/restaurants"
+            to="/restaurant/restaurants"
             className="p-[6px_10px] bg-red-500 text-white text-[0.9rem] text-center hover:bg-red-600 rounded-sm"
           >
             Trở về

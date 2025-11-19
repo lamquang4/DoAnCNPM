@@ -12,7 +12,7 @@ interface PrivateRouteProps {
   children: React.ReactNode;
   allowedRoles: number[];
   redirectPath: string;
-  type: "admin" | "client";
+  type: "admin" | "client" | "restaurant";
 }
 
 const PrivateRoute = ({

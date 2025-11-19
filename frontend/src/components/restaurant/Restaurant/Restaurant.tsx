@@ -1,39 +1,21 @@
 import Image from "../../Image";
 import InputSearch from "../InputSearch";
 import { Link } from "react-router-dom";
-import { VscTrash } from "react-icons/vsc";
 import { LiaEdit } from "react-icons/lia";
 import { IoMdAddCircle } from "react-icons/io";
 import Loading from "../../Loading";
 import Pagination from "../Pagination";
-import toast from "react-hot-toast";
-import useGetRestaurantBranches from "../../../hooks/admin/useGetRestaurant.stsx";
-import useDeleteRestaurantBranch from "../../../hooks/admin/useDeleteRestaurantBranch";
+import useGetRestaurants from "../../../hooks/admin/useGetRestaurants";
 function RestaurantBranch() {
   const {
     restaurants,
-    mutate,
     isLoading,
     currentPage,
     totalItems,
     totalPages,
     limit,
-  } = useGetRestaurantBranches();
-  const { deleteRestaurantBranch, isLoading: isLoadingDelete } =
-    useDeleteRestaurantBranch();
+  } = useGetRestaurants();
 
-  const handleDelete = async (id: string) => {
-    if (!id) {
-      return;
-    }
-    try {
-      await deleteRestaurantBranch(id);
-      mutate();
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message);
-      mutate();
-    }
-  };
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
@@ -41,7 +23,7 @@ function RestaurantBranch() {
           <h2 className=" text-[#74767d]">Chi nhánh nhà hàng ({totalItems})</h2>
 
           <Link
-            to={"/admin/add-restaurant-branch"}
+            to={"/restaurant/add-restaurant"}
             className="bg-[#C62028] border-0 cursor-pointer text-[0.9rem] font-medium w-[90px] !flex p-[10px_12px] items-center justify-center gap-[5px] text-white"
           >
             <IoMdAddCircle size={22} /> Thêm
@@ -84,17 +66,10 @@ function RestaurantBranch() {
                   <td className="p-[1rem]  ">
                     <div className="flex items-center gap-[15px]">
                       <Link
-                        to={`/admin/edit-restaurant-branch/${restaurant.id}`}
+                        to={`/restaurant/edit-restaurant/${restaurant.id}`}
                       >
                         <LiaEdit size={22} className="text-[#076ffe]" />
                       </Link>
-
-                      <button
-                        disabled={isLoadingDelete}
-                        onClick={() => handleDelete(restaurant.id!)}
-                      >
-                        <VscTrash size={22} className="text-[#d9534f]" />
-                      </button>
                     </div>
                   </td>
                 </tr>

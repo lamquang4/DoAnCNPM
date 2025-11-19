@@ -2,12 +2,12 @@ import { memo } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import L from "leaflet";
 import type { Restaurant } from "../types/type";
-
+import "leaflet/dist/leaflet.css";
 type Props = {
-  lat: number | null;
-  lng: number | null;
-  fullAddress: string | null;
-  restaurants: Restaurant[] | null;
+  lat?: number | null;
+  lng?: number | null;
+  fullAddress?: string | null;
+  restaurants?: Restaurant[] | null;
 };
 
 const restaurantIcon = new L.Icon({
@@ -22,7 +22,7 @@ const userIcon = new L.Icon({
 function LeafletMap({ lat, lng, fullAddress, restaurants }: Props) {
   return (
     <MapContainer
-      center={lat && lng ? [lat, lng] : [10.762622, 106.660172]}
+      center={[10.762622, 106.660172]}
       zoom={15}
       className="w-full h-[400px] z-5"
     >

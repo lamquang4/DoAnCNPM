@@ -62,7 +62,7 @@ function Header() {
         <div className=" py-[20px] px-[15px] relative">
           <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center">
             <Link to={"/"}>
-              <h2>Foodfast</h2>
+              <h2 className="!text-[#C62028]">Foodfast</h2>
             </Link>
 
             <nav className="hidden lg:block">

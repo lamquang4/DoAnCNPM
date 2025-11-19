@@ -27,14 +27,13 @@ function Order() {
               <th className="p-[1rem]  ">Mã đơn</th>
 
               <th className="p-[1rem]  ">Người đặt</th>
-              <th className="p-[1rem]  ">Tài khoản</th>
 
               <th className="p-[1rem]  ">Thanh toán</th>
 
               <th className="p-[1rem]  ">Tổng tiền</th>
               <th className="p-[1rem]  ">Ngày tạo</th>
               <th className="p-[1rem] ">Tình trạng</th>
-              <th className="p-[1rem]  ">Action</th>
+              <th className="p-[1rem]  ">Hành động</th>
             </tr>
           </thead>
           <tbody>
@@ -49,7 +48,6 @@ function Order() {
                 <tr key={order.id} className="hover:bg-[#f2f3f8]">
                   <td className="p-[1rem] font-semibold">{order.orderCode}</td>
                   <td className="p-[1rem]  ">{order.fullname}</td>
-                  <td className="p-[1rem]  ">{order.accountEmail}</td>
                   <td className="p-[1rem] uppercase">{order.paymethod}</td>
                   <td className="p-[1rem]  ">
                     {order.total!.toLocaleString("vi-VN")}₫

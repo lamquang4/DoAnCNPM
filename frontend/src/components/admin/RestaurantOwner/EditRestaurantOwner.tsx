@@ -28,8 +28,8 @@ function EditRestaurantOwner() {
     if (isLoading) return;
 
     if (!user) {
-      toast.error("Nhà hàng không tìm thấy");
-      navigate("/admin/restaurants");
+      toast.error("Chủ nhà hàng không tìm thấy");
+      navigate("/admin/restaurant-owners");
       return;
     }
 

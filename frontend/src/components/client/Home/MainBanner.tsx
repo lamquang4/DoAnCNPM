@@ -1,54 +1,30 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import Image from "../../Image";
 function MainBanner() {
-  const banners = [
-    {
-      mobile: "/assets/banner/mainbanner1.png",
-      desktop: "/assets/banner/mainbanner1.png",
-    },
-    {
-      mobile: "/assets/banner/mainbanner2.png",
-      desktop: "/assets/banner/mainbanner2.png",
-    },
-  ];
   return (
     <>
       <section className="mb-[40px] text-black">
-        <div className="w-full mx-auto">
-          <Swiper
-            modules={[Autoplay, Pagination]}
-            pagination={{ clickable: true, type: "bullets" }}
-            autoplay={{ delay: 5000 }}
-            loop={true}
-            speed={1000}
-            grabCursor={true}
-            className="w-full"
-          >
-            {banners.map((banner, index) => (
-              <SwiperSlide key={index}>
-                <div className="relative block w-full h-full">
-                  <div className="w-full h-full">
-                    <picture>
-                      <source
-                        srcSet={banner.mobile}
-                        media="(max-width: 768px)"
-                      />
-                      <Image
-                        source={banner.desktop}
-                        alt={"banner"}
-                        className={"w-full object-center"}
-                        loading="eager"
-                      />
-                    </picture>
-                  </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <div
+          className="relative h-96 flex items-center"
+          style={{
+            backgroundImage: "url('/assets/banner/mainbanner1.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div className="absolute inset-0 bg-gray-200 opacity-20"></div>
+
+          <div className="relative z-10 w-full px-6">
+            <div className="max-w-6xl mx-auto text-center">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+                Hưởng thức món ngon
+              </h1>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="bg-primary text-white px-4 py-2 rounded-button text-[0.9rem] font-semibold bg-[#C62028] transition-colors whitespace-nowrap">
+                  Thực đơn
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </>

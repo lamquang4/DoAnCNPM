@@ -24,8 +24,16 @@ import AddRestaurantOwnerPage from "./pages/admin/AddRestaurantOwnerPage";
 import EditRestaurantOwnerPage from "./pages/admin/EditRestaurantOwnerPage";
 import DronePage from "./pages/admin/DronePage";
 import AddDronePage from "./pages/admin/AddDronePage";
-import EditDronePage from "./pages/admin/EditDronePage";
 import RestaurantPage from "./pages/admin/RestaurantPage";
+import EditDronePage from "./pages/admin/EditDronePage";
+import ProductRestaurantPage from "./pages/restaurant/ProductRestaurantPage";
+import AddProductRestaurantPage from "./pages/restaurant/AddProductRestaurantPage";
+import OwnRestaurantPage from "./pages/restaurant/OwnRestaurantPage";
+import AddRestaurantPage from "./pages/restaurant/AddRestaurantPage";
+import EditRestaurantPage from "./pages/restaurant/EditRestaurantPage";
+import OrderRestaurantPage from "./pages/restaurant/OrderRestaurantPage";
+import OrderDetailRestaurantPage from "./pages/restaurant/OrderDetailRestaurantPage";
+import AccountAdminPage from "./pages/admin/AccountAdminPage";
 
 function LayoutRoute() {
   return (
@@ -84,10 +92,29 @@ function LayoutRoute() {
         }
       />
 
+      <Route
+        path="/admin/account"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <AccountAdminPage />
+          </PrivateRoute>
+        }
+      />
+
       <Route path="/admin/products" element={<ProductPage />} />
 
-      <Route path="/admin/restaurant-owners" element={<RestaurantOwnerPage />} />
-      <Route path="/admin/add-restaurant-owner" element={<AddRestaurantOwnerPage />} />
+      <Route
+        path="/admin/restaurant-owners"
+        element={<RestaurantOwnerPage />}
+      />
+      <Route
+        path="/admin/add-restaurant-owner"
+        element={<AddRestaurantOwnerPage />}
+      />
       <Route
         path="/admin/edit-restaurant-owner/:id"
         element={
@@ -104,7 +131,7 @@ function LayoutRoute() {
       <Route path="/admin/admins" element={<AdminPage />} />
       <Route path="/admin/add-admin" element={<AddAdminPage />} />
       <Route path="/admin/edit-admin/:id" element={<EditAdminPage />} />
-      
+
       <Route path="/admin/customers" element={<CustomerPage />} />
       <Route path="/admin/add-customer" element={<AddCustomerPage />} />
       <Route
@@ -140,6 +167,61 @@ function LayoutRoute() {
       <Route path="/admin/orders" element={<OrderAdminPage />} />
       <Route path="/admin/order/:id" element={<OrderDetailAdminPage />} />
       <Route path="/admin/payments" element={<PaymentPage />} />
+
+      <Route
+        path="/restaurant/account"
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/login"
+          >
+            <AccountAdminPage />
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="/restaurant/products" element={<ProductRestaurantPage />} />
+      <Route
+        path="/restaurant/add-product"
+        element={<AddProductRestaurantPage />}
+      />
+      <Route
+        path="/restaurant/edit-product/:id"
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/login"
+          >
+            <EditDronePage />
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="/restaurant/restaurants" element={<OwnRestaurantPage />} />
+      <Route
+        path="/restaurant/add-restaurant"
+        element={<AddRestaurantPage />}
+      />
+      <Route
+        path="/restaurant/edit-restaurant/:id"
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/login"
+          >
+            <EditRestaurantPage />
+          </PrivateRoute>
+        }
+      />
+
+      <Route path="/restaurant/orders" element={<OrderRestaurantPage />} />
+      <Route
+        path="/restaurant/order/:id"
+        element={<OrderDetailRestaurantPage />}
+      />
     </Routes>
   );
 }

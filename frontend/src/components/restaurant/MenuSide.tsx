@@ -25,8 +25,8 @@ function MenuSide({ menuOpen, toggleMenu }: Props) {
           label: "Món ăn",
           key: "2a",
           children: [
-            { label: "Danh sách món ăn", path: "/owner/products" },
-            { label: "Thêm món ăn", path: "/owner/add-product" },
+            { label: "Danh sách món ăn", path: "/restaurant/products" },
+            { label: "Thêm món ăn", path: "/restaurant/add-product" },
           ],
         },
         {
@@ -36,11 +36,11 @@ function MenuSide({ menuOpen, toggleMenu }: Props) {
           children: [
             {
               label: "Danh sách nhà hàng",
-              path: "/owner/restaurants",
+              path: "/restaurant/restaurants",
             },
             {
               label: "Thêm nhà hàng",
-              path: "/owner/add-restaurant",
+              path: "/restaurant/add-restaurant",
             },
           ],
         },
@@ -52,12 +52,12 @@ function MenuSide({ menuOpen, toggleMenu }: Props) {
         {
           icon: <RiShoppingBag4Line size={20} />,
           label: "Đơn hàng",
-          path: "/owner/orders",
+          path: "/restaurant/orders",
         },
         {
           icon: <GiDeliveryDrone size={20} />,
           label: "Drone",
-          path: "/owner/drones",
+          path: "/restaurant/drones",
         },
       ],
     },
@@ -87,7 +87,7 @@ function MenuSide({ menuOpen, toggleMenu }: Props) {
               <p className="  uppercase">{group.title}</p>
               {group.items.map((item, index) => (
                 <li key={index}>
-                  {item.children ? (
+                  {'children' in item ? (
                     <>
                       <div
                         onClick={() => toggleOpen(item.key)}

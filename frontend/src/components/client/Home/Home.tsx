@@ -1,5 +1,6 @@
 import ProductList from "./ProductList";
 import MainBanner from "./MainBanner";
+import RestaurantLocation from "./RestaurantLocation";
 
 function Home() {
   const products = [
@@ -30,6 +31,8 @@ function Home() {
       <MainBanner />
 
       <ProductList products={products} isLoading={false} />
+
+      <RestaurantLocation />
     </>
   );
 }

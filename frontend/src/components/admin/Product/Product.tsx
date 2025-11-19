@@ -1,6 +1,5 @@
 import { VscTrash } from "react-icons/vsc";
 import { LiaEdit } from "react-icons/lia";
-import { IoMdAddCircle } from "react-icons/io";
 import Image from "../../Image";
 import Pagination from "../Pagination";
 import Loading from "../../Loading";
@@ -38,13 +37,6 @@ function Product() {
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
         <div className="flex justify-between items-center">
           <h2 className=" text-[#74767d]">Đồ ăn ({totalItems})</h2>
-
-          <Link
-            to={"/admin/add-product"}
-            className="bg-[#C62028] border-0 cursor-pointer text-[0.9rem] font-medium w-[90px] !flex p-[10px_12px] items-center justify-center gap-[5px] text-white"
-          >
-            <IoMdAddCircle size={22} /> Thêm
-          </Link>
         </div>
       </div>
 

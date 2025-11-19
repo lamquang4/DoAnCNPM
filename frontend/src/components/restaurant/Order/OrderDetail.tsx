@@ -3,42 +3,24 @@ import { LuArchive, LuCheck, LuStar, LuTruck } from "react-icons/lu";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { TbCancel } from "react-icons/tb";
 import Loading from "../../Loading";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import useGetOrder from "../../../hooks/admin/useGetOrder";
 import DeliveryMap from "../../DeliveryMap";
-import useGetAvailableDrones from "../../../hooks/useGetAvailableDrones";
-import useGetRestaurantBranches from "../../../hooks/admin/useGetRestaurant.stsx";
 
 function OrderDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [data, setData] = useState({
-    droneId: "",
-    restaurantId: "",
-  });
-
   const { order, isLoading } = useGetOrder(id as string);
-  const { drones } = useGetAvailableDrones();
-  const { restaurants } = useGetRestaurantBranches();
+
   const steps = [
     { label: "Chờ xử lý", icon: <LuArchive size={24} /> },
     { label: "Đã sẵn sàng", icon: <LuCheck size={24} /> },
     { label: "Đang giao", icon: <LuTruck size={24} /> },
     { label: "Giao thành công", icon: <LuStar size={24} /> },
   ];
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setData({
-      ...data,
-      [name]: value,
-    });
-  };
 
   useEffect(() => {
     if (isLoading) return;
@@ -137,66 +119,11 @@ function OrderDetail() {
                   </div>
                 )}
 
-                <div className="px-[20px] space-y-[8px] py-[20px]">
-                  <h4 className="uppercase">Phân công giao hàng</h4>
-
-                  <form className="flex flex-col gap-7 w-full">
-                    <div className="flex flex-wrap md:flex-nowrap gap-[15px]">
-                      <div className="flex flex-col gap-1 w-full">
-                        <label htmlFor="" className="text-[0.9rem] font-medium">
-                          Chi nhánh nhà hàng
-                        </label>
-                        <select
-                          name="restaurantId"
-                          required
-                          onChange={handleChange}
-                          value={data.restaurantId}
-                          className="border border-gray-300 p-[6px_10px] text-[0.9rem] w-full outline-none focus:border-gray-400  "
-                        >
-                          <option value="">Chọn chi nhánh nhà hàng</option>
-                          {restaurants.map((restaurant) => (
-                            <option value={restaurant.id} key={restaurant.id}>
-                              {restaurant.name} -
-                              {` ${restaurant.speaddress}, ${restaurant.ward}, ${restaurant.city}`}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div className="flex flex-col gap-1 w-full">
-                        <label htmlFor="" className="text-[0.9rem] font-medium">
-                          Drone
-                        </label>
-                        <select
-                          name="droneId"
-                          required
-                          onChange={handleChange}
-                          value={data.droneId}
-                          className="border border-gray-300 p-[6px_10px] text-[0.9rem] w-full outline-none focus:border-gray-400  "
-                        >
-                          <option value="">Chọn drone</option>
-                          {drones.map((drone) => (
-                            <option value={drone.id} key={drone.id}>
-                              {drone.model} - {drone.restaurantName}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-center gap-6">
-                      <button
-                        disabled={isLoading}
-                        type="submit"
-                        className="p-[6px_10px] bg-teal-500 text-white text-[0.9rem] font-medium text-center hover:bg-teal-600 rounded-sm"
-                      >
-                        {isLoading ? "Đang lưu..." : "Lưu"}
-                      </button>
-                    </div>
-
-                    <DeliveryMap order={order!} restaurant={restaurants[0]} />
-                  </form>
-                </div>
+                {order && (
+                  <div className="px-[20px] space-y-[8px] py-[20px]">
+                    <DeliveryMap order={order} />
+                  </div>
+                )}
 
                 <div className="px-[20px] space-y-[8px] py-[20px]">
                   <h4 className="uppercase">Thông tin giao hàng</h4>

@@ -86,8 +86,8 @@ function MenuSide({ menuOpen, toggleMenu }: Props) {
           label: "Nhà hàng",
           key: "7a",
           children: [
-            { label: "Danh sách nhà hàng", path: "/admin/restaurants" },
-            { label: "Thêm nhà hàng", path: "/admin/add-restaurant" },
+            { label: "Danh sách chủ nhà hàng", path: "/admin/restaurant-owners" },
+            { label: "Thêm chủ nhà hàng", path: "/admin/add-restaurant-owner" },
           ],
         },
       ],
