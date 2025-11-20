@@ -1,13 +1,13 @@
-# Công nghệ phần mềm
+# Đồ án công nghệ phần mềm Giao đồ ăn của nhà hàng bằng drone
 
-### Frontend
+## Frontend (Vite reactjs typescript)
 
 B1: npm install
 
 B2: npm run dev
 
-### Docker
+## Backend (Spring boot - MongoDB Atlas)
 
-Chạy docker compose: docker compose up -d --build hoặc docker compose up --build
+Backend sẽ chạy bằng docker: docker compose up -d --build hoặc docker compose up --build
 
 Dừng docker compose: docker-compose down

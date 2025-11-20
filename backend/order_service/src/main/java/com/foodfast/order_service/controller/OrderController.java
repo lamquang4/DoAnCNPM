@@ -43,12 +43,12 @@ public class OrderController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Lấy danh sách đơn hàng theo userId (trả về DTO)
+    // Lấy danh sách đơn hàng theo userId
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getOrdersByUserId(
             @PathVariable String userId,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int limit
+            @RequestParam(defaultValue = "12") int limit
     ) {
         Page<OrderDTO> orders = orderService.getOrdersByUserId(userId, page, limit);
 
@@ -59,10 +59,26 @@ public class OrderController {
         ));
     }
 
-    // Tạo đơn hàng mới (nhận entity Order, trả về DTO)
+    // Tạo đơn hàng mới
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
         OrderDTO createdOrder = orderService.createOrder(order);
         return ResponseEntity.ok(createdOrder);
     }
+
+    @GetMapping("/code/{orderCode}")
+public ResponseEntity<OrderDTO> getOrderByCode(@PathVariable String orderCode) {
+    return orderService.getOrderByOrderCode(orderCode)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+}
+
+@PutMapping("/{id}/status")
+public ResponseEntity<?> updateOrderStatus(
+        @PathVariable String id,
+        @RequestParam Integer status
+) {
+    boolean updated = orderService.updateStatusOrder(id, status);
+    return ResponseEntity.ok(Map.of("updated", updated));
+}
 }

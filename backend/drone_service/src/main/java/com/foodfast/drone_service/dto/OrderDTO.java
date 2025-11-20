@@ -23,5 +23,5 @@ public class OrderDTO {
     private Double total;
     private LocalDateTime createdAt;
     private List<OrderItemDTO> items;
-            private DeliveryDTO delivery;
+private List<DeliveryDTO> deliveries;
 }

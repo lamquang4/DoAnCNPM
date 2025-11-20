@@ -22,8 +22,10 @@ const fetcher =
     return res.data;
   };
 
-export default function useGetCurrentUser(type: "admin" | "client" | "restaurant") {
-  const url = null;
+export default function useGetCurrentUser(
+  type: "admin" | "client" | "restaurant"
+) {
+  const url = `${import.meta.env.VITE_BACKEND_URL}/user/me`;
 
   const { data, error, isLoading, mutate } = useSWR<User>(url, fetcher(type));
 

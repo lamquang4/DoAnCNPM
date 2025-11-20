@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import Image from "../../Image";
 import Loading from "../../Loading";
 import Overplay from "./../Overplay";
 import ProductBuyList from "./ProductBuyList";
@@ -25,7 +24,7 @@ function CheckoutForm() {
   } = useGetCart(user?.id || "");
 
   const { provinces } = useGetProvincesVN();
-  const { addOrder, isLoading: isLoadingAdd } = useAddOrder(user?.id || "");
+  const { addOrder, isLoading: isLoadingAdd } = useAddOrder();
   const { createPaymentMomo, isLoading: isLoadingPaymentMomo } =
     usePaymentMomo();
 
@@ -46,13 +45,11 @@ function CheckoutForm() {
   useEffect(() => {
     if (isLoadingCart) return;
 
-    /*
     if (!cart || !cart.items?.length) {
       toast.error("Không có gì trong giỏ hết");
       navigate("/");
       return;
     }
-      */
   }, [cart, navigate, isLoadingCart]);
 
   const handleChange = useCallback(
@@ -87,11 +84,44 @@ function CheckoutForm() {
       return;
     }
 
-    if (paymethod === "momo") {
-      try {
-      } catch (err: any) {
-        toast.error(err?.response?.data?.msg);
-      }
+    const items = cart?.items.map((item) => {
+      return {
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+      };
+    });
+
+    const totalPrice = useMemo(() => {
+      return (
+        cart?.items.reduce((sum, item) => {
+          const finalPrice = item.price;
+
+          return sum + finalPrice * item.quantity;
+        }, 0) || 0
+      );
+    }, [cart?.items]);
+
+    try {
+      const res = await addOrder({
+        fullname: data.fullname,
+        phone: data.phone,
+        speaddress: data.speaddress,
+        city: data.city,
+        ward: data.ward,
+        paymethod: paymethod,
+        location: {
+          latitude: latLng.lat,
+          longitude: latLng.lng,
+        },
+        items: items!,
+        total: totalPrice,
+      });
+      const momoResponse = await createPaymentMomo(res.orderCode);
+      window.location.href = momoResponse.payUrl;
+      mutateCart({ items: [] }, false);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
     }
   };
 
@@ -101,7 +131,7 @@ function CheckoutForm() {
     <section className="my-[40px] px-[15px] text-black">
       <div className="mx-auto max-w-[1200px] w-full">
         <Link to={"/"}>
-          <h2>Foodfast</h2>
+          <h2 className="text-[#C62028]">Foodfast</h2>
         </Link>
 
         <hr className="border-gray-300 my-[15px]" />

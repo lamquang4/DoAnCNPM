@@ -3,11 +3,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.foodfast.user_service.model.User;
 import com.foodfast.user_service.repository.UserRepository;
-import main.java.com.foodfast.user_service.dto.UserDTO;
+import com.foodfast.user_service.dto.UserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,7 +31,10 @@ public class UserService {
                 user.getEmail(),
                 user.getPhone(),
                 user.getRole(),
-                user.getStatus()
+                user.getStatus(),  
+                user.getCreatedAt() != null 
+            ? LocalDateTime.ofInstant(user.getCreatedAt(), ZoneId.systemDefault())
+            : null
         );
     }
 
@@ -45,8 +51,9 @@ public class UserService {
         return userPage.map(this::toDTO);
     }
 
-    public Optional<User> getUserById(String id) {
-        return userRepository.findById(id);
+    public Optional<UserDTO> getUserById(String id) {
+        return userRepository.findById(id)
+                .map(this::toDTO);
     }
 
   public User createUser(User user) {
@@ -96,6 +103,12 @@ public User updateUser(String id, User user) {
     }).orElse(null);
 }
 
+public User updateUserStatus(String id, int status) {
+    return userRepository.findById(id).map(user -> {
+        user.setStatus(status);
+        return UserRepository.save(user);
+    }).orElse(null);
+}
 
 
 }

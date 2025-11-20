@@ -21,7 +21,7 @@ export default function useGetActiveProducts() {
 
   const url = `${
     import.meta.env.VITE_BACKEND_URL
-  }/product?${query.toString()}`;
+  }/product/active?${query.toString()}`;
 
   const { data, error, isLoading, mutate } = useSWR<ResponseType>(
     url,

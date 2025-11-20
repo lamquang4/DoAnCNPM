@@ -3,6 +3,8 @@ package com.foodfast.payment_service.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,8 +22,8 @@ public class OrderDTO {
     private LocationDTO location;
     private String paymethod;
     private Integer status;
-    private Double total;
+    private BigDecimal total;
     private LocalDateTime createdAt;
     private List<OrderItemDTO> items;
-        private DeliveryDTO delivery;
+private List<DeliveryDTO> deliveries;
 }

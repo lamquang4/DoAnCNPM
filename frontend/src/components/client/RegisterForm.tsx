@@ -50,8 +50,10 @@ function RegisterForm() {
     try {
       await addUser({
         fullname: data.fullname.trim(),
+        phone: data.phone,
         email: data.email.toLowerCase().trim(),
         password: data.password.trim(),
+        role: 2,
       });
 
       setData({

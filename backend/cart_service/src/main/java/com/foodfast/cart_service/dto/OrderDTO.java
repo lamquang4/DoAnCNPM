@@ -24,5 +24,5 @@ public class OrderDTO {
     private BigDecimal total;
     private LocalDateTime createdAt;
     private List<OrderItemDTO> items;
-            private DeliveryDTO delivery;
+    private DeliveryDTO deliveries;
 }

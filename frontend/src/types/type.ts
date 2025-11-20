@@ -21,8 +21,8 @@ export interface Product {
 }
 
 export interface Order {
-  id: string;
-  orderCode: string;
+  id?: string;
+  orderCode?: string;
   fullname: string;
   phone: string;
   speaddress: string;
@@ -30,17 +30,17 @@ export interface Order {
   ward: string;
   location: Location;
   paymethod: string;
-  status: number;
+  status?: number;
   total: number;
-  createdAt: string;
+  createdAt?: string;
   items: OrderItem[];
-  delivery?: Delivery;
+  deliveries?: Delivery[];
 }
 
 export interface OrderItem {
   productId: string;
-  name: string;
-  image: string;
+  name?: string;
+  image?: string;
   price: number;
   quantity: number;
 }
@@ -58,9 +58,9 @@ export interface Payment {
 
 export interface CartItem {
   productId: string;
-  image: string;
-  name: string;
-  price: string;
+  image?: string;
+  name?: string;
+  price: number;
   quantity: number;
 }
 

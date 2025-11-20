@@ -54,7 +54,7 @@ function Order() {
                     {order.total!.toLocaleString("vi-VN")}₫
                   </td>
                   <td className="p-[1rem]">
-                    {new Date(order.createdAt).toLocaleString("vi-VN", {
+                    {new Date(order.createdAt!).toLocaleString("vi-VN", {
                       year: "numeric",
                       month: "2-digit",
                       day: "2-digit",

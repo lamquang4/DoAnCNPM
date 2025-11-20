@@ -1,7 +1,11 @@
 package com.foodfast.user_service.controller;
 import com.foodfast.user_service.model.User;
 import com.foodfast.user_service.service.UserService;
-import main.java.com.foodfast.user_service.dto.UserDTO;
+import com.foodfast.user_service.dto.UserDTO;
+import com.foodfast.user_service.dto.LoginRequest;
+import com.foodfast.user_service.dto.LoginResponse;
+import com.foodfast.user_service.service.AuthService;
+import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +16,10 @@ import java.util.Map;
 @RequestMapping("/api/user")
 public class UserController {
  private final UserService userService;
-
-public UserController(UserService userService) {
+    private final AuthService authService;
+public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
  }
 
 @GetMapping("/role/{role}")
@@ -34,13 +39,12 @@ public ResponseEntity<?> getUsersByRole(
     ));
 }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
-        return userService.getUserById(id)
-                .map(userService::toDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+@GetMapping("/{id}")
+public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
+    return userService.getUserById(id)
+                      .map(ResponseEntity::ok)
+                      .orElse(ResponseEntity.notFound().build());
+}
 
    @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody User user) {
@@ -56,4 +60,33 @@ public ResponseEntity<?> getUsersByRole(
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        LoginResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
+    
+
+@GetMapping("/me")
+public ResponseEntity<Map<String, Object>> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    String token = authHeader.substring(7);
+    Map<String, Object> user = authService.getUserFromToken(token);
+    return ResponseEntity.ok(user);
+}
+
+ @PatchMapping("/{id}/status")
+public ResponseEntity<User> updateUserStatus(
+        @PathVariable String id,
+        @RequestParam int status
+) {
+    User updated = userService.updateUserStatus(id, status);
+    return updated != null 
+            ? ResponseEntity.ok(updated) 
+            : ResponseEntity.notFound().build();
+}
 }

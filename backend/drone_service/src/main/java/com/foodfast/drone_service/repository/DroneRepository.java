@@ -9,7 +9,8 @@ import com.foodfast.drone_service.model.Drone;
 
 @Repository
 public interface DroneRepository extends MongoRepository<Drone, String> {
-    Page<Drone> findByModelContainingIgnoreCase(String model, Pageable pageable);
-List<Drone> findByStatus(int status);
+  Page<Drone> findByModelContainingIgnoreCase(String model, Pageable pageable);
+  List<Drone> findByStatus(int status);
+  List<Drone> findByRestaurantIdAndStatus(String restaurantId, Integer status);
 }
 

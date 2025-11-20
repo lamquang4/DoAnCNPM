@@ -1,5 +1,12 @@
+import LayoutPage from "../../components/restaurant/LayoutPage";
+import Product from "../../components/restaurant/Product/Product";
+
 function ProductRestaurantPage() {
-  return <div></div>;
+  return (
+    <LayoutPage>
+      <Product />
+    </LayoutPage>
+  );
 }
 
 export default ProductRestaurantPage;

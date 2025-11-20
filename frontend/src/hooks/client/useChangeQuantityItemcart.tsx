@@ -4,9 +4,13 @@ import { useState } from "react";
 export function useChangeQuantityItemCart() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const changeQuantity = async (userId: string, productId: string, quantity: number) => {
+  const changeQuantity = async (
+    userId: string,
+    productId: string,
+    quantity: number
+  ) => {
     setIsLoading(true);
-    if (!userId) {
+    if (!userId || !productId) {
       return;
     }
     try {

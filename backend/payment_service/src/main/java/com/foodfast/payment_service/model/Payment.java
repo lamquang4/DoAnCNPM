@@ -21,7 +21,7 @@ public class Payment {
 
     private String orderId;
     private String transactionId;
-    private Integer status; // 0: pending, 1: paid
+    private Integer status; // 1: thành công
     private BigDecimal amount; // số tiền
     private String paymethod;
     @CreatedDate

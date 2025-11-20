@@ -198,7 +198,7 @@ function EditProduct() {
               {isLoadingUpdate ? "Đang cập nhật..." : "Cập nhật"}
             </button>
             <Link
-              to="/admin/products"
+              to="/restaurant/products"
               className="p-[6px_10px] bg-red-500 text-white text-[0.9rem] text-center hover:bg-red-600 rounded-sm"
             >
               Trở về

@@ -119,7 +119,7 @@ function OrderDetail() {
                   </div>
                 )}
 
-                {order && (
+                {order?.deliveries && (
                   <div className="px-[20px] space-y-[8px] py-[20px]">
                     <DeliveryMap order={order} />
                   </div>

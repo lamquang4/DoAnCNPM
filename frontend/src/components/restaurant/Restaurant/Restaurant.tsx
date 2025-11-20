@@ -7,14 +7,8 @@ import Loading from "../../Loading";
 import Pagination from "../Pagination";
 import useGetRestaurants from "../../../hooks/admin/useGetRestaurants";
 function RestaurantBranch() {
-  const {
-    restaurants,
-    isLoading,
-    currentPage,
-    totalItems,
-    totalPages,
-    limit,
-  } = useGetRestaurants();
+  const { restaurants, isLoading, currentPage, totalItems, totalPages, limit } =
+    useGetRestaurants();
 
   return (
     <>
@@ -65,9 +59,7 @@ function RestaurantBranch() {
                   </td>
                   <td className="p-[1rem]  ">
                     <div className="flex items-center gap-[15px]">
-                      <Link
-                        to={`/restaurant/edit-restaurant/${restaurant.id}`}
-                      >
+                      <Link to={`/restaurant/edit-restaurant/${restaurant.id}`}>
                         <LiaEdit size={22} className="text-[#076ffe]" />
                       </Link>
                     </div>

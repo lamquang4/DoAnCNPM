@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 function Footer() {
   return (
     <footer className="bg-gray-50 border-t border-gray-200 px-[15px]">
@@ -28,21 +29,23 @@ function Footer() {
               </li>
 
               <li>
-                <a
-                  href="#menu"
+                <HashLink
+                  smooth
+                  to="/#menu"
                   className=" text-gray-500 font-medium text-[0.9rem] hover:text-black"
                 >
                   Thực đơn
-                </a>
+                </HashLink>
               </li>
 
               <li>
-                <a
-                  href="#restaurant"
+                <HashLink
+                  smooth
+                  to="/#restaurant"
                   className=" text-gray-500 font-medium text-[0.9rem] hover:text-black"
                 >
                   Hệ thống nhà hàng
-                </a>
+                </HashLink>
               </li>
             </ul>
           </div>
@@ -122,7 +125,7 @@ function Footer() {
         </div>
 
         <div className="py-4 border-t border-gray-200 text-center">
-          <p className="font-medium text-gray-500">© KFC Vietnam 2025</p>
+          <p className="font-medium text-gray-500">© Foodfast Vietnam 2025</p>
         </div>
       </div>
     </footer>

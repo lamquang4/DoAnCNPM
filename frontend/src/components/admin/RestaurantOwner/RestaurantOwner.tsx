@@ -6,15 +6,35 @@ import InputSearch from "../InputSearch";
 import { Link } from "react-router-dom";
 import Loading from "../../Loading";
 import useGetUsersByRole from "../../../hooks/admin/useGetUsersByRole";
+import useUpdateStatusUser from "../../../hooks/admin/useUpdateStatusUser";
+import toast from "react-hot-toast";
+import { TbLock, TbLockOpen } from "react-icons/tb";
 function RestaurantOwner() {
   const {
     users: restaurants,
+    mutate,
     isLoading,
     totalItems,
     totalPages,
     currentPage,
     limit,
   } = useGetUsersByRole(1);
+  const { updateStatusUser, isLoading: isLoadingUpdate } =
+    useUpdateStatusUser();
+
+  const handleUpdateStatus = async (id: string, status: number) => {
+    if (!id && !status) {
+      return;
+    }
+
+    try {
+      await updateStatusUser(id, status);
+      mutate();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+      mutate();
+    }
+  };
 
   return (
     <>
@@ -66,6 +86,22 @@ function RestaurantOwner() {
                   </td>
                   <td className="p-[1rem]  ">
                     <div className="flex items-center gap-[15px]">
+                      <button
+                        disabled={isLoadingUpdate}
+                        onClick={() =>
+                          handleUpdateStatus(
+                            restaurant?.id || "",
+                            restaurant?.status === 1 ? 0 : 1
+                          )
+                        }
+                      >
+                        {restaurant?.status === 1 ? (
+                          <TbLock size={22} className="text-[#74767d]" />
+                        ) : (
+                          <TbLockOpen size={22} className="text-[#74767d]" />
+                        )}
+                      </button>
+
                       <Link to={`/admin/edit-restaurant/${restaurant.id}`}>
                         <LiaEdit size={22} className="text-[#076ffe]" />
                       </Link>

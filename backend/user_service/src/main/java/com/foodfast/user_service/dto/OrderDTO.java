@@ -1,4 +1,4 @@
-package main.java.com.foodfast.user_service.dto;
+package com.foodfast.user_service.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,5 +23,5 @@ public class OrderDTO {
     private BigDecimal total;
     private LocalDateTime createdAt;
     private List<OrderItemDTO> items;
-    private DeliveryDTO delivery;
+private List<DeliveryDTO> deliveries;
 }

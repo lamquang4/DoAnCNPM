@@ -8,7 +8,7 @@ export default function usePaymentMomo() {
     try {
       const url = `${
         import.meta.env.VITE_BACKEND_URL
-      }/api/payment/momo/qr/${orderCode}`;
+      }/payment/momo/qr/${orderCode}`;
       const res = await axios.post(url);
       return res.data;
     } catch (err) {

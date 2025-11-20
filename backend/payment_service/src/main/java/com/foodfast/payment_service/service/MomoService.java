@@ -1,5 +1,7 @@
 package com.foodfast.payment_service.service;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.UUID;
 
 import javax.crypto.Mac;
@@ -7,8 +9,13 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import com.foodfast.payment_service.client.OrderClient;
+import com.foodfast.payment_service.dto.OrderDTO;
 import com.foodfast.payment_service.dto.Momo.MomoRequest;
 import com.foodfast.payment_service.dto.Momo.MomoResponse;
+import com.foodfast.payment_service.model.Payment;
+import com.foodfast.payment_service.repository.PaymentRepository;
 
 @Service
 public class MomoService {
@@ -34,7 +41,15 @@ private String ipnUrl;
     @Value("${momo.refund-url}")
     private String refundUrl;
 
-   private final RestTemplate restTemplate = new RestTemplate();
+    private final PaymentRepository paymentRepository;
+    private final OrderClient orderClient;
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    public MomoService(PaymentRepository paymentRepository, OrderClient orderClient) {
+        this.paymentRepository = paymentRepository;
+        this.orderClient = orderClient;
+    }
+
 
  public MomoResponse createPayment(String orderCode) throws Exception {
         String requestId = UUID.randomUUID().toString();
@@ -98,4 +113,35 @@ private String signHmacSHA256(String data, String key) throws Exception {
     }
     return hexString.toString();
 }
+
+ public boolean handleSuccessfulPayment(String orderId, String transId) {
+        try {
+
+         OrderDTO order = orderClient.getOrderByCode(orderId);
+        if (order == null) {
+            return false;
+        }
+        BigDecimal amount = order.getTotal();
+
+            Payment payment = Payment.builder()
+                    .orderId(orderId)
+                    .transactionId(transId)
+                    .status(1)
+                      .amount(amount)   
+                    .paymethod("MOMO")
+                    .createdAt(Instant.now())
+                    .updatedAt(Instant.now())
+                    .build();
+
+            paymentRepository.save(payment);
+
+            orderClient.updateOrderStatus(orderId, 0);
+
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 }

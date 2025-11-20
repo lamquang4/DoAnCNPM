@@ -9,42 +9,33 @@ export default function useLogin() {
   const handleLogin = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/user/login`;
       const res = await axios.post(url, { email, password });
       const { token, role } = res.data;
 
-      const isAdminPage = window.location.pathname.startsWith("/admin");
-
-      if (!isAdminPage && role === 0) {
-        toast.error(
-          "Bạn không thể đăng nhập bằng tài khoản quản trị viên hoặc chủ nhà hàng ở trang khách hàng"
-        );
-        return;
-      }
-
-      if (isAdminPage && (role === 2 || role === 1)) {
-        toast.error(
-          "Bạn không thể đăng nhập bằng tài khoản khách hàng ở trang này"
-        );
-        return;
-      }
-
       toast.success("Đăng nhập thành công");
 
-      if (role === 3) {
+      if (role === 2) {
         Cookies.set("token-client", token, {
           expires: 1,
           sameSite: "strict",
           secure: import.meta.env.VITE_ENV === "production",
         });
         window.location.href = "/";
-      } else if (role >= 0 && role <= 2) {
+      } else if (role === 0) {
         Cookies.set("token-admin", token, {
           expires: 1,
           sameSite: "strict",
           secure: import.meta.env.VITE_ENV === "production",
         });
         window.location.href = "/admin/account";
+      } else if (role === 1) {
+        Cookies.set("token-restaurant", token, {
+          expires: 1,
+          sameSite: "strict",
+          secure: import.meta.env.VITE_ENV === "production",
+        });
+        window.location.href = "/restaurant/account";
       }
     } catch (err: any) {
       console.error("Lỗi:", err);

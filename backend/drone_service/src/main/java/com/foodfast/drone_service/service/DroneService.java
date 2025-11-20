@@ -29,7 +29,7 @@ public class DroneService {
         this.restaurantClient = restaurantClient;
     }
 
-    // Lấy tất cả drone với paging và search
+    // Lấy tất cả drone
     public Page<DroneDTO> getAllDrones(String q, int page, int limit) {
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Drone> dronePage = (q != null && !q.isEmpty())
@@ -48,14 +48,8 @@ public class DroneService {
         return droneRepository.findById(id).map(this::toDTO);
     }
 
-    // Lấy danh sách drone đang rảnh
-    public List<DroneDTO> getAvailableDrones() {
-        List<Drone> drones = droneRepository.findByStatus(0);
-        return drones.stream().map(this::toDTO).collect(Collectors.toList());
-    }
-
     // Thêm drone mới
-    public DroneDTO addDrone(Drone drone) {
+    public DroneDTO createDrone(Drone drone) {
         drone.setStatus(0); // mặc định rảnh
         Drone saved = droneRepository.save(drone);
         return toDTO(saved);
@@ -84,6 +78,18 @@ public class DroneService {
             throw new RuntimeException("Không tìm thấy drone");
         }
         droneRepository.deleteById(id);
+    }
+
+    public void updateDroneStatus(String id, Integer status) {
+        Drone drone = droneRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Drone không tồn tại"));
+        drone.setStatus(status);
+        droneRepository.save(drone);
+    }
+
+    //  lấy drone rảnh theo restaurantId ---
+    public List<Drone> getAvailableDrones(String restaurantId) {
+        return droneRepository.findByRestaurantIdAndStatus(restaurantId, 0);
     }
 
     private DroneDTO toDTO(Drone drone) {

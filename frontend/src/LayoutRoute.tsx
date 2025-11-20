@@ -34,6 +34,9 @@ import EditRestaurantPage from "./pages/restaurant/EditRestaurantPage";
 import OrderRestaurantPage from "./pages/restaurant/OrderRestaurantPage";
 import OrderDetailRestaurantPage from "./pages/restaurant/OrderDetailRestaurantPage";
 import AccountAdminPage from "./pages/admin/AccountAdminPage";
+import EditProductRestaurantPage from "./pages/restaurant/EditProductRestaurantPage";
+import AccountRestaurantPage from "./pages/restaurant/AccountRestaurantPage";
+import AccountPage from "./pages/client/AccountPage";
 
 function LayoutRoute() {
   return (
@@ -57,9 +60,17 @@ function LayoutRoute() {
       />
 
       <Route
+        path="/account"
+        element={
+          <PrivateRoute type="client" allowedRoles={[2]} redirectPath="/">
+            <AccountPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/order"
         element={
-          <PrivateRoute type="client" allowedRoles={[3]} redirectPath="/">
+          <PrivateRoute type="client" allowedRoles={[2]} redirectPath="/">
             <OrderPage />
           </PrivateRoute>
         }
@@ -67,17 +78,24 @@ function LayoutRoute() {
       <Route
         path="/order/:code"
         element={
-          <PrivateRoute type="client" allowedRoles={[3]} redirectPath="/">
+          <PrivateRoute type="client" allowedRoles={[2]} redirectPath="/">
             <OrderDetailPage />
           </PrivateRoute>
         }
       />
 
-      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route
+        path="/checkout"
+        element={
+          <PrivateRoute type="client" allowedRoles={[2]} redirectPath="/">
+            <CheckoutPage />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/order-result"
         element={
-          <PrivateRoute type="client" allowedRoles={[3]} redirectPath="/">
+          <PrivateRoute type="client" allowedRoles={[2]} redirectPath="/">
             <OrderResultPage />
           </PrivateRoute>
         }
@@ -105,15 +123,42 @@ function LayoutRoute() {
         }
       />
 
-      <Route path="/admin/products" element={<ProductPage />} />
+      <Route
+        path="/admin/products"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <ProductPage />
+          </PrivateRoute>
+        }
+      />
 
       <Route
         path="/admin/restaurant-owners"
-        element={<RestaurantOwnerPage />}
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <RestaurantOwnerPage />
+          </PrivateRoute>
+        }
       />
       <Route
         path="/admin/add-restaurant-owner"
-        element={<AddRestaurantOwnerPage />}
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <AddRestaurantOwnerPage />
+          </PrivateRoute>
+        }
       />
       <Route
         path="/admin/edit-restaurant-owner/:id"
@@ -128,12 +173,67 @@ function LayoutRoute() {
         }
       />
 
-      <Route path="/admin/admins" element={<AdminPage />} />
-      <Route path="/admin/add-admin" element={<AddAdminPage />} />
-      <Route path="/admin/edit-admin/:id" element={<EditAdminPage />} />
+      <Route
+        path="/admin/admins"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <AdminPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/add-admin"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <AddAdminPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/edit-admin/:id"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <EditAdminPage />
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/admin/customers" element={<CustomerPage />} />
-      <Route path="/admin/add-customer" element={<AddCustomerPage />} />
+      <Route
+        path="/admin/customers"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <CustomerPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/add-customer"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <AddCustomerPage />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/admin/edit-customer/:id"
         element={
@@ -147,8 +247,30 @@ function LayoutRoute() {
         }
       />
 
-      <Route path="/admin/drones" element={<DronePage />} />
-      <Route path="/admin/add-drone" element={<AddDronePage />} />
+      <Route
+        path="/admin/drones"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <DronePage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/add-drone"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <AddDronePage />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/admin/edit-drone/:id"
         element={
@@ -162,11 +284,55 @@ function LayoutRoute() {
         }
       />
 
-      <Route path="/admin/restaurant" element={<RestaurantPage />} />
+      <Route
+        path="/admin/restaurants"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <RestaurantPage />
+          </PrivateRoute>
+        }
+      />
 
-      <Route path="/admin/orders" element={<OrderAdminPage />} />
-      <Route path="/admin/order/:id" element={<OrderDetailAdminPage />} />
-      <Route path="/admin/payments" element={<PaymentPage />} />
+      <Route
+        path="/admin/orders"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <OrderAdminPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/order/:id"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <OrderDetailAdminPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/payments"
+        element={
+          <PrivateRoute
+            type="admin"
+            allowedRoles={[0]}
+            redirectPath="/admin/login"
+          >
+            <PaymentPage />
+          </PrivateRoute>
+        }
+      />
 
       <Route
         path="/restaurant/account"
@@ -176,15 +342,34 @@ function LayoutRoute() {
             allowedRoles={[1]}
             redirectPath="/login"
           >
-            <AccountAdminPage />
+            <AccountRestaurantPage />
           </PrivateRoute>
         }
       />
 
-      <Route path="/restaurant/products" element={<ProductRestaurantPage />} />
+      <Route
+        path="/restaurant/products"
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/login"
+          >
+            <ProductRestaurantPage />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/restaurant/add-product"
-        element={<AddProductRestaurantPage />}
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/login"
+          >
+            <AddProductRestaurantPage />
+          </PrivateRoute>
+        }
       />
       <Route
         path="/restaurant/edit-product/:id"
@@ -194,15 +379,34 @@ function LayoutRoute() {
             allowedRoles={[1]}
             redirectPath="/login"
           >
-            <EditDronePage />
+            <EditProductRestaurantPage />
           </PrivateRoute>
         }
       />
 
-      <Route path="/restaurant/restaurants" element={<OwnRestaurantPage />} />
+      <Route
+        path="/restaurant/restaurants"
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/login"
+          >
+            <OwnRestaurantPage />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/restaurant/add-restaurant"
-        element={<AddRestaurantPage />}
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/login"
+          >
+            <AddRestaurantPage />
+          </PrivateRoute>
+        }
       />
       <Route
         path="/restaurant/edit-restaurant/:id"
@@ -217,10 +421,29 @@ function LayoutRoute() {
         }
       />
 
-      <Route path="/restaurant/orders" element={<OrderRestaurantPage />} />
+      <Route
+        path="/restaurant/orders"
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/login"
+          >
+            <OrderRestaurantPage />
+          </PrivateRoute>
+        }
+      />
       <Route
         path="/restaurant/order/:id"
-        element={<OrderDetailRestaurantPage />}
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/login"
+          >
+            <OrderDetailRestaurantPage />
+          </PrivateRoute>
+        }
       />
     </Routes>
   );

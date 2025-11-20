@@ -1,5 +1,5 @@
 package com.foodfast.delivery_service.service;
-import java.util.Optional;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import com.foodfast.delivery_service.client.DroneClient;
 import com.foodfast.delivery_service.client.RestaurantClient;
@@ -21,8 +21,8 @@ public class DeliveryService {
         this.restaurantClient = restaurantClient;
     }
 
-    public Optional<Delivery> getDeliveryByOrderId(String orderId) {
-        return deliveryRepository.findByOrderId(orderId);
+    public List<Delivery> getDeliveriesByOrderId(String orderId) {
+        return deliveryRepository.findAllByOrderId(orderId);
     }
 
     public Delivery createDelivery(Delivery delivery) {

@@ -1,12 +1,18 @@
-import { memo, useState } from "react";
+import { memo, useMemo } from "react";
 import {
   HiMiniXMark,
   HiOutlineMinusSmall,
   HiOutlinePlusSmall,
 } from "react-icons/hi2";
 import { FaArrowRightLong } from "react-icons/fa6";
-import Image from "../Image";
-import Overplay from "./Overplay";
+import Image from "../../Image";
+import Overplay from "../Overplay";
+import useGetCart from "../../../hooks/client/useGetCart";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
+import { useRemoveItemCart } from "../../../hooks/client/useRemoveItemCart";
+import { useChangeQuantityItemCart } from "../../../hooks/client/useChangeQuantityItemcart";
+import Loading from "../../Loading";
+import { Link } from "react-router-dom";
 
 type Props = {
   isOpen: boolean;
@@ -14,24 +20,48 @@ type Props = {
 };
 
 function MenuSideCart({ isOpen, toggleMenu }: Props) {
-  const products = [
-    {
-      id: "p1",
-      name: "Cơm gà viên Nanban",
-      image: "/assets/products/com-ga-vien-nanban.png",
-      price: 120000,
-      status: 1,
-    },
-    {
-      id: "p2",
-      name: "Gà miếng",
-      image: "/assets/products/ga-mieng.png",
-      price: 45000,
-      status: 1,
-    },
-  ];
+  const { user } = useGetCurrentUser("client");
+  const { cart, mutate, isLoading } = useGetCart(user?.id!);
+  const { removeItem, isLoading: isLoadingRemove } = useRemoveItemCart();
+  const { changeQuantity, isLoading: isLoadingChangeQuantity } =
+    useChangeQuantityItemCart();
 
-  const totalPrice = 200000;
+  const totalQuantity = useMemo(() => {
+    return (
+      cart?.items.reduce((sum, item) => {
+        return sum + (item?.quantity || 0);
+      }, 0) || 0
+    );
+  }, [cart?.items]);
+
+  const totalPrice = useMemo(() => {
+    return (
+      cart?.items.reduce((sum, item) => {
+        const finalPrice = item.price;
+
+        return sum + finalPrice * item.quantity;
+      }, 0) || 0
+    );
+  }, [cart?.items]);
+
+  const handleChangeQuantity = async (productId: string, quantity: number) => {
+    await changeQuantity(user?.id!, productId, quantity);
+    mutate();
+  };
+
+  const handleIncrement = (productId: string, currentQuantity: number) => {
+    handleChangeQuantity(productId, currentQuantity + 1);
+  };
+
+  const handleDecrement = (id: string, currentQuantity: number) => {
+    if (currentQuantity <= 1) return;
+    handleChangeQuantity(id, currentQuantity - 1);
+  };
+
+  const handleRemoveItem = async (productId: string) => {
+    await removeItem(user?.id!, productId);
+    mutate();
+  };
   return (
     <>
       <div
@@ -40,26 +70,30 @@ function MenuSideCart({ isOpen, toggleMenu }: Props) {
         } shadow-lg`}
       >
         <div className="sticky top-0 p-4 flex justify-between items-center border-b border-gray-300 bg-white z-10">
-          <h4 className="uppercase font-semibold">Giỏ hàng</h4>
+          <h4 className="uppercase font-semibold">
+            Giỏ hàng ({totalQuantity})
+          </h4>
           <button onClick={toggleMenu}>
             <HiMiniXMark size={28} />
           </button>
         </div>
 
         <div className="overflow-y-auto h-[calc(100vh-120px)] p-4 space-y-4">
-          {products.length > 0 ? (
-            products.map((product) => {
+          {isLoading ? (
+            <Loading height={60} size={50} color="black" thickness={2} />
+          ) : cart && cart?.items.length > 0 ? (
+            cart?.items.map((item) => {
               return (
                 <div
-                  key={product.id}
+                  key={item.productId}
                   className="flex items-center justify-between border-b border-gray-200 pb-2"
                 >
                   <div className="flex items-center gap-3">
-                    {product.image && (
+                    {item.image && (
                       <div className="w-20 h-20 overflow-hidden">
                         <Image
-                          source={product.image}
-                          alt={product.name}
+                          source={item.image}
+                          alt={item.name!}
                           className="w-full h-full object-cover"
                           loading="lazy"
                         />
@@ -67,25 +101,41 @@ function MenuSideCart({ isOpen, toggleMenu }: Props) {
                     )}
 
                     <div className="space-y-3">
-                      <h5 className="font-medium">{product.name}</h5>
+                      <h5 className="font-medium">{item.name}</h5>
                       <p className="text-[#C62028] font-semibold">
-                        {(product.price * 2).toLocaleString("vi-VN")}₫
+                        {(item.price * 2).toLocaleString("vi-VN")}₫
                       </p>
                       <div className="flex items-center gap-3">
-                        <button className="flex items-center justify-center w-6 h-6 outline-none bg-[#F7F7F7] border-gray-300 border">
+                        <button
+                          onClick={() =>
+                            handleDecrement(item.productId, item.quantity)
+                          }
+                          disabled={
+                            item.quantity <= 1 || isLoadingChangeQuantity
+                          }
+                          className="flex items-center justify-center w-6 h-6 outline-none bg-[#F7F7F7] border-gray-300 border"
+                        >
                           <HiOutlineMinusSmall size={15} />
                         </button>
 
                         <span className="font-medium">{2}</span>
 
-                        <button className="flex items-center justify-center w-6 h-6 outline-none bg-[#F7F7F7] border-gray-300 border">
+                        <button
+                          onClick={() =>
+                            handleIncrement(item.productId, item.quantity)
+                          }
+                          className="flex items-center justify-center w-6 h-6 outline-none bg-[#F7F7F7] border-gray-300 border"
+                        >
                           <HiOutlinePlusSmall size={15} />
                         </button>
                       </div>
                     </div>
                   </div>
 
-                  <button>
+                  <button
+                    disabled={isLoadingRemove}
+                    onClick={() => handleRemoveItem(item.productId)}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="w-5 h-5 cursor-pointer fill-black hover:fill-red-600 inline-block"
@@ -126,10 +176,15 @@ function MenuSideCart({ isOpen, toggleMenu }: Props) {
             <h4>{totalPrice.toLocaleString("vi-VN")}₫</h4>
           </div>
 
-          <button className="bg-[#C62028] text-white py-3 flex justify-center items-center gap-2 rounded font-semibold text-[0.9rem]">
-            Thanh toán
-            <FaArrowRightLong size={20} />
-          </button>
+          <Link
+            to="/checkout"
+            className="bg-[#C62028] text-white py-3 rounded font-semibold text-[0.9rem]"
+          >
+            <div className="flex justify-center items-center gap-2 ">
+              Thanh toán
+              <FaArrowRightLong size={20} />
+            </div>
+          </Link>
         </div>
       </div>
 

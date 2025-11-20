@@ -4,11 +4,14 @@ import Pagination from "../Pagination";
 import InputSearch from "../InputSearch";
 import Loading from "../../Loading";
 import { Link } from "react-router-dom";
-import useGetOrders from "../../../hooks/admin/useGetOrders";
+import { SiTicktick } from "react-icons/si";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
+import useGetOrdersByUserId from "../../../hooks/useGetOrdersByUserId";
 
 function Order() {
+  const { user } = useGetCurrentUser("restaurant");
   const { orders, isLoading, totalItems, totalPages, limit, currentPage } =
-    useGetOrders();
+    useGetOrdersByUserId(user?.id || "");
 
   return (
     <>
@@ -53,7 +56,7 @@ function Order() {
                     {order.total!.toLocaleString("vi-VN")}₫
                   </td>
                   <td className="p-[1rem]">
-                    {new Date(order.createdAt).toLocaleString("vi-VN", {
+                    {new Date(order.createdAt!).toLocaleString("vi-VN", {
                       year: "numeric",
                       month: "2-digit",
                       day: "2-digit",
@@ -81,6 +84,10 @@ function Order() {
                           className="text-[#076ffe]"
                         />
                       </Link>
+
+                      <button className="text-green-400">
+                        <SiTicktick />
+                      </button>
                     </div>
                   </td>
                 </tr>

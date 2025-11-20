@@ -4,7 +4,7 @@ import { useState } from "react";
 export default function useLogout() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogout = async (type: "admin" | "client") => {
+  const handleLogout = async (type: "admin" | "client" | "restaurant") => {
     setIsLoading(true);
     try {
       if (type === "admin") {
@@ -12,6 +12,9 @@ export default function useLogout() {
         window.location.href = "/admin/login";
       } else if (type === "client") {
         Cookies.remove("token-client");
+        window.location.href = "/login";
+      } else if (type === "restaurant") {
+        Cookies.remove("token-restaurant");
         window.location.href = "/login";
       }
     } catch (err) {

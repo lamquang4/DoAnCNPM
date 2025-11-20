@@ -87,4 +87,12 @@ public Product updateProduct(String id, Product product, MultipartFile imageFile
     public void deleteProduct(String id) {
         productRepository.deleteById(id);
     }
+
+public Product updateProductStatus(String id, int status) {
+    return productRepository.findById(id).map(product -> {
+        product.setStatus(status);
+        return productRepository.save(product);
+    }).orElse(null);
+}
+
 }

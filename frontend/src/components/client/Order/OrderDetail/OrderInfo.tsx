@@ -5,6 +5,7 @@ import { RiArrowLeftSLine } from "react-icons/ri";
 import { TbCancel } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import type { Order } from "../../../../types/type";
+import DeliveryMap from "../../../DeliveryMap";
 
 type Props = {
   order: Order;
@@ -94,6 +95,12 @@ function OrderInfo({ order, isLoading }: Props) {
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {order && (
+            <div className="px-[20px] space-y-[8px] py-[20px]">
+              <DeliveryMap order={order} />
             </div>
           )}
 

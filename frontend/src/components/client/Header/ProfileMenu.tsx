@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import useLogout from "../../../hooks/useLogout";
-import useCurrentUser from "../../../hooks/useGetCurrentUser";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
 
 type ProfileMenuProp = {
   isOpen: boolean;
@@ -10,7 +10,7 @@ type ProfileMenuProp = {
 function ProfileMenu({ isOpen }: ProfileMenuProp) {
   if (!isOpen) return null;
   const { handleLogout } = useLogout();
-  const { user } = useCurrentUser("client");
+  const { user } = useGetCurrentUser("client");
 
   return (
     <>
@@ -32,13 +32,6 @@ function ProfileMenu({ isOpen }: ProfileMenuProp) {
             className="hover:bg-gray-100 w-full block p-2.5 text-[0.95rem]  "
           >
             Đơn hàng
-          </Link>
-
-          <Link
-            to="/address"
-            className="hover:bg-gray-100 w-full block p-2.5 text-[0.95rem]  "
-          >
-            Sổ địa chỉ
           </Link>
 
           <button

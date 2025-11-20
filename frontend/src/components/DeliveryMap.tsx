@@ -21,47 +21,72 @@ type Props = {
 };
 
 function DeliveryMap({ order }: Props) {
-  const delivery = order.delivery;
-
-  const restaurantLoc = delivery?.restaurantLocation;
-  const droneLoc = delivery?.currentLocation;
+  const deliveries = order.deliveries || [];
   const userLoc = order.location;
+
+  const center: [number, number] =
+    deliveries.length > 0 && deliveries[0].restaurantLocation
+      ? [
+          deliveries[0].restaurantLocation.latitude,
+          deliveries[0].restaurantLocation.longitude,
+        ]
+      : [userLoc.latitude, userLoc.longitude];
+
   return (
-    <MapContainer
-      center={[restaurantLoc!.latitude, restaurantLoc!.longitude]}
-      zoom={15}
-      className="w-full h-[400px] z-5"
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-      <Marker
-        position={[restaurantLoc!.latitude, restaurantLoc!.longitude]}
-        icon={restaurantIcon}
-      >
-        <Popup>
-          <strong>Nhà hàng</strong>
-        </Popup>
-      </Marker>
-
-      <Marker position={[userLoc.latitude, userLoc.longitude]} icon={userIcon}>
-        <Popup>
-          <strong>Vị trí giao</strong>
-          <br />
-          {order.speaddress}, {order.ward}, {order.city}
-        </Popup>
-      </Marker>
-
-      {droneLoc && (
-        <Marker
-          position={[droneLoc.latitude, droneLoc.longitude]}
-          icon={droneIcon}
+    <>
+      {center && order?.deliveries && (
+        <MapContainer
+          center={center}
+          zoom={15}
+          className="w-full h-[400px] z-5"
         >
-          <Popup>
-            <strong>Drone đang giao</strong>
-          </Popup>
-        </Marker>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+          {deliveries.map((delivery, idx) => (
+            <Marker
+              key={`restaurant-${idx}`}
+              position={[
+                delivery?.restaurantLocation!.latitude,
+                delivery?.restaurantLocation!.longitude,
+              ]}
+              icon={restaurantIcon}
+            >
+              <Popup>
+                <strong>Nhà hàng</strong>
+              </Popup>
+            </Marker>
+          ))}
+
+          <Marker
+            position={[userLoc.latitude, userLoc.longitude]}
+            icon={userIcon}
+          >
+            <Popup>
+              <strong>Vị trí giao</strong>
+              <br />
+              {order.speaddress}, {order.ward}, {order.city}
+            </Popup>
+          </Marker>
+
+          {deliveries.map((delivery, idx) =>
+            delivery.currentLocation ? (
+              <Marker
+                key={`drone-${idx}`}
+                position={[
+                  delivery.currentLocation.latitude,
+                  delivery.currentLocation.longitude,
+                ]}
+                icon={droneIcon}
+              >
+                <Popup>
+                  <strong>Drone đang giao</strong>
+                </Popup>
+              </Marker>
+            ) : null
+          )}
+        </MapContainer>
       )}
-    </MapContainer>
+    </>
   );
 }
 

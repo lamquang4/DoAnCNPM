@@ -8,10 +8,11 @@ import InputSearch from "../InputSearch";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import useGetUsersByRole from "../../../hooks/admin/useGetUsersByRole";
-import useCurrentUser from "../../../hooks/useGetCurrentUser";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
+import useUpdateStatusUser from "../../../hooks/admin/useUpdateStatusUser";
 
 function Admin() {
-  const { user } = useCurrentUser("admin");
+  const { user } = useGetCurrentUser("admin");
   const {
     users: admins,
     isLoading,
@@ -21,6 +22,27 @@ function Admin() {
     currentPage,
     limit,
   } = useGetUsersByRole(0);
+  const { updateStatusUser, isLoading: isLoadingUpdate } =
+    useUpdateStatusUser();
+
+  const handleUpdateStatus = async (id: string, status: number) => {
+    if (!id && !status) {
+      return;
+    }
+
+    if (id === user?.id) {
+      toast.error("Bạn không thể khóa chính tài khoản của mình");
+      return;
+    }
+
+    try {
+      await updateStatusUser(id, status);
+      mutate();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+      mutate();
+    }
+  };
 
   return (
     <>
@@ -74,6 +96,22 @@ function Admin() {
                   </td>
                   <td className="p-[1rem]  ">
                     <div className="flex items-center gap-[15px]">
+                      <button
+                        disabled={isLoadingUpdate}
+                        onClick={() =>
+                          handleUpdateStatus(
+                            admin?.id || "",
+                            admin?.status === 1 ? 0 : 1
+                          )
+                        }
+                      >
+                        {admin?.status === 1 ? (
+                          <TbLock size={22} className="text-[#74767d]" />
+                        ) : (
+                          <TbLockOpen size={22} className="text-[#74767d]" />
+                        )}
+                      </button>
+
                       <Link to={`/admin/edit-admin/${admin.id}`}>
                         <LiaEdit size={22} className="text-[#076ffe]" />
                       </Link>

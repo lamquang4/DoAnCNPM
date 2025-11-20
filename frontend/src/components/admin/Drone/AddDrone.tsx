@@ -122,7 +122,7 @@ function AddDrone() {
 
             <div className="flex flex-col gap-1">
               <label htmlFor="" className="text-[0.9rem] font-medium">
-                Chi nhánh nhà hàng
+                Nhà hàng
               </label>
               <select
                 name="restaurantId"
@@ -131,7 +131,7 @@ function AddDrone() {
                 value={data.restaurantId}
                 className="border border-gray-300 p-[6px_10px] text-[0.9rem] w-full outline-none focus:border-gray-400  "
               >
-                <option value="">Chọn chi nhánh nhà hàng</option>
+                <option value="">Chọn nhà hàng</option>
                 {restaurants.map((restaurant) => (
                   <option value={restaurant.id} key={restaurant.id}>
                     {restaurant.name} -

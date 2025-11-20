@@ -66,4 +66,16 @@ public Product createProduct(
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/status")
+public ResponseEntity<Product> updateProductStatus(
+        @PathVariable String id,
+        @RequestParam int status
+) {
+    Product updated = productService.updateProductStatus(id, status);
+    return updated != null 
+            ? ResponseEntity.ok(updated) 
+            : ResponseEntity.notFound().build();
+}
+
 }

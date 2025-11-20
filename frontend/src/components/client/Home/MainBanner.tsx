@@ -1,3 +1,5 @@
+import { HashLink } from "react-router-hash-link";
+
 function MainBanner() {
   return (
     <>
@@ -19,9 +21,13 @@ function MainBanner() {
               </h1>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-primary text-white px-4 py-2 rounded-button text-[0.9rem] font-semibold bg-[#C62028] transition-colors whitespace-nowrap">
+                <HashLink
+                  smooth
+                  to="/#menu"
+                  className="bg-primary text-white px-4 py-2 rounded-button text-[0.9rem] font-semibold bg-[#C62028] transition-colors whitespace-nowrap"
+                >
                   Thực đơn
-                </button>
+                </HashLink>
               </div>
             </div>
           </div>

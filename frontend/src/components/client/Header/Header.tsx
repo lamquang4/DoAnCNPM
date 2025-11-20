@@ -8,7 +8,7 @@ import Overplay from "../Overplay";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import useCurrentUser from "../../../hooks/useGetCurrentUser";
 import useGetCart from "../../../hooks/client/useGetCart";
-import MenuSideCart from "../MenuSideCart";
+import MenuSideCart from "./MenuSideCart";
 import { HashLink } from "react-router-hash-link";
 function Header() {
   const { user } = useCurrentUser("client");
@@ -59,7 +59,7 @@ function Header() {
   return (
     <>
       <header className="w-full bg-white sticky top-0 border-b border-gray-200 z-[15] text-black">
-        <div className=" py-[20px] px-[15px] relative">
+        <div className=" py-[10px] px-[15px] relative">
           <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center">
             <Link to={"/"}>
               <h2 className="!text-[#C62028]">Foodfast</h2>

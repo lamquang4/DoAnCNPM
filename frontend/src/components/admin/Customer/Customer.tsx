@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Loading from "../../Loading";
 import useGetUsersByRole from "../../../hooks/admin/useGetUsersByRole";
+import useUpdateStatusUser from "../../../hooks/admin/useUpdateStatusUser";
+
 function Customer() {
   const {
     users: customers,
@@ -19,6 +21,23 @@ function Customer() {
     limit,
   } = useGetUsersByRole(2);
 
+  const { updateStatusUser, isLoading: isLoadingUpdate } =
+    useUpdateStatusUser();
+
+  const handleUpdateStatus = async (id: string, status: number) => {
+    if (!id && !status) {
+      return;
+    }
+
+    try {
+      await updateStatusUser(id, status);
+      mutate();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+      mutate();
+    }
+  };
+
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
@@ -26,7 +45,7 @@ function Customer() {
           <h2 className=" text-[#74767d]">Khách hàng ({totalItems})</h2>
 
           <Link
-            to={"/admin/add-customer"}
+            to={"/customer/add-customer"}
             className="bg-[#C62028] border-0 cursor-pointer text-[0.9rem] font-medium w-[90px] !flex p-[10px_12px] items-center justify-center gap-[5px] text-white"
           >
             <IoMdAddCircle size={22} /> Thêm
@@ -69,7 +88,23 @@ function Customer() {
                   </td>
                   <td className="p-[1rem]  ">
                     <div className="flex items-center gap-[15px]">
-                      <Link to={`/admin/edit-customer/${customer.id}`}>
+                      <button
+                        disabled={isLoadingUpdate}
+                        onClick={() =>
+                          handleUpdateStatus(
+                            customer?.id || "",
+                            customer?.status === 1 ? 0 : 1
+                          )
+                        }
+                      >
+                        {customer?.status === 1 ? (
+                          <TbLock size={22} className="text-[#74767d]" />
+                        ) : (
+                          <TbLockOpen size={22} className="text-[#74767d]" />
+                        )}
+                      </button>
+
+                      <Link to={`/customer/edit-customer/${customer.id}`}>
                         <LiaEdit size={22} className="text-[#076ffe]" />
                       </Link>
                     </div>

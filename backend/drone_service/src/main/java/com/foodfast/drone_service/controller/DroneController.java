@@ -6,7 +6,6 @@ import com.foodfast.drone_service.service.DroneService;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,15 +42,10 @@ public class DroneController {
                 .orElseThrow(() -> new RuntimeException("Drone không tồn tại"));
     }
 
-    @GetMapping("/available")
-    public List<DroneDTO> getAvailableDrones() {
-        return droneService.getAvailableDrones();
-    }
-
     // Thêm drone
     @PostMapping
-    public DroneDTO addDrone(@RequestBody Drone drone) {
-        return droneService.addDrone(drone);
+    public DroneDTO createDrone(@RequestBody Drone drone) {
+        return droneService.createDrone(drone);
     }
 
     // Cập nhật drone
@@ -64,5 +58,17 @@ public class DroneController {
     @DeleteMapping("/{id}")
     public void deleteDrone(@PathVariable String id) {
         droneService.deleteDrone(id);
+    }
+
+        // Cập nhật status drone
+    @PutMapping("/{id}/status")
+    public void updateDroneStatus(@PathVariable String id, @RequestParam Integer status) {
+        droneService.updateDroneStatus(id, status);
+    }
+
+    // Lấy drone rảnh (status = 0) theo restaurantId
+    @GetMapping("/available/{restaurantId}")
+    public List<Drone> getAvailableDrones(@PathVariable String restaurantId) {
+        return droneService.getAvailableDrones(restaurantId);
     }
 }

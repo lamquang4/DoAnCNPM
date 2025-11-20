@@ -3,12 +3,12 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
-export default function useUpdateStatusOrder() {
+export default function useUpdateStatusUser() {
   const [isLoading, setIsLoading] = useState(false);
-  const updateStatusOrder = async (id: string, status: number) => {
+  const updateStatusUser = async (id: string, status: number) => {
     const result = await Swal.fire({
       title: `Xác nhận cập nhật trạng thái?`,
-      text: `Bạn có chắc muốn cập nhật trạng thái đơn hàng này không?`,
+      text: `Bạn có chắc muốn cập nhật trạng thái người dùng này không?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Đồng ý",
@@ -25,7 +25,7 @@ export default function useUpdateStatusOrder() {
     try {
       const url = `${
         import.meta.env.VITE_BACKEND_URL
-      }/api/order/${id}?status=${status}`;
+      }/user/${id}/status?status=${status}`;
       await axios.put(url);
 
       toast.dismiss(loadingToast);
@@ -39,5 +39,5 @@ export default function useUpdateStatusOrder() {
     }
   };
 
-  return { updateStatusOrder, isLoading };
+  return { updateStatusUser, isLoading };
 }

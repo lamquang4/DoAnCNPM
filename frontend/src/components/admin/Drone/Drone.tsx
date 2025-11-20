@@ -59,7 +59,7 @@ function Drone() {
           <thead>
             <tr className="bg-[#E9EDF2] text-left">
               <th className="p-[1rem]">Model</th>
-              <th className="p-[1rem]">Chi nhánh nhà hàng</th>
+              <th className="p-[1rem]">Nhà hàng</th>
               <th className="p-[1rem]">Sức chứa (kg)</th>
               <th className="p-[1rem]"> Quãng đường bay tối đa (km)</th>
               <th className="p-[1rem]">Pin (%)</th>

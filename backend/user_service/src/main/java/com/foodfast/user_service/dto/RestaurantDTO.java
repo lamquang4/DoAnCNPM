@@ -1,4 +1,4 @@
-package main.java.com.foodfast.user_service.dto;
+package com.foodfast.user_service.dto;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

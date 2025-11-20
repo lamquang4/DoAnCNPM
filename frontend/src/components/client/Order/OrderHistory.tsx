@@ -1,14 +1,12 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Image from "../../Image";
 import Loading from "../../Loading";
 import { CiCalendar } from "react-icons/ci";
-import useGetOrders from "../../../hooks/client/useGetOrders";
+import useGetOrders from "../../../hooks/useGetOrdersByUserId";
 import useCurrentUser from "../../../hooks/useGetCurrentUser";
 import Pagination from "../Pagination";
 
 function OrderHistory() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { user } = useCurrentUser("client");
   const { orders, isLoading, totalItems, totalPages, currentPage } =
     useGetOrders(user?.id || "");
@@ -57,7 +55,7 @@ function OrderHistory() {
                 <div className="text-gray-500 font-medium flex items-center gap-1">
                   <CiCalendar size={18} />{" "}
                   <span>
-                    {new Date(order.createdAt).toLocaleString("vi-VN", {
+                    {new Date(order.createdAt!).toLocaleString("vi-VN", {
                       year: "numeric",
                       month: "2-digit",
                       day: "2-digit",
@@ -78,7 +76,7 @@ function OrderHistory() {
                           source={`${import.meta.env.VITE_BACKEND_URL}${
                             item.image
                           }`}
-                          alt={item.name}
+                          alt={item.name!}
                           className={"w-full h-full object-contain"}
                           loading="lazy"
                         />

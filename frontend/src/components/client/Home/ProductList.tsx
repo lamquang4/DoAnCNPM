@@ -1,18 +1,20 @@
 import { useState } from "react";
 import Image from "../../Image";
 import Loading from "../../Loading";
-import type { Product } from "../../../types/type";
 import { HiOutlineMinusSmall, HiOutlinePlusSmall } from "react-icons/hi2";
+import { useAddItemToCart } from "../../../hooks/client/useAddItemToCart";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import useGetActiveProducts from "../../../hooks/client/useGetActiveProducts";
 
-interface Props {
-  products: Product[];
-  isLoading: boolean;
-  onAddToCart?: (productId: string, quantity: number) => void;
-}
-
-function ProductList({ products, isLoading, onAddToCart }: Props) {
-  const max = 20;
+function ProductList() {
+  const navigate = useNavigate();
   const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const { products, isLoading } = useGetActiveProducts();
+  const { addItem, isLoading: isLoadingAdd } = useAddItemToCart();
+  const { user } = useGetCurrentUser("client");
+  const max = 20;
 
   const increase = (id: string) => {
     setQuantities((prev) => ({
@@ -28,9 +30,20 @@ function ProductList({ products, isLoading, onAddToCart }: Props) {
     }));
   };
 
-  const handleAddCart = (id: string) => {
-    const qty = quantities[id] || 1;
-    onAddToCart!(id, qty);
+  const handleAddItemToCart = async (productId: string) => {
+    if (!user?.id) {
+      toast.error("Bạn phải đăng nhập");
+      navigate("/login");
+      return;
+    }
+
+    const quantity = quantities[productId] || 1;
+
+    try {
+      await addItem(user.id, productId, quantity);
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+    }
   };
 
   return (
@@ -97,8 +110,8 @@ function ProductList({ products, isLoading, onAddToCart }: Props) {
 
                         <button
                           className=" bg-[#C62028] text-white rounded font-medium px-2.5 py-1 text-[0.9rem]"
-                          disabled={product.status === 0}
-                          onClick={() => handleAddCart(product.id)}
+                          onClick={() => handleAddItemToCart(product.id)}
+                          disabled={isLoadingAdd}
                         >
                           Thêm
                         </button>

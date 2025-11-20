@@ -1,5 +1,5 @@
 package com.foodfast.delivery_service.controller;
-import java.util.Optional;
+import java.util.List;
 import org.springframework.web.bind.annotation.*;
 import com.foodfast.delivery_service.model.Delivery;
 import com.foodfast.delivery_service.service.DeliveryService;
@@ -14,10 +14,9 @@ public class DeliveryController {
         this.deliveryService = deliveryService;
     }
 
-    // Lấy delivery theo orderId
     @GetMapping("/order/{orderId}")
-    public Optional<Delivery> getDeliveryByOrderId(@PathVariable String orderId) {
-        return deliveryService.getDeliveryByOrderId(orderId);
+    public List<Delivery> getDeliveriesByOrderId(@PathVariable String orderId) {
+        return deliveryService.getDeliveriesByOrderId(orderId);
     }
 
     // Tạo delivery mới

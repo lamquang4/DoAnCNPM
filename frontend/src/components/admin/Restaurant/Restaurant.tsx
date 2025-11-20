@@ -2,7 +2,6 @@ import Image from "../../Image";
 import InputSearch from "../InputSearch";
 import { Link } from "react-router-dom";
 import { LiaEdit } from "react-icons/lia";
-import { IoMdAddCircle } from "react-icons/io";
 import Loading from "../../Loading";
 import Pagination from "../Pagination";
 import useGetRestaurants from "../../../hooks/admin/useGetRestaurants";
@@ -14,14 +13,7 @@ function Restaurant() {
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
         <div className="flex justify-between items-center">
-          <h2 className=" text-[#74767d]">Chi nhánh nhà hàng ({totalItems})</h2>
-
-          <Link
-            to={"/admin/add-restaurant-branch"}
-            className="bg-[#C62028] border-0 cursor-pointer text-[0.9rem] font-medium w-[90px] !flex p-[10px_12px] items-center justify-center gap-[5px] text-white"
-          >
-            <IoMdAddCircle size={22} /> Thêm
-          </Link>
+          <h2 className=" text-[#74767d]">Nhà hàng ({totalItems})</h2>
         </div>
       </div>
 

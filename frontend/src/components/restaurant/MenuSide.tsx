@@ -4,7 +4,6 @@ import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 import { RiShoppingBag4Line } from "react-icons/ri";
 import { Link, useLocation } from "react-router-dom";
-import { GiDeliveryDrone } from "react-icons/gi";
 import { IoFastFoodOutline, IoRestaurantOutline } from "react-icons/io5";
 type Props = {
   menuOpen: boolean;
@@ -54,11 +53,6 @@ function MenuSide({ menuOpen, toggleMenu }: Props) {
           label: "Đơn hàng",
           path: "/restaurant/orders",
         },
-        {
-          icon: <GiDeliveryDrone size={20} />,
-          label: "Drone",
-          path: "/restaurant/drones",
-        },
       ],
     },
   ];
@@ -79,7 +73,7 @@ function MenuSide({ menuOpen, toggleMenu }: Props) {
         } custom-scroll fixed border top-0 h-screen w-[320px] pb-5 bg-white transition-all duration-350 ease-in-out z-100 xl:sticky overflow-y-auto border-b border-gray-200`}
       >
         <div className="mb-[20px] flex justify-center sticky top-0 bg-white px-3.5 py-4.5">
-          <h2>Foodfast</h2>
+          <h2 className="text-[#C62028]">Foodfast</h2>
         </div>
         <ul className="flex flex-col gap-[15px] font-semibold px-3.5">
           {menuData.map((group, groupIndex) => (
@@ -87,7 +81,7 @@ function MenuSide({ menuOpen, toggleMenu }: Props) {
               <p className="  uppercase">{group.title}</p>
               {group.items.map((item, index) => (
                 <li key={index}>
-                  {'children' in item ? (
+                  {"children" in item ? (
                     <>
                       <div
                         onClick={() => toggleOpen(item.key)}
