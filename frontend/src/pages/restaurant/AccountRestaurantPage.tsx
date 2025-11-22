@@ -1,5 +1,5 @@
-import LayoutPage from "../../components/restaurant/LayoutPage";
 import Account from "../../components/restaurant/Account";
+import LayoutPage from "../../components/restaurant/LayoutPage";
 
 function AccountRestaurantPage() {
   return (

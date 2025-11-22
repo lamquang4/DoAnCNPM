@@ -41,13 +41,13 @@ public ResponseEntity<Void> handleRedirect(
         boolean success = momoService.handleSuccessfulPayment(orderId, transId);
 
         if (success) {
-            redirectUrl = frontendUrl + "/order-result?result=successfully&orderCode=" + orderId;
+            redirectUrl = frontendUrl + "/order-result?result=successfully";
         } else {
-            redirectUrl = frontendUrl + "/order-result?result=fail";
+       redirectUrl = frontendUrl + "/order-result?result=fail";
         }
 
     } else {
-        redirectUrl = frontendUrl + "/order-result?result=fail";
+       redirectUrl = frontendUrl + "/order-result?result=fail";
     }
 
     return ResponseEntity.status(302)

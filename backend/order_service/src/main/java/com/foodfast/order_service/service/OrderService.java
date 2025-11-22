@@ -7,12 +7,12 @@ import com.foodfast.order_service.dto.DeliveryDTO;
 import com.foodfast.order_service.dto.LocationDTO;
 import com.foodfast.order_service.dto.OrderDTO;
 import com.foodfast.order_service.dto.OrderItemDTO;
-import com.foodfast.order_service.dto.ProductDTO;
 import com.foodfast.order_service.model.Delivery;
 import com.foodfast.order_service.model.Drone;
 import com.foodfast.order_service.model.Location;
 import com.foodfast.order_service.model.Order;
 import com.foodfast.order_service.model.OrderItem;
+import com.foodfast.order_service.model.Product;
 import com.foodfast.order_service.model.Restaurant;
 import com.foodfast.order_service.repository.OrderRepository;
 import org.springframework.data.domain.Page;
@@ -23,9 +23,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,59 +63,54 @@ public class OrderService {
         return sb.toString();
     }
 
-private OrderDTO convertToDTO(Order order) {
-    List<OrderItemDTO> items = order.getItems().stream().map(item -> {
-        ProductDTO p;
-        try {
-            p = productClient.getProductById(item.getProductId());
-        } catch (Exception e) {
-            p = new ProductDTO(
+    private OrderDTO convertToDTO(Order order) {
+        List<OrderItemDTO> items = order.getItems().stream().map(item -> {
+            Product p = productClient.getProductById(item.getProductId());
+            if (p == null) {
+                throw new NoSuchElementException("Sản phẩm không tồn tại với ID: " + item.getProductId());
+            }
+            return new OrderItemDTO(
                     item.getProductId(),
-                    "Unknown",
-                    "",
+                    p.getName(),
+                    p.getImage(),
                     item.getPrice(),
-                    null,
-                    null,
-                    null,
-                    null
+                    item.getQuantity()
             );
+        }).toList();
+
+        List<DeliveryDTO> deliveries = deliveryClient.getDeliveriesByOrderId(order.getId());
+        for (DeliveryDTO delivery : deliveries) {
+            Restaurant restaurant = restaurantClient.getRestaurantById(delivery.getRestaurantId());
+            if (restaurant != null) {
+                delivery.setRestaurantName(restaurant.getName());
+                delivery.setRestaurantLocation(new LocationDTO(
+                        restaurant.getLocation().getLatitude(),
+                        restaurant.getLocation().getLongitude()
+                ));
+            } else {
+                delivery.setRestaurantName(null);
+                delivery.setRestaurantLocation(null);
+            }
         }
 
-        return new OrderItemDTO(
-                item.getProductId(),
-                p.getName(),
-                p.getImage(),
-                item.getPrice(),
-                item.getQuantity()
+        return new OrderDTO(
+                order.getId(),
+                order.getUserId(),
+                order.getOrderCode(),
+                order.getFullname(),
+                order.getPhone(),
+                order.getSpeaddress(),
+                order.getCity(),
+                order.getWard(),
+                new LocationDTO(order.getLocation().getLatitude(), order.getLocation().getLongitude()),
+                order.getPaymethod(),
+                order.getStatus(),
+                order.getTotal(),
+                order.getCreatedAt() != null ? order.getCreatedAt().atZone(ZoneId.systemDefault()).toLocalDateTime() : null,
+                items,
+                deliveries
         );
-    }).toList();
-
-    List<DeliveryDTO> deliveries;
-    try {
-        deliveries = deliveryClient.getDeliveriesByOrderId(order.getId());
-    } catch (Exception e) {
-        deliveries = List.of(); 
     }
-
-    return new OrderDTO(
-            order.getId(),
-            order.getOrderCode(),
-            order.getFullname(),
-            order.getPhone(),
-            order.getSpeaddress(),
-            order.getCity(),
-            order.getWard(),
-            new LocationDTO(order.getLocation().getLatitude(), order.getLocation().getLongitude()),
-            order.getPaymethod(),
-            order.getStatus(),
-            order.getTotal(),
-            order.getCreatedAt() != null
-                    ? order.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()
-                    : null,
-            items,
-            deliveries 
-    );
-}
 
     public Page<OrderDTO> getAllOrders(String q, int page, int limit) {
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
@@ -134,8 +130,10 @@ private OrderDTO convertToDTO(Order order) {
     }
 
     // Lấy order theo id
-    public Optional<OrderDTO> getOrderById(String id) {
-        return orderRepository.findById(id).map(this::convertToDTO);
+    public OrderDTO getOrderById(String id) {
+        return orderRepository.findById(id)
+                .map(this::convertToDTO)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy order với ID: " + id));
     }
 
     // Lấy order theo userId 
@@ -151,42 +149,32 @@ public Page<OrderDTO> getOrdersByUserId(String userId, int page, int limit) {
 }
 
     // Tạo order mới
-    public OrderDTO createOrder(Order order) {
+ public OrderDTO createOrder(Order order) {
         String orderCode = generateOrderCode(9);
         while (orderRepository.existsByOrderCode(orderCode)) {
             orderCode = generateOrderCode(9);
         }
         order.setOrderCode(orderCode);
         order.setStatus(-1);
+        order.setCreatedAt(Instant.now());
 
         Order savedOrder = orderRepository.save(order);
-        return convertToDTO(savedOrder);
-    }
 
-    public Optional<OrderDTO> getOrderByOrderCode(String orderCode) {
-    return orderRepository.findByOrderCode(orderCode)
-            .map(this::convertToDTO);
-}
-
- public boolean updateStatusOrder(String orderId, Integer status) {
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isEmpty()) return false;
-
-        Order order = optionalOrder.get();
-        order.setStatus(status);
-        order.setUpdatedAt(Instant.now());
-        orderRepository.save(order);
-
-        if (status == 2  && order.getItems() != null && !order.getItems().isEmpty()) {
-            Map<String, List<OrderItem>> itemsByRestaurant = order.getItems().stream()
-                    .collect(Collectors.groupingBy(item -> productClient.getProductById(item.getProductId()).getRestaurantId()));
+        if (savedOrder.getItems() != null && !savedOrder.getItems().isEmpty()) {
+            Map<String, List<OrderItem>> itemsByRestaurant = savedOrder.getItems().stream()
+                    .collect(Collectors.groupingBy(item -> {
+                        Product p = productClient.getProductById(item.getProductId());
+                        if (p == null) throw new NoSuchElementException("Sản phẩm không tồn tại với ID: " + item.getProductId());
+                        return p.getRestaurantId();
+                    }));
 
             for (String restaurantId : itemsByRestaurant.keySet()) {
                 Restaurant restaurant = restaurantClient.getRestaurantById(restaurantId);
+                if (restaurant == null) throw new NoSuchElementException("Nhà hàng không tồn tại với ID: " + restaurantId);
 
                 List<Drone> availableDrones = droneClient.getAvailableDrones(restaurantId);
                 if (availableDrones.isEmpty()) {
-                    throw new RuntimeException("Hiện tại không có drone rảnh tại nhà hàng: " + restaurant.getName());
+                    throw new IllegalStateException("Hiện tại không có drone rảnh tại nhà hàng: " + restaurant.getName());
                 }
 
                 Drone drone = availableDrones.get(0);
@@ -199,14 +187,70 @@ public Page<OrderDTO> getOrdersByUserId(String userId, int page, int limit) {
                         restaurant.getLocation().getLatitude(),
                         restaurant.getLocation().getLongitude()
                 ));
+                delivery.setCreatedAt(Instant.now());
 
                 deliveryClient.createDelivery(delivery);
-
-                droneClient.updateDroneStatus(drone.getId(), 1);
             }
+        }
+
+        return convertToDTO(savedOrder);
+    }
+
+    public OrderDTO getOrderByOrderCode(String orderCode) {
+        return orderRepository.findByOrderCode(orderCode)
+                .map(this::convertToDTO)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy order với code: " + orderCode));
+    }
+
+public Page<OrderDTO> getOrdersForRestaurantOwner(String ownerId, int page, int limit) {
+
+    List<Restaurant> restaurants = restaurantClient.getRestaurantsByOwnerId(ownerId);
+    if (restaurants.isEmpty()) {
+        return Page.empty();
+    }
+
+    List<String> restaurantIds = restaurants.stream()
+            .map(Restaurant::getId)
+            .toList();
+
+    List<String> productIds = restaurantIds.stream()
+            .flatMap(id -> productClient.getProductsByRestaurantId(id).stream())
+            .map(Product::getId)
+            .toList();
+
+    if (productIds.isEmpty()) {
+        return Page.empty();
+    }
+
+    Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
+    Page<Order> orders = orderRepository.findByItemsProductIdIn(productIds, pageable);
+
+    List<OrderDTO> dtoList = orders.stream()
+            .map(this::convertToDTO)
+            .toList();
+
+    return new PageImpl<>(dtoList, pageable, orders.getTotalElements());
+}
+
+public boolean updateStatusOrder(String orderId, Integer status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy order với ID: " + orderId));
+
+        order.setStatus(status);
+        order.setUpdatedAt(Instant.now());
+        orderRepository.save(order);
+
+        if (status == 1) {
+            List<DeliveryDTO> deliveries = deliveryClient.getDeliveriesByOrderId(orderId);
+            for (DeliveryDTO delivery : deliveries) {
+                if (delivery.getRestaurantId() != null && delivery.getDroneId() != null) {
+                    droneClient.updateDroneStatus(delivery.getDroneId(), 1);
+                }
+            }
+
+        deliveryClient.startDeliveryFlight(deliveries);
         }
 
         return true;
     }
-
 }

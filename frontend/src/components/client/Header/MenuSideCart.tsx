@@ -7,21 +7,23 @@ import {
 import { FaArrowRightLong } from "react-icons/fa6";
 import Image from "../../Image";
 import Overplay from "../Overplay";
-import useGetCart from "../../../hooks/client/useGetCart";
 import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
 import { useRemoveItemCart } from "../../../hooks/client/useRemoveItemCart";
 import { useChangeQuantityItemCart } from "../../../hooks/client/useChangeQuantityItemcart";
 import Loading from "../../Loading";
 import { Link } from "react-router-dom";
+import type { Cart } from "../../../types/type";
+import useGetCart from "../../../hooks/client/useGetCart";
 
 type Props = {
   isOpen: boolean;
   toggleMenu: () => void;
+  cart: Cart;
 };
 
-function MenuSideCart({ isOpen, toggleMenu }: Props) {
+function MenuSideCart({ isOpen, toggleMenu, cart }: Props) {
   const { user } = useGetCurrentUser("client");
-  const { cart, mutate, isLoading } = useGetCart(user?.id!);
+  const { mutate, isLoading } = useGetCart(user?.id || "");
   const { removeItem, isLoading: isLoadingRemove } = useRemoveItemCart();
   const { changeQuantity, isLoading: isLoadingChangeQuantity } =
     useChangeQuantityItemCart();
@@ -103,7 +105,7 @@ function MenuSideCart({ isOpen, toggleMenu }: Props) {
                     <div className="space-y-3">
                       <h5 className="font-medium">{item.name}</h5>
                       <p className="text-[#C62028] font-semibold">
-                        {(item.price * 2).toLocaleString("vi-VN")}₫
+                        {item.price.toLocaleString("vi-VN")}₫
                       </p>
                       <div className="flex items-center gap-3">
                         <button
@@ -118,7 +120,7 @@ function MenuSideCart({ isOpen, toggleMenu }: Props) {
                           <HiOutlineMinusSmall size={15} />
                         </button>
 
-                        <span className="font-medium">{2}</span>
+                        <span className="font-medium">{item.quantity}</span>
 
                         <button
                           onClick={() =>

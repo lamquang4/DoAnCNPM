@@ -22,7 +22,11 @@ const PrivateRoute = ({
   type,
 }: PrivateRouteProps) => {
   const token =
-    type === "admin" ? Cookies.get("token-admin") : Cookies.get("token-client");
+    type === "admin"
+      ? Cookies.get("token-admin")
+      : type === "client"
+      ? Cookies.get("token-client")
+      : Cookies.get("token-restaurant");
 
   if (!token) {
     return <Navigate to={redirectPath} replace />;
@@ -33,7 +37,10 @@ const PrivateRoute = ({
     // kiểm tra token hết hạn
     const isExpired = decoded.exp * 1000 < Date.now();
     if (isExpired) {
-      Cookies.remove("token");
+      if (type === "admin") Cookies.remove("token-admin");
+      else if (type === "client") Cookies.remove("token-client");
+      else Cookies.remove("token-restaurant");
+
       return <Navigate to={redirectPath} replace />;
     }
 

@@ -1,13 +1,13 @@
 import OrderInfo from "./OrderInfo";
 import SideBarMenu from "../../SideMenuBar";
 import { useNavigate, useParams } from "react-router-dom";
-import useGetOrder from "../../../../hooks/useGetOrder";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import useGetOrder from "../../../../hooks/useGetOrder";
 function OrderDetail() {
   const navigate = useNavigate();
-  const { code } = useParams();
-  const { order, isLoading } = useGetOrder(code as string);
+  const { id } = useParams();
+  const { order, isLoading } = useGetOrder(id as string);
 
   useEffect(() => {
     if (isLoading) return;
@@ -25,7 +25,7 @@ function OrderDetail() {
           <div className="flex justify-center flex-wrap gap-5">
             <SideBarMenu />
 
-            <OrderInfo order={order} isLoading={isLoading} />
+            <OrderInfo order={order!} isLoading={isLoading} />
           </div>
         </div>
       </section>

@@ -1,5 +1,4 @@
-
-import Restaurant from "../../components/admin/Restaurant/Restaurant";
+import Restaurant from "../../components/restaurant/Restaurant/Restaurant";
 import LayoutPage from "../../components/restaurant/LayoutPage";
 
 function OwnRestaurantPage() {

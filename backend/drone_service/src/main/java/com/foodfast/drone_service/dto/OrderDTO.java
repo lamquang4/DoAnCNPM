@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDTO {
     private String id;
+        private String userId;
     private String orderCode;
     private String fullname;
     private String phone;

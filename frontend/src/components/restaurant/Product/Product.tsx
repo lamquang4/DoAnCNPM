@@ -1,38 +1,16 @@
-import { VscTrash } from "react-icons/vsc";
 import { LiaEdit } from "react-icons/lia";
 import { IoMdAddCircle } from "react-icons/io";
 import Image from "../../Image";
 import Pagination from "../Pagination";
 import Loading from "../../Loading";
 import InputSearch from "../InputSearch";
-import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import useGetProducts from "../../../hooks/admin/useGetProducts";
-import useDeleteProduct from "../../../hooks/restaurant/useDeleteProduct";
-function Product() {
-  const {
-    products,
-    mutate,
-    isLoading,
-    totalItems,
-    currentPage,
-    totalPages,
-    limit,
-  } = useGetProducts();
-  const { deleteProduct, isLoading: isLoadingDelete } = useDeleteProduct();
 
-  const handleDelete = async (id: string) => {
-    if (!id) {
-      return;
-    }
-    try {
-      await deleteProduct(id);
-      mutate();
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message);
-      mutate();
-    }
-  };
+function Product() {
+  const { products, isLoading, totalItems, currentPage, totalPages, limit } =
+    useGetProducts();
+
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
@@ -108,15 +86,9 @@ function Product() {
 
                     <td className="p-[1rem]  ">
                       <div className="flex items-center gap-[15px]">
-                        <Link to={`/admin/edit-product/${product.id}`}>
+                        <Link to={`/restaurant/edit-product/${product.id}`}>
                           <LiaEdit size={22} className="text-[#076ffe]" />
                         </Link>
-                        <button
-                          disabled={isLoadingDelete}
-                          onClick={() => handleDelete(product.id!)}
-                        >
-                          <VscTrash size={22} className="text-[#d9534f]" />
-                        </button>
                       </div>
                     </td>
                   </tr>

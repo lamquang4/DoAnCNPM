@@ -1,6 +1,7 @@
 package com.foodfast.user_service.controller;
 import com.foodfast.user_service.model.User;
 import com.foodfast.user_service.service.UserService;
+import  com.foodfast.user_service.dto.OrderDTO;
 import com.foodfast.user_service.dto.UserDTO;
 import com.foodfast.user_service.dto.LoginRequest;
 import com.foodfast.user_service.dto.LoginResponse;
@@ -39,12 +40,11 @@ public ResponseEntity<?> getUsersByRole(
     ));
 }
 
-@GetMapping("/{id}")
-public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
-    return userService.getUserById(id)
-                      .map(ResponseEntity::ok)
-                      .orElse(ResponseEntity.notFound().build());
-}
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
+        UserDTO user = userService.getUserById(id);
+            return ResponseEntity.ok(user);
+    }
 
    @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody User user) {

@@ -22,6 +22,7 @@ export interface Product {
 
 export interface Order {
   id?: string;
+  userId: string;
   orderCode?: string;
   fullname: string;
   phone: string;
@@ -90,10 +91,7 @@ export interface Drone {
 export interface Delivery {
   id?: string;
   orderId: string;
-  orderCode: string;
-  destination?: Location;
   droneId: string;
-  model?: string;
   restaurantId: string;
   restaurantName?: string;
   restaurantLocation?: Location;
@@ -108,7 +106,7 @@ export interface Restaurant {
   ward: string;
   city: string;
   location: Location;
-  userId: string;
+  ownerId: string;
   fullname?: string;
   status: number;
   createdAt?: string;

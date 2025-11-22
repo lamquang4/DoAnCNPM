@@ -1,37 +1,12 @@
-import { VscTrash } from "react-icons/vsc";
-import { LiaEdit } from "react-icons/lia";
 import Image from "../../Image";
 import Pagination from "../Pagination";
 import Loading from "../../Loading";
 import InputSearch from "../InputSearch";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
 import useGetProducts from "../../../hooks/admin/useGetProducts";
-import useDeleteProduct from "../../../hooks/restaurant/useDeleteProduct";
 function Product() {
-  const {
-    products,
-    mutate,
-    isLoading,
-    totalItems,
-    currentPage,
-    totalPages,
-    limit,
-  } = useGetProducts();
-  const { deleteProduct, isLoading: isLoadingDelete } = useDeleteProduct();
+  const { products, isLoading, totalItems, currentPage, totalPages, limit } =
+    useGetProducts();
 
-  const handleDelete = async (id: string) => {
-    if (!id) {
-      return;
-    }
-    try {
-      await deleteProduct(id);
-      mutate();
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message);
-      mutate();
-    }
-  };
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
@@ -50,8 +25,8 @@ function Product() {
             <tr className="bg-[#E9EDF2] text-left">
               <th className="p-[1rem]  ">Tên</th>
               <th className="p-[1rem]  ">Giá</th>
+              <th className="p-[1rem]  ">Nhà hàng</th>
               <th className="p-[1rem]">Tình trạng</th>
-              <th className="p-[1rem]  ">Hành động</th>
             </tr>
           </thead>
           <tbody>
@@ -90,26 +65,14 @@ function Product() {
                       </p>
                     </td>
 
+                    <td className="p-[1rem]  ">{product.restaurantName}</td>
+
                     <td className="p-[1rem]  ">
                       {product.status === 1
                         ? "Hiện"
                         : product.status === 0
                         ? "Ẩn"
                         : ""}
-                    </td>
-
-                    <td className="p-[1rem]  ">
-                      <div className="flex items-center gap-[15px]">
-                        <Link to={`/admin/edit-product/${product.id}`}>
-                          <LiaEdit size={22} className="text-[#076ffe]" />
-                        </Link>
-                        <button
-                          disabled={isLoadingDelete}
-                          onClick={() => handleDelete(product.id!)}
-                        >
-                          <VscTrash size={22} className="text-[#d9534f]" />
-                        </button>
-                      </div>
                     </td>
                   </tr>
                 );

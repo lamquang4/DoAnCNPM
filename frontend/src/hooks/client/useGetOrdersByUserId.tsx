@@ -1,7 +1,8 @@
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import useSWR from "swr";
-import type { Order } from "../types/type";
+import type { Order } from "../../types/type";
+
 
 interface ResponseType {
   orders: Order[];

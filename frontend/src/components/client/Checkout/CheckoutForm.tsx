@@ -42,6 +42,16 @@ function CheckoutForm() {
     lng: number | null;
   }>({ lat: null, lng: null });
 
+  const totalPrice = useMemo(() => {
+    return (
+      cart?.items.reduce((sum, item) => {
+        const finalPrice = item.price;
+
+        return sum + finalPrice * item.quantity;
+      }, 0) || 0
+    );
+  }, [cart?.items]);
+
   useEffect(() => {
     if (isLoadingCart) return;
 
@@ -92,16 +102,6 @@ function CheckoutForm() {
       };
     });
 
-    const totalPrice = useMemo(() => {
-      return (
-        cart?.items.reduce((sum, item) => {
-          const finalPrice = item.price;
-
-          return sum + finalPrice * item.quantity;
-        }, 0) || 0
-      );
-    }, [cart?.items]);
-
     try {
       const res = await addOrder({
         fullname: data.fullname,
@@ -116,6 +116,7 @@ function CheckoutForm() {
         },
         items: items!,
         total: totalPrice,
+        userId: user?.id!,
       });
       const momoResponse = await createPaymentMomo(res.orderCode);
       window.location.href = momoResponse.payUrl;
@@ -124,8 +125,6 @@ function CheckoutForm() {
       toast.error(err?.response?.data?.message);
     }
   };
-
-  const totalPrice = 200000;
 
   return (
     <section className="my-[40px] px-[15px] text-black">

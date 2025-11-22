@@ -2,14 +2,15 @@ import { Link } from "react-router-dom";
 import Image from "../../Image";
 import Loading from "../../Loading";
 import { CiCalendar } from "react-icons/ci";
-import useGetOrders from "../../../hooks/useGetOrdersByUserId";
-import useCurrentUser from "../../../hooks/useGetCurrentUser";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
 import Pagination from "../Pagination";
+import useGetOrdersByUserId from "../../../hooks/client/useGetOrdersByUserId";
+import type { Order } from "../../../types/type";
 
 function OrderHistory() {
-  const { user } = useCurrentUser("client");
+  const { user } = useGetCurrentUser("client");
   const { orders, isLoading, totalItems, totalPages, currentPage } =
-    useGetOrders(user?.id || "");
+    useGetOrdersByUserId(user?.id || "");
 
   return (
     <div className="w-full max-w-full flex-1 sm:px-[15px] px-[10px]">
@@ -21,7 +22,7 @@ function OrderHistory() {
         {isLoading ? (
           <Loading height={60} size={50} color="black" thickness={3} />
         ) : orders.length > 0 ? (
-          orders.map((order) => (
+          orders.map((order: Order) => (
             <div className="border border-gray-300 px-[15px]" key={order.id}>
               <div className="space-y-[10px] py-[15px] border-b border-gray-300">
                 <div className="flex justify-between flex-wrap gap-[10px]">
@@ -69,13 +70,11 @@ function OrderHistory() {
                   key={index}
                   className="relative py-[15px] border-b border-gray-300 w-full"
                 >
-                  <Link to={`/order/${order.orderCode}`}>
+                  <Link to={`/order/${order.id}`}>
                     <div className="flex items-center gap-[10px] w-full">
                       <div className="w-[120px] h-[120px] overflow-hidden">
                         <Image
-                          source={`${import.meta.env.VITE_BACKEND_URL}${
-                            item.image
-                          }`}
+                          source={item.image!}
                           alt={item.name!}
                           className={"w-full h-full object-contain"}
                           loading="lazy"
@@ -106,7 +105,7 @@ function OrderHistory() {
                   </h5>
 
                   <Link
-                    to={`/order/${order.orderCode}`}
+                    to={`/order/${order.id}`}
                     className="text-white text-[0.9rem] font-medium px-[10px] py-[6px] bg-[#C62028]"
                   >
                     Xem chi tiết

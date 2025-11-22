@@ -33,3 +33,4 @@ public class Restaurant {
     @Field("updatedAt")
     private Instant updatedAt;
 }
+

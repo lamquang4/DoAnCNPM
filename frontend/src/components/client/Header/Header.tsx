@@ -6,12 +6,12 @@ import { AiOutlineMenu } from "react-icons/ai";
 import MenuMobile from "./MenuMobile";
 import Overplay from "../Overplay";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import useCurrentUser from "../../../hooks/useGetCurrentUser";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
 import useGetCart from "../../../hooks/client/useGetCart";
 import MenuSideCart from "./MenuSideCart";
 import { HashLink } from "react-router-hash-link";
 function Header() {
-  const { user } = useCurrentUser("client");
+  const { user } = useGetCurrentUser("client");
   const { cart } = useGetCart(user?.id || "");
 
   const [openSearch, setOpenSearch] = useState<boolean>(false);
@@ -59,7 +59,7 @@ function Header() {
   return (
     <>
       <header className="w-full bg-white sticky top-0 border-b border-gray-200 z-[15] text-black">
-        <div className=" py-[10px] px-[15px] relative">
+        <div className=" py-[15px] px-[15px] relative">
           <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center">
             <Link to={"/"}>
               <h2 className="!text-[#C62028]">Foodfast</h2>
@@ -136,7 +136,11 @@ function Header() {
           </div>
 
           <MenuMobile isOpen={menuMobileOpen} toggleMenu={toggleMobileMenu} />
-          <MenuSideCart isOpen={cartMenuOpen} toggleMenu={toggleCartMenu} />
+          <MenuSideCart
+            isOpen={cartMenuOpen}
+            toggleMenu={toggleCartMenu}
+            cart={cart!}
+          />
         </div>
       </header>
 

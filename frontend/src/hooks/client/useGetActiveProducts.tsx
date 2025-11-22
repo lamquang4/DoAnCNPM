@@ -11,13 +11,15 @@ interface ResponseType {
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
-export default function useGetActiveProducts() {
+export default function useGetProducts() {
   const [searchParams] = useSearchParams();
 
   const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "12", 10);
 
   const query = new URLSearchParams();
   if (page) query.set("page", page.toString());
+  if (limit) query.set("limit", limit.toString());
 
   const url = `${
     import.meta.env.VITE_BACKEND_URL
@@ -37,6 +39,7 @@ export default function useGetActiveProducts() {
     totalPages: data?.totalPages || 1,
     totalItems: data?.total || 0,
     currentPage: page,
+    limit,
     isLoading,
     error,
     mutate,

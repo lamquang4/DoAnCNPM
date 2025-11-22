@@ -2,19 +2,22 @@ import InputImage from "../InputImage";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { useInputImage } from "../../../hooks/admin/useInputImage";
+import { useInputImage } from "../../../hooks/useInputImage";
 import useAddProduct from "../../../hooks/restaurant/useAddProduct";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
+import useGetRestaurants from "../../../hooks/restaurant/useGetRestaurants";
 
 function AddProduct() {
   const [data, setData] = useState({
     name: "",
     price: 1,
     status: "",
+    restaurantId: "",
   });
-  // thêm chọn restaurant
 
+  const { user } = useGetCurrentUser("restaurant");
   const { addProduct, isLoading } = useAddProduct();
-
+  const { restaurants } = useGetRestaurants(user?.id || "");
   const max = 1;
 
   const {
@@ -52,20 +55,29 @@ function AddProduct() {
     try {
       const formData = new FormData();
 
-      formData.append("product[name]", data.name);
-      formData.append("product[price]", data.price.toString());
-      formData.append("product[status]", data.status);
+      formData.append(
+        "product",
+        new Blob(
+          [
+            JSON.stringify({
+              ...data,
+              price: Number(data.price),
+              status: 1,
+            }),
+          ],
+          { type: "application/json" }
+        )
+      );
 
       selectedFiles.forEach((file) => {
         formData.append("image", file);
       });
 
       await addProduct(formData);
-      toast.success("Thêm sản phẩm thành công");
 
       setPreviewImages([]);
       setSelectedFiles([]);
-      setData({ name: "", price: 1, status: "" });
+      setData({ name: "", price: 1, status: "", restaurantId: "" });
     } catch (err: any) {
       toast.error(err?.response?.data?.message);
     }
@@ -121,23 +133,24 @@ function AddProduct() {
               />
             </div>
 
-            <div className="flex flex-wrap md:flex-nowrap gap-[15px]">
-              <div className="flex flex-col gap-1 w-full">
-                <label htmlFor="" className="text-[0.9rem] font-medium">
-                  Tình trạng
-                </label>
-                <select
-                  name="status"
-                  required
-                  onChange={handleChange}
-                  value={data.status}
-                  className="border border-gray-300 p-[6px_10px] text-[0.9rem] w-full outline-none focus:border-gray-400  "
-                >
-                  <option value="">Chọn tình trạng</option>
-                  <option value="0">Ẩn</option>
-                  <option value="1">Hiện</option>
-                </select>
-              </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="" className="text-[0.9rem] font-medium">
+                Nhà hàng
+              </label>
+              <select
+                name="restaurantId"
+                required
+                onChange={handleChange}
+                value={data.restaurantId}
+                className="border border-gray-300 p-[6px_10px] text-[0.9rem] w-full outline-none focus:border-gray-400  "
+              >
+                <option value="">Chọn nhà hàng</option>
+                {restaurants.map((restaurant) => (
+                  <option key={restaurant.id} value={restaurant.id}>
+                    {`${restaurant.name} - ${restaurant.speaddress}, ${restaurant.ward}, ${restaurant.city}`}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

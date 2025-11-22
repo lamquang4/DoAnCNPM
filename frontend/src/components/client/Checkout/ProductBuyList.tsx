@@ -1,9 +1,9 @@
 import { memo } from "react";
 import Image from "../../Image";
-import type { ProductInCart } from "../../../types/type";
+import type { CartItem } from "../../../types/type";
 
 type Props = {
-  productsInCart: ProductInCart[];
+  productsInCart: CartItem[];
 };
 
 function ProductBuyList({ productsInCart }: Props) {
@@ -19,8 +19,8 @@ function ProductBuyList({ productsInCart }: Props) {
           <div className="relative">
             <div className="w-[120px] h-[120px]">
               <Image
-                source={`${import.meta.env.VITE_BACKEND_URL}${item.images[0]}`}
-                alt={item.name}
+                source={item.image!}
+                alt={item.name!}
                 className={"w-full h-full object-contain"}
                 loading="eager"
               />
@@ -32,7 +32,7 @@ function ProductBuyList({ productsInCart }: Props) {
           </div>
 
           <div className="flex w-full flex-col my-auto gap-[5px]">
-            <span className="font-semibold">{item.title}</span>
+            <span className="font-semibold">{item.name}</span>
 
             <p className="font-medium text-[#C62028]">
               {item.price.toLocaleString("vi-VN")}₫

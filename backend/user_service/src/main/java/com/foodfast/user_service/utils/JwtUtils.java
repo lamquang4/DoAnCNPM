@@ -30,6 +30,7 @@ public class JwtUtils {
                 .setSubject(user.getId())
                 .claim("role", user.getRole())
                 .claim("email", user.getEmail())
+                .claim("phone", user.getPhone())
                 .claim("fullname", user.getFullname())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
@@ -47,6 +48,7 @@ public Map<String, Object> getUserFromToken(String token) {
     Map<String, Object> userDetails = new HashMap<>();
     userDetails.put("id", claims.getSubject());
     userDetails.put("email", claims.get("email"));
+    userDetails.put("phone", claims.get("phone"));
     userDetails.put("fullname", claims.get("fullname"));
     userDetails.put("role", claims.get("role"));
     return userDetails;

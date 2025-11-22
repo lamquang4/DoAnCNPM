@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import org.springframework.data.domain.Page;
-
 @RestController
 @RequestMapping("/api/order")
 public class OrderController {
@@ -38,9 +37,8 @@ public class OrderController {
     // Lấy đơn hàng theo id
     @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable String id) {
-        return orderService.getOrderById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        OrderDTO order = orderService.getOrderById(id);
+        return ResponseEntity.ok(order);
     }
 
     // Lấy danh sách đơn hàng theo userId
@@ -66,12 +64,26 @@ public class OrderController {
         return ResponseEntity.ok(createdOrder);
     }
 
-    @GetMapping("/code/{orderCode}")
-public ResponseEntity<OrderDTO> getOrderByCode(@PathVariable String orderCode) {
-    return orderService.getOrderByOrderCode(orderCode)
-            .map(ResponseEntity::ok)
-            .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/owner/{ownerId}")
+public ResponseEntity<?> getOrdersForRestaurantOwner(
+        @PathVariable String ownerId,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "12") int limit
+) {
+    Page<OrderDTO> orders = orderService.getOrdersForRestaurantOwner(ownerId, page, limit);
+
+    return ResponseEntity.ok(Map.of(
+            "orders", orders.getContent(),
+            "totalPages", orders.getTotalPages(),
+            "total", orders.getTotalElements()
+    ));
 }
+
+    @GetMapping("/code/{orderCode}")
+    public ResponseEntity<OrderDTO> getOrderByCode(@PathVariable String orderCode) {
+        OrderDTO order = orderService.getOrderByOrderCode(orderCode);
+        return ResponseEntity.ok(order);
+    }
 
 @PutMapping("/{id}/status")
 public ResponseEntity<?> updateOrderStatus(

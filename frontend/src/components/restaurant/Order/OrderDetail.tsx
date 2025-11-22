@@ -6,7 +6,7 @@ import Loading from "../../Loading";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import useGetOrder from "../../../hooks/admin/useGetOrder";
+import useGetOrder from "../../../hooks/useGetOrder";
 import DeliveryMap from "../../DeliveryMap";
 
 function OrderDetail() {
@@ -17,7 +17,6 @@ function OrderDetail() {
 
   const steps = [
     { label: "Chờ xử lý", icon: <LuArchive size={24} /> },
-    { label: "Đã sẵn sàng", icon: <LuCheck size={24} /> },
     { label: "Đang giao", icon: <LuTruck size={24} /> },
     { label: "Giao thành công", icon: <LuStar size={24} /> },
   ];
@@ -27,7 +26,7 @@ function OrderDetail() {
 
     if (!order) {
       toast.error("Đơn hàng không tìm thấy");
-      navigate("/admin/orders");
+      navigate("/restaurant/orders");
     }
   }, [isLoading, order, navigate]);
   return (
@@ -75,7 +74,7 @@ function OrderDetail() {
                     </p>
                   </div>
 
-                  <Link to={"/admin/orders"} className="text-center">
+                  <Link to={"/restaurant/orders"} className="text-center">
                     <span className="flex items-center font-semibold text-gray-600">
                       <RiArrowLeftSLine size={20} /> Trở về
                     </span>
@@ -89,7 +88,7 @@ function OrderDetail() {
                     </span>
                   </div>
                 ) : (
-                  <div className="relative gap-y-5 grid grid-cols-2 md:grid-cols-4 py-[20px] px-[20px] border-b border-gray-300 z-0">
+                  <div className="relative gap-y-5 grid grid-cols-2 md:grid-cols-3 py-[20px] px-[20px] border-b border-gray-300 z-0">
                     {steps.map((step, index) => {
                       const isActive = (order?.status ?? -1) >= index;
                       return (
@@ -174,9 +173,7 @@ function OrderDetail() {
                             <div className="flex items-center gap-[10px]">
                               <div className="w-[75px] h-[75px] overflow-hidden">
                                 <Image
-                                  source={`${import.meta.env.VITE_BACKEND_URL}${
-                                    item.image
-                                  }`}
+                                  source={item.image!}
                                   alt={""}
                                   className={"w-full h-full object-contain"}
                                   loading="eager"

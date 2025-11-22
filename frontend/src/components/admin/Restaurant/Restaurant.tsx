@@ -1,7 +1,5 @@
 import Image from "../../Image";
 import InputSearch from "../InputSearch";
-import { Link } from "react-router-dom";
-import { LiaEdit } from "react-icons/lia";
 import Loading from "../../Loading";
 import Pagination from "../Pagination";
 import useGetRestaurants from "../../../hooks/admin/useGetRestaurants";
@@ -27,8 +25,8 @@ function Restaurant() {
             <tr className="bg-[#E9EDF2] text-left">
               <th className="p-[1rem]  ">Tên</th>
               <th className="p-[1rem]">Địa chỉ</th>
+              <th className="p-[1rem]">Chủ nhà hàng</th>
               <th className="p-[1rem]e">Tình trạng</th>
-              <th className="p-[1rem]  ">Hành động</th>
             </tr>
           </thead>
           <tbody>
@@ -46,17 +44,10 @@ function Restaurant() {
                     {`${restaurant.speaddress}, ${restaurant.ward}, ${restaurant.city}`}
                   </td>
 
+                  <td className="p-[1rem]  ">{restaurant.fullname}</td>
+
                   <td className="p-[1rem]  ">
                     {restaurant.status === 1 ? "Đang mở cửa" : "Đóng cửa"}
-                  </td>
-                  <td className="p-[1rem]  ">
-                    <div className="flex items-center gap-[15px]">
-                      <Link
-                        to={`/admin/edit-restaurant-branch/${restaurant.id}`}
-                      >
-                        <LiaEdit size={22} className="text-[#076ffe]" />
-                      </Link>
-                    </div>
                   </td>
                 </tr>
               ))

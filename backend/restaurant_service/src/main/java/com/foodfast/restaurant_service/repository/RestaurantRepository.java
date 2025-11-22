@@ -20,4 +20,15 @@ public interface RestaurantRepository extends MongoRepository<Restaurant, String
     boolean existsByName(String name);
 
     boolean existsByLocation_LatitudeAndLocation_Longitude(double latitude, double longitude);
+
+    boolean existsByNameAndIdNot(String name, String id);
+
+    boolean existsByLocation_LatitudeAndLocation_LongitudeAndIdNot(
+        double latitude,
+        double longitude,
+        String id
+    );
+
+    Page<Restaurant> findByOwnerId(String ownerId, Pageable pageable);
+    List<Restaurant> findByOwnerId(String ownerId);
 }

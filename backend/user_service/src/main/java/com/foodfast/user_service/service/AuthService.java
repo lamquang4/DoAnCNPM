@@ -26,9 +26,9 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Email hoặc mật khẩu không chính xác"));
 
-       if (user.getStatus() == 0) {
-        throw new IllegalArgumentException("Tài khoản của bạn đã bị khóa");
-       }
+        if (user.getStatus() == 0) {
+            throw new IllegalStateException("Tài khoản của bạn đã bị khóa");
+        }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Email hoặc mật khẩu không chính xác");
@@ -41,6 +41,7 @@ public class AuthService {
                 .token(token)
                 .id(user.getId())
                 .email(user.getEmail())
+                .phone(user.getPhone())
                 .fullname(user.getFullname())
                 .role(user.getRole())
                 .build();

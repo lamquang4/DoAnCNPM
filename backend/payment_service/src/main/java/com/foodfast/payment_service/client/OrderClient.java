@@ -16,9 +16,9 @@ public interface OrderClient {
     @GetMapping("/api/order/code/{orderCode}")
     OrderDTO getOrderByCode(@PathVariable("orderCode") String orderCode);
 
-    @PutMapping("/api/order/code/{orderCode}")
+    @PutMapping("/api/order/{id}/status")
     void updateOrderStatus(
-            @PathVariable("orderCode") String orderCode,
+            @PathVariable("id") String id,
             @RequestParam("status") Integer status
     );
 }

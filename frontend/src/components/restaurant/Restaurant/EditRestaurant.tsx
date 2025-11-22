@@ -6,6 +6,7 @@ import useGetProvincesVN from "../../../hooks/useGetProvincesVN";
 import LeafletMap from "../../LeafletMap";
 import useGetRestaurant from "../../../hooks/restaurant/useGetRestaurant";
 import useUpdateRestaurant from "../../../hooks/restaurant/useUpdateRestaurant";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
 
 function EditRestaurant() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function EditRestaurant() {
     status: "",
   });
 
+  const { user } = useGetCurrentUser("restaurant");
   const { restaurant, isLoading, mutate } = useGetRestaurant(id as string);
   const { updateRestaurant, isLoading: isLoadingUpdate } = useUpdateRestaurant(
     id as string
@@ -72,6 +74,11 @@ function EditRestaurant() {
       return;
     }
 
+    if (!user?.id) {
+      toast.error("Bạn chưa đăng nhập");
+      return;
+    }
+
     try {
       await updateRestaurant({
         name: data.name,
@@ -79,8 +86,8 @@ function EditRestaurant() {
         ward: data.ward,
         city: data.city,
         location: { latitude: lat, longitude: lng },
-        status: Number(data.status),
-        userId: "abc",
+        status: 1,
+        ownerId: user?.id,
       });
       mutate();
     } catch (err: any) {
@@ -89,8 +96,11 @@ function EditRestaurant() {
   };
 
   return (
-    <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-full">
-      <form className="flex flex-col gap-7 w-full" onSubmit={handleSubmit}>
+    <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-auto">
+      <form
+        className="flex flex-col gap-7 w-full h-full"
+        onSubmit={handleSubmit}
+      >
         <h2 className="text-[#74767d]">Chỉnh sửa nhà hàng</h2>
 
         <div className="flex gap-[25px] w-full flex-col">
@@ -181,23 +191,6 @@ function EditRestaurant() {
               }`}
             >
               <LeafletMap lat={lat} lng={lng} fullAddress={fullAddress} />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label htmlFor="" className="text-[0.9rem] font-medium">
-                Tình trạng
-              </label>
-              <select
-                name="status"
-                value={data.status}
-                onChange={handleChange}
-                required
-                className="border border-gray-300 p-[6px_10px] text-[0.9rem] w-full outline-none focus:border-gray-400  "
-              >
-                <option value="">Chọn tình trạng</option>
-                <option value="1">Đang mở cửa</option>
-                <option value="0">Đóng cửa</option>
-              </select>
             </div>
           </div>
         </div>

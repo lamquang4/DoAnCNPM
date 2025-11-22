@@ -8,8 +8,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
+import com.foodfast.payment_service.client.CartClient;
 import com.foodfast.payment_service.client.OrderClient;
 import com.foodfast.payment_service.dto.OrderDTO;
 import com.foodfast.payment_service.dto.Momo.MomoRequest;
@@ -43,13 +44,14 @@ private String ipnUrl;
 
     private final PaymentRepository paymentRepository;
     private final OrderClient orderClient;
+    private final CartClient cartClient;
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public MomoService(PaymentRepository paymentRepository, OrderClient orderClient) {
+    public MomoService(PaymentRepository paymentRepository, OrderClient orderClient, CartClient cartClient) {
         this.paymentRepository = paymentRepository;
         this.orderClient = orderClient;
+        this.cartClient = cartClient;
     }
-
 
  public MomoResponse createPayment(String orderCode) throws Exception {
         String requestId = UUID.randomUUID().toString();
@@ -58,7 +60,6 @@ private String ipnUrl;
         String orderInfo = "Thanh toan don hang " + orderId;
         String extraData = "";
 
-        // Chuỗi để ký
         String rawSignature =
                 "accessKey=" + accessKey +
                 "&amount=" + amount +
@@ -74,7 +75,6 @@ private String ipnUrl;
         // Tạo chữ ký HMAC SHA256
         String signature = signHmacSHA256(rawSignature, secretKey);
 
-        // Tạo request
         MomoRequest request = MomoRequest.builder()
                 .partnerCode(partnerCode)
                 .accessKey(accessKey)
@@ -114,34 +114,36 @@ private String signHmacSHA256(String data, String key) throws Exception {
     return hexString.toString();
 }
 
- public boolean handleSuccessfulPayment(String orderId, String transId) {
-        try {
+@Transactional
+ public boolean handleSuccessfulPayment(String orderCode, String transId) {
 
-         OrderDTO order = orderClient.getOrderByCode(orderId);
-        if (order == null) {
-            return false;
-        }
-        BigDecimal amount = order.getTotal();
-
-            Payment payment = Payment.builder()
-                    .orderId(orderId)
-                    .transactionId(transId)
-                    .status(1)
-                      .amount(amount)   
-                    .paymethod("MOMO")
-                    .createdAt(Instant.now())
-                    .updatedAt(Instant.now())
-                    .build();
-
-            paymentRepository.save(payment);
-
-            orderClient.updateOrderStatus(orderId, 0);
-
-            return true;
-
-        } catch (Exception e) {
-            return false;
-        }
+    if (paymentRepository.existsByTransactionId(transId)) {
+        return true;
     }
+
+    OrderDTO order = orderClient.getOrderByCode(orderCode);
+    if (order == null) {
+        return false;
+    }
+
+    BigDecimal amount = order.getTotal();
+
+    Payment payment = Payment.builder()
+            .orderId(order.getId())
+            .transactionId(transId)
+            .status(1)
+            .amount(amount)
+            .paymethod("MOMO")
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+
+    paymentRepository.save(payment);
+    cartClient.clearCart(order.getUserId());
+    orderClient.updateOrderStatus(order.getId(), 0);
+
+    return true;
+}
+
 
 }

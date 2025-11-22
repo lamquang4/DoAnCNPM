@@ -5,21 +5,28 @@ import Image from "../../Image";
 import ImageViewer from "../../ImageViewer";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useInputImage } from "../../../hooks/admin/useInputImage";
+import { useInputImage } from "../../../hooks/useInputImage";
 import useGetProduct from "../../../hooks/restaurant/useGetProduct";
-import useUpdateProduct from "../../../hooks/admin/useUpdateProduct";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
+import useUpdateProduct from "../../../hooks/restaurant/useUpdateProduct";
+import useGetRestaurants from "../../../hooks/restaurant/useGetRestaurants";
 
 function EditProduct() {
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const { user } = useGetCurrentUser("restaurant");
   const { product, isLoading, mutate } = useGetProduct(id as string);
   const { updateProduct, isLoading: isLoadingUpdate } = useUpdateProduct(
     id as string
   );
+  const { restaurants } = useGetRestaurants(user?.id || "");
+
   const [data, setData] = useState({
     name: "",
     price: 1,
     status: "",
+    restaurantId: "",
   });
   const [openViewer, setOpenViewer] = useState<boolean>(false);
   const [viewerImage, setViewerImage] = useState<string>("");
@@ -40,7 +47,7 @@ function EditProduct() {
 
     if (!product) {
       toast.error("Sản phẩm không tìm thấy");
-      navigate("/admin/products");
+      navigate("/restaurant/products");
       return;
     }
 
@@ -48,6 +55,7 @@ function EditProduct() {
       name: product?.name || "",
       price: product?.price || 1,
       status: product?.status?.toString() || "",
+      restaurantId: product?.restaurantId || "",
     });
   }, [isLoading, product, navigate]);
 
@@ -55,7 +63,6 @@ function EditProduct() {
     setViewerImage(image);
     setOpenViewer(true);
   };
-
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -78,13 +85,23 @@ function EditProduct() {
     try {
       const formData = new FormData();
 
-      formData.append("product[name]", data.name);
-      formData.append("product[price]", data.price.toString());
-      formData.append("product[status]", data.status);
+      formData.append(
+        "product",
+        new Blob(
+          [
+            JSON.stringify({
+              ...data,
+              price: Number(data.price),
+              status: 1,
+            }),
+          ],
+          { type: "application/json" }
+        )
+      );
 
       if (selectedFiles && selectedFiles.length > 0) {
         selectedFiles.forEach((file) => {
-          formData.append("image", file); 
+          formData.append("image", file);
         });
       }
 
@@ -126,10 +143,8 @@ function EditProduct() {
                   }}
                 >
                   <Image
-                    source={`${import.meta.env.VITE_BACKEND_URL}${
-                      product?.image
-                    }`}
-                    alt={product!.name}
+                    source={product?.image!}
+                    alt=""
                     className="w-full h-full"
                     loading="lazy"
                   />
@@ -170,23 +185,24 @@ function EditProduct() {
               />
             </div>
 
-            <div className="flex flex-wrap md:flex-nowrap gap-[15px]">
-              <div className="flex flex-col gap-1 w-full">
-                <label htmlFor="" className="text-[0.9rem] font-medium">
-                  Tình trạng
-                </label>
-                <select
-                  name="status"
-                  required
-                  onChange={handleChange}
-                  value={data.status}
-                  className="border border-gray-300 p-[6px_10px] text-[0.9rem] w-full outline-none focus:border-gray-400  "
-                >
-                  <option value="">Chọn tình trạng</option>
-                  <option value="0">Ẩn</option>
-                  <option value="1">Hiện</option>
-                </select>
-              </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="" className="text-[0.9rem] font-medium">
+                Nhà hàng
+              </label>
+              <select
+                name="restaurantId"
+                required
+                onChange={handleChange}
+                value={data.restaurantId}
+                className="border border-gray-300 p-[6px_10px] text-[0.9rem] w-full outline-none focus:border-gray-400  "
+              >
+                <option value="">Chọn nhà hàng</option>
+                {restaurants.map((restaurant) => (
+                  <option key={restaurant.id} value={restaurant.id}>
+                    {`${restaurant.name} - ${restaurant.speaddress}, ${restaurant.ward}, ${restaurant.city}`}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

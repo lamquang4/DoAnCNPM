@@ -20,6 +20,7 @@ public class DroneController {
         this.droneService = droneService;
     }
 
+    // lấy tất cả drone
     @GetMapping
     public ResponseEntity<?> getAllDrones(
             @RequestParam(defaultValue = "1") int page,
@@ -37,9 +38,9 @@ public class DroneController {
 
     // Lấy drone theo id
     @GetMapping("/{id}")
-    public DroneDTO getDroneById(@PathVariable String id) {
-        return droneService.getDroneById(id)
-                .orElseThrow(() -> new RuntimeException("Drone không tồn tại"));
+    public ResponseEntity<DroneDTO> getDroneById(@PathVariable String id) {
+        DroneDTO drone = droneService.getDroneById(id);
+        return ResponseEntity.ok(drone);
     }
 
     // Thêm drone
@@ -60,13 +61,13 @@ public class DroneController {
         droneService.deleteDrone(id);
     }
 
-        // Cập nhật status drone
+    // Cập nhật status drone (cho mấy service khác gọi đến)
     @PutMapping("/{id}/status")
     public void updateDroneStatus(@PathVariable String id, @RequestParam Integer status) {
         droneService.updateDroneStatus(id, status);
     }
 
-    // Lấy drone rảnh (status = 0) theo restaurantId
+    // Lấy drone rảnh (status = 0) theo nhà hàng id
     @GetMapping("/available/{restaurantId}")
     public List<Drone> getAvailableDrones(@PathVariable String restaurantId) {
         return droneService.getAvailableDrones(restaurantId);

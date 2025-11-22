@@ -11,7 +11,7 @@ type Props = {
   toggleMenu: () => void;
 };
 function ProfileMenu({ menuOpen, toggleMenu }: Props) {
-  const { user } = useCurrentUser("admin");
+  const { user } = useCurrentUser("restaurant");
   const { handleLogout } = useLogout();
   return (
     <>
@@ -40,7 +40,7 @@ function ProfileMenu({ menuOpen, toggleMenu }: Props) {
               </p>
 
               <Link
-                to={"/admin/account"}
+                to={"/restaurant/account"}
                 className="w-ful block hover:bg-gray-100 px-3 py-3.5"
               >
                 <div className="flex items-center gap-[8px]">

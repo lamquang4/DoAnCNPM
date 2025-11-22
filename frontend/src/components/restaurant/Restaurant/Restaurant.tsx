@@ -5,16 +5,18 @@ import { LiaEdit } from "react-icons/lia";
 import { IoMdAddCircle } from "react-icons/io";
 import Loading from "../../Loading";
 import Pagination from "../Pagination";
-import useGetRestaurants from "../../../hooks/admin/useGetRestaurants";
-function RestaurantBranch() {
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
+import useGetRestaurants from "../../../hooks/restaurant/useGetRestaurants";
+function Restaurant() {
+  const { user } = useGetCurrentUser("restaurant");
   const { restaurants, isLoading, currentPage, totalItems, totalPages, limit } =
-    useGetRestaurants();
+    useGetRestaurants(user?.id || "");
 
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
         <div className="flex justify-between items-center">
-          <h2 className=" text-[#74767d]">Chi nhánh nhà hàng ({totalItems})</h2>
+          <h2 className=" text-[#74767d]">Nhà hàng ({totalItems})</h2>
 
           <Link
             to={"/restaurant/add-restaurant"}
@@ -35,7 +37,7 @@ function RestaurantBranch() {
             <tr className="bg-[#E9EDF2] text-left">
               <th className="p-[1rem]  ">Tên</th>
               <th className="p-[1rem]">Địa chỉ</th>
-              <th className="p-[1rem]e">Tình trạng</th>
+              <th className="p-[1rem]">Tình trạng</th>
               <th className="p-[1rem]  ">Hành động</th>
             </tr>
           </thead>
@@ -49,7 +51,10 @@ function RestaurantBranch() {
             ) : restaurants.length > 0 ? (
               restaurants.map((restaurant) => (
                 <tr key={restaurant.id} className="hover:bg-[#f2f3f8]">
-                  <td className="p-[1rem]  font-semibold">{restaurant.name}</td>
+                  <td className="p-[1rem]  font-semibold">
+                    {restaurant.name} {restaurant.fullname}
+                  </td>
+
                   <td className="p-[1rem]">
                     {`${restaurant.speaddress}, ${restaurant.ward}, ${restaurant.city}`}
                   </td>
@@ -94,4 +99,4 @@ function RestaurantBranch() {
   );
 }
 
-export default RestaurantBranch;
+export default Restaurant;

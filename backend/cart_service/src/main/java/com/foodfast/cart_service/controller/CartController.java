@@ -53,4 +53,10 @@ public class CartController {
     ) {
         return ResponseEntity.ok(cartService.removeProductFromCart(userId, productId));
     }
+
+    // xóa tất cả items trong cart của user
+    @DeleteMapping("/clear/{userId}")
+    public ResponseEntity<CartDTO> clearCart(@PathVariable String userId) {
+        return ResponseEntity.ok(cartService.clearCart(userId));
+    }
 }

@@ -2,6 +2,8 @@ import useGetCurrentUser from "../../hooks/useGetCurrentUser";
 
 function Account() {
   const { user } = useGetCurrentUser("restaurant");
+  console.log(user);
+
   return (
     <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-full">
       <form className="flex flex-col gap-7 w-full">

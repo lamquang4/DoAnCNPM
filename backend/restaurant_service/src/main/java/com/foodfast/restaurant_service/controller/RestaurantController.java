@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.foodfast.restaurant_service.dto.RestaurantDTO;
 import com.foodfast.restaurant_service.model.Restaurant;
 import com.foodfast.restaurant_service.service.RestaurantService;
 
@@ -20,14 +21,14 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
 
-    @GetMapping
+     @GetMapping
     public ResponseEntity<?> getAllRestaurants(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "12") int limit,
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Integer status
     ) {
-        Page<Restaurant> restaurants = restaurantService.getAllRestaurants(q, status, page, limit);
+        Page<RestaurantDTO> restaurants = restaurantService.getAllRestaurants(q, status, page, limit);
 
         return ResponseEntity.ok(Map.of(
                 "restaurants", restaurants.getContent(),
@@ -35,6 +36,39 @@ public class RestaurantController {
                 "total", restaurants.getTotalElements()
         ));
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getRestaurantsByUserId(
+            @PathVariable String userId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "12") int limit
+    ) {
+        Page<RestaurantDTO> restaurants = restaurantService.getRestaurantsByUserId(userId, page, limit);
+
+        return ResponseEntity.ok(Map.of(
+                "restaurants", restaurants.getContent(),
+                "totalPages", restaurants.getTotalPages(),
+                "total", restaurants.getTotalElements()
+        ));
+    }
+
+        @GetMapping("/owner/{ownerId}")
+    public List<RestaurantDTO> getRestaurantsByOwnerId(@PathVariable String ownerId) {
+        return restaurantService.getRestaurantsByOwnerIdSimple(ownerId);
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<RestaurantDTO> updateStatus(
+            @PathVariable String id,
+            @RequestParam int status
+    ) {
+        return ResponseEntity.ok(restaurantService.updateStatus(id, status));
+    }
+
+    @GetMapping("/user/{userId}/list")
+public List<RestaurantDTO> getRestaurantsByUserIdSimple(@PathVariable String userId) {
+    return restaurantService.getRestaurantsByUserIdSimple(userId);
+}
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> getRestaurantById(@PathVariable String id) {
@@ -44,8 +78,8 @@ public class RestaurantController {
     }
 
     @GetMapping("/active")
-    public List<Restaurant> getActiveRestaurants() {
-        return restaurantService.getActiveRestaurants();
+    public ResponseEntity<List<RestaurantDTO>> getActiveRestaurants() {
+        return ResponseEntity.ok(restaurantService.getActiveRestaurants());
     }
 
     @PostMapping
@@ -70,11 +104,9 @@ public class RestaurantController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteRestaurant(@PathVariable String id) {
-        try {
+  
             restaurantService.deleteRestaurant(id);
-            return ResponseEntity.ok("Đã xóa nhà hàng với ID: " + id);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            return ResponseEntity.noContent().build();
+       
     }
 }

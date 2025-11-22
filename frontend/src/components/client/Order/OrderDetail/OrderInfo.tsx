@@ -15,10 +15,12 @@ type Props = {
 function OrderInfo({ order, isLoading }: Props) {
   const steps = [
     { label: "Chờ xử lý", icon: <LuArchive size={24} /> },
-    { label: "Đã sẵn sàng", icon: <LuCheck size={24} /> },
     { label: "Đang giao", icon: <LuTruck size={24} /> },
     { label: "Giao thành công", icon: <LuStar size={24} /> },
   ];
+
+  console.log(order);
+
   return (
     <div className="w-full flex-1 border border-gray-300 text-black">
       {isLoading ? (
@@ -54,7 +56,7 @@ function OrderInfo({ order, isLoading }: Props) {
               </p>
             </div>
 
-            <Link to={"/admin/orders"} className="text-center">
+            <Link to={"/order"} className="text-center">
               <span className="flex items-center font-semibold text-gray-600">
                 <RiArrowLeftSLine size={20} /> Trở về
               </span>
@@ -68,7 +70,7 @@ function OrderInfo({ order, isLoading }: Props) {
               </span>
             </div>
           ) : (
-            <div className="relative gap-y-5 grid grid-cols-2 md:grid-cols-4 py-[20px] px-[20px] border-b border-gray-300">
+            <div className="relative gap-y-5 grid grid-cols-2 md:grid-cols-3 py-[20px] px-[20px] border-b border-gray-300">
               {steps.map((step, index) => {
                 const isActive = (order?.status ?? -1) >= index;
                 return (
@@ -130,18 +132,6 @@ function OrderInfo({ order, isLoading }: Props) {
               Phương thức thanh toán:{" "}
               <span className="font-normal uppercase">{order?.paymethod}</span>
             </p>
-
-            <p className="font-medium">
-              Chi nhánh nhà hàng:{" "}
-              <span className="font-normal">Chi nhánh Hà Nội</span>
-            </p>
-
-            <p className="font-medium">
-              Drone:{" "}
-              <span className="font-normal">
-                DJI Mavic Pro - Chi nhánh Hà Nội
-              </span>
-            </p>
           </div>
 
           <div className="w-full overflow-auto">
@@ -161,9 +151,7 @@ function OrderInfo({ order, isLoading }: Props) {
                       <div className="flex items-center gap-[10px]">
                         <div className="w-[75px] h-[75px] overflow-hidden">
                           <Image
-                            source={`${import.meta.env.VITE_BACKEND_URL}${
-                              item.image
-                            }`}
+                            source={item.image!}
                             alt={""}
                             className={"w-full h-full object-contain"}
                             loading="eager"

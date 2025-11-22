@@ -45,7 +45,7 @@ function Customer() {
           <h2 className=" text-[#74767d]">Khách hàng ({totalItems})</h2>
 
           <Link
-            to={"/customer/add-customer"}
+            to={"/admin/add-customer"}
             className="bg-[#C62028] border-0 cursor-pointer text-[0.9rem] font-medium w-[90px] !flex p-[10px_12px] items-center justify-center gap-[5px] text-white"
           >
             <IoMdAddCircle size={22} /> Thêm

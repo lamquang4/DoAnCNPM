@@ -13,6 +13,22 @@ export default function useLogin() {
       const res = await axios.post(url, { email, password });
       const { token, role } = res.data;
 
+      const isAdminPage = window.location.pathname.startsWith("/admin");
+
+      if (!isAdminPage && role === 0) {
+        toast.error(
+          "Bạn không thể đăng nhập bằng tài khoản quản trị viên vào trang khách hàng"
+        );
+        return;
+      }
+
+      if (isAdminPage && (role === 1 || role === 2)) {
+        toast.error(
+          "Bạn không thể đăng nhập bằng tài khoản khách hàng hay chủ nhà hàng vào trang quản trị viên"
+        );
+        return;
+      }
+
       toast.success("Đăng nhập thành công");
 
       if (role === 2) {

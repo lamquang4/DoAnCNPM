@@ -26,6 +26,7 @@ public class PaymentService {
         this.orderClient = orderClient;
     }
 
+    // lấy tất cả thanh toán Momo
     public Page<PaymentDTO> getAllPayments(int page, int limit) {
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
         Page<Payment> payments = paymentRepository.findAll(pageable);
@@ -50,7 +51,7 @@ public class PaymentService {
                 payment.getId(),
                 payment.getOrderId(),
                 payment.getTransactionId(),
-                orderCode,  // điền orderCode từ order-service
+                orderCode,  
                 payment.getAmount(),
                 payment.getPaymethod(),
                 payment.getStatus(),

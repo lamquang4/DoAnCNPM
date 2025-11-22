@@ -5,14 +5,38 @@ import InputSearch from "../InputSearch";
 import Loading from "../../Loading";
 import { Link } from "react-router-dom";
 import { SiTicktick } from "react-icons/si";
+import useUpdateStatusOrder from "../../../hooks/useUpdateStatusOrder";
+import toast from "react-hot-toast";
+import useGetOrders from "../../../hooks/restaurant/useGetOrders";
 import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
-import useGetOrdersByUserId from "../../../hooks/useGetOrdersByUserId";
 
 function Order() {
   const { user } = useGetCurrentUser("restaurant");
-  const { orders, isLoading, totalItems, totalPages, limit, currentPage } =
-    useGetOrdersByUserId(user?.id || "");
+  const {
+    orders,
+    mutate,
+    isLoading,
+    totalItems,
+    totalPages,
+    limit,
+    currentPage,
+  } = useGetOrders(user?.id || "");
+  const { updateStatusOrder, isLoading: isLoadingUpdate } =
+    useUpdateStatusOrder();
 
+  const handleUpdateStatus = async (id: string, status: number) => {
+    if (!id && !status) {
+      return;
+    }
+
+    try {
+      await updateStatusOrder(id, status);
+      mutate();
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
+      mutate();
+    }
+  };
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9] space-y-[20px]">
@@ -72,22 +96,26 @@ function Order() {
                       ? "Đang giao"
                       : order.status === 2
                       ? "Giao thành công"
-                      : order.status === 3
-                      ? "Đã hủy"
                       : ""}
                   </td>
                   <td className="p-[1rem]  ">
                     <div className="flex items-center gap-[15px]">
-                      <Link to={`/admin/order/${order.id}`}>
+                      <Link to={`/restaurant/order/${order.id}`}>
                         <LiaExternalLinkAltSolid
                           size={23}
                           className="text-[#076ffe]"
                         />
                       </Link>
 
-                      <button className="text-green-400">
-                        <SiTicktick />
-                      </button>
+                      {order.status === 0 && (
+                        <button
+                          className="text-green-500"
+                          disabled={isLoadingUpdate}
+                          onClick={() => handleUpdateStatus(order?.id || "", 1)}
+                        >
+                          <SiTicktick size={20} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

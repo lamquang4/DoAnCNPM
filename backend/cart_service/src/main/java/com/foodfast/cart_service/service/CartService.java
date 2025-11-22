@@ -1,6 +1,7 @@
 package com.foodfast.cart_service.service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import com.foodfast.cart_service.client.ProductClient;
@@ -23,7 +24,7 @@ public class CartService {
     }
 
     // Lấy giỏ hàng theo userId
-    public CartDTO getCartByUserId(String userId) {
+ public CartDTO getCartByUserId(String userId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
@@ -36,7 +37,7 @@ public class CartService {
             ProductDTO product = productClient.getProductById(item.getIdProduct());
 
             if (product == null) {
-                throw new RuntimeException("Sản phẩm không tồn tại với id: " + item.getIdProduct());
+                throw new NoSuchElementException("Sản phẩm không tồn tại với ID: " + item.getIdProduct());
             }
 
             return new CartItemDTO(
@@ -52,7 +53,7 @@ public class CartService {
     }
 
     // Thêm sản phẩm vào giỏ (tạo giỏ nếu chưa có)
-    public CartDTO addProductToCart(String userId, String productId, int quantity) {
+     public CartDTO addProductToCart(String userId, String productId, int quantity) {
         if (quantity < 1) {
             throw new IllegalArgumentException("Số lượng mua phải lớn hơn 0");
         }
@@ -67,7 +68,7 @@ public class CartService {
 
         ProductDTO product = productClient.getProductById(productId);
         if (product == null) {
-            throw new RuntimeException("Sản phẩm không tồn tại");
+            throw new NoSuchElementException("Sản phẩm không tồn tại với ID: " + productId);
         }
 
         CartItem existingItem = cart.getItems().stream()
@@ -86,18 +87,18 @@ public class CartService {
     }
 
     // Cập nhật số lượng sản phẩm trong giỏ
-    public CartDTO updateProductQuantity(String userId, String productId, int quantity) {
+   public CartDTO updateProductQuantity(String userId, String productId, int quantity) {
         if (quantity < 1) {
             throw new IllegalArgumentException("Số lượng mua phải lớn hơn 0");
         }
 
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Giỏ hàng không tồn tại"));
+                .orElseThrow(() -> new NoSuchElementException("Giỏ hàng không tồn tại cho user: " + userId));
 
         CartItem item = cart.getItems().stream()
                 .filter(i -> i.getIdProduct().equals(productId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại trong giỏ"));
+                .orElseThrow(() -> new NoSuchElementException("Sản phẩm không tồn tại trong giỏ với ID: " + productId));
 
         item.setQuantity(quantity);
         cartRepository.save(cart);
@@ -106,9 +107,9 @@ public class CartService {
     }
 
     // Xóa sản phẩm khỏi giỏ
-    public CartDTO removeProductFromCart(String userId, String productId) {
+      public CartDTO removeProductFromCart(String userId, String productId) {
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Giỏ hàng không tồn tại"));
+                .orElseThrow(() -> new NoSuchElementException("Giỏ hàng không tồn tại cho user: " + userId));
 
         List<CartItem> items = cart.getItems().stream()
                 .filter(i -> !i.getIdProduct().equals(productId))
@@ -119,4 +120,14 @@ public class CartService {
 
         return getCartByUserId(userId);
     }
+
+    public CartDTO clearCart(String userId) {
+    Cart cart = cartRepository.findByUserId(userId)
+            .orElseThrow(() -> new NoSuchElementException("Giỏ hàng không tồn tại cho user: " + userId));
+
+    cart.setItems(new ArrayList<>());
+    cartRepository.save(cart);
+
+    return getCartByUserId(userId);
+}
 }

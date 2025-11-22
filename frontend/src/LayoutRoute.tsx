@@ -76,7 +76,7 @@ function LayoutRoute() {
         }
       />
       <Route
-        path="/order/:code"
+        path="/order/:id"
         element={
           <PrivateRoute type="client" allowedRoles={[2]} redirectPath="/">
             <OrderDetailPage />

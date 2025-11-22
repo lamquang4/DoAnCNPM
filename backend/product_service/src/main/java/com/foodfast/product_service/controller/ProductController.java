@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.foodfast.product_service.dto.ProductDTO;
 import com.foodfast.product_service.model.Product;
 import com.foodfast.product_service.service.ProductService;
 
@@ -20,18 +21,40 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllProducts(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "12") int limit,
-            @RequestParam(required = false) String q
-    ) {
-        Page<Product> products = productService.getAllProducts(q, page, limit);
-        return ResponseEntity.ok(Map.of(
-                "products", products.getContent(),
-                "totalPages", products.getTotalPages(),
-                "total", products.getTotalElements()
-        ));
-    }
+public ResponseEntity<?> getAllProducts(
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "12") int limit,
+        @RequestParam(required = false) String q
+) {
+    Page<ProductDTO> products = productService.getAllProducts(q, page, limit);
+
+    return ResponseEntity.ok(Map.of(
+            "products", products.getContent(),
+            "totalPages", products.getTotalPages(),
+            "total", products.getTotalElements()
+    ));
+}
+
+@GetMapping("/active")
+public ResponseEntity<?> getActiveProducts(
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "12") int limit,
+        @RequestParam(required = false) String q
+) {
+    Page<ProductDTO> products = productService.getActiveProducts(page, limit, q);
+
+    return ResponseEntity.ok(Map.of(
+            "products", products.getContent(),
+            "totalPages", products.getTotalPages(),
+            "total", products.getTotalElements()
+    ));
+}
+
+
+@GetMapping("/restaurant/{restaurantId}")
+public ResponseEntity<?> getAllProductsByRestaurantId(@PathVariable String restaurantId) {
+    return ResponseEntity.ok(productService.getAllProductsByRestaurantId(restaurantId));
+}
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable String id) {
@@ -39,6 +62,22 @@ public class ProductController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+@GetMapping("/user/{userId}")
+public ResponseEntity<?> getProductsByUser(
+        @PathVariable String userId,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "12") int limit,
+        @RequestParam(required = false) String q
+) {
+    Page<ProductDTO> products = productService.getProductsByUserId(userId, page, limit, q);
+
+    return ResponseEntity.ok(Map.of(
+            "products", products.getContent(),
+            "totalPages", products.getTotalPages(),
+            "total", products.getTotalElements()
+    ));
+}
 
 @PostMapping
 public Product createProduct(

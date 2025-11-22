@@ -19,4 +19,7 @@ public interface DeliveryClient {
 
     @GetMapping("/api/delivery/order/{orderId}")
     List<DeliveryDTO> getDeliveriesByOrderId(@PathVariable("orderId") String orderId);
+
+    @PostMapping("/api/delivery/start-flight")
+    void startDeliveryFlight(@RequestBody List<DeliveryDTO> deliveries);
 }

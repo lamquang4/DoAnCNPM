@@ -1,7 +1,6 @@
 import { memo, useEffect, useMemo } from "react";
-import type { Province, Restaurant } from "../../../types/type";
+import type { Province } from "../../../types/type";
 import useGeocodeAddress from "../../../hooks/useGeocodeAddress";
-import toast from "react-hot-toast";
 import LeafletMap from "../../LeafletMap";
 
 type Props = {
@@ -39,36 +38,6 @@ function ShippingInfoForm({
   provinces,
   setLatLng,
 }: Props) {
-  const restaurants: Restaurant[] = [
-    {
-      id: "1",
-      name: "FoodFast chi nhánh 1",
-      speaddress: "12 Nguyễn Huệ",
-      ward: "Bến Nghé",
-      city: "Hồ Chí Minh",
-      location: { latitude: 10.77986, longitude: 106.68734 },
-      status: 1,
-    },
-    {
-      id: "2",
-      name: "FoodFast chi nhánh 2",
-      speaddress: "150 Võ Văn Tần",
-      ward: "Phường 6",
-      city: "Hồ Chí Minh",
-      location: { latitude: 10.85278, longitude: 106.75852 },
-      status: 1,
-    },
-    {
-      id: "3",
-      name: "FoodFast chi nhánh 3",
-      speaddress: "22 Võ Văn Ngân",
-      ward: "Linh Chiểu",
-      city: "Thủ Đức",
-      location: { latitude: 10.86968, longitude: 106.80352 },
-      status: 1,
-    },
-  ];
-
   const selectedProvince = useMemo(
     () => provinces?.find((p) => p.province === data.city),
     [provinces, data.city]
@@ -187,40 +156,12 @@ function ShippingInfoForm({
         </div>
       </div>
 
-      {lat && lng && (
-        <div className="space-y-[5px]">
-          <label htmlFor="" className="block text-[0.9rem] font-medium">
-            Chi nhánh nhà hàng
-          </label>
-          <select
-            name="restaurantId"
-            required
-            value={data.restaurantId}
-            onChange={handleChange}
-            className="w-full rounded-md text-[0.9rem] border border-gray-200 px-2.5 py-2 outline-none focus:z-10 focus:border-[#197FB6] focus:ring-[#197FB6]"
-          >
-            <option value="">Chọn chi nhánh nhà hàng</option>
-            {restaurants?.map((restaurant) => (
-              <option key={restaurant.id} value={restaurant.id}>
-                {restaurant.name} — {restaurant.speaddress}, {restaurant.ward},{" "}
-                {restaurant.city}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
       <div
         className={`space-y-[5px] ${
           lat && lng ? "border-2 border-green-500" : "border-2 border-red-500"
         }`}
       >
-        <LeafletMap
-          lat={lat}
-          lng={lng}
-          fullAddress={fullAddress}
-          restaurants={restaurants}
-        />
+        <LeafletMap lat={lat} lng={lng} fullAddress={fullAddress} />
       </div>
     </div>
   );

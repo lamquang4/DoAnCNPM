@@ -1,8 +1,5 @@
 package com.foodfast.restaurant_service.dto;
-
-import java.time.Instant;
 import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,10 +9,7 @@ import lombok.NoArgsConstructor;
 public class DeliveryDTO {
     private String id;
     private String orderId;
-    private String orderCode;
-    private LocationDTO destination; // vị trí đơn cần giao
     private String droneId;
-    private String model;
     private String restaurantId;
     private String restaurantName; 
     private LocationDTO restaurantLocation; // vị trí nhà hàng của drone

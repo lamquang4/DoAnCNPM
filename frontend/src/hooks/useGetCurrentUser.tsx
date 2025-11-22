@@ -27,7 +27,9 @@ export default function useGetCurrentUser(
 ) {
   const url = `${import.meta.env.VITE_BACKEND_URL}/user/me`;
 
-  const { data, error, isLoading, mutate } = useSWR<User>(url, fetcher(type));
+  const { data, error, isLoading, mutate } = useSWR<User>([url, type], () =>
+    fetcher(type)(url)
+  );
 
   return {
     user: data,

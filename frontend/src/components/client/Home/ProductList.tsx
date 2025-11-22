@@ -6,14 +6,18 @@ import { useAddItemToCart } from "../../../hooks/client/useAddItemToCart";
 import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import useGetCart from "../../../hooks/client/useGetCart";
 import useGetActiveProducts from "../../../hooks/client/useGetActiveProducts";
+import Pagination from "../Pagination";
 
 function ProductList() {
   const navigate = useNavigate();
   const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const { products, isLoading } = useGetActiveProducts();
+  const { products, isLoading, currentPage, totalItems, totalPages } =
+    useGetActiveProducts();
   const { addItem, isLoading: isLoadingAdd } = useAddItemToCart();
   const { user } = useGetCurrentUser("client");
+  const { mutate } = useGetCart(user?.id || "");
   const max = 20;
 
   const increase = (id: string) => {
@@ -41,6 +45,7 @@ function ProductList() {
 
     try {
       await addItem(user.id, productId, quantity);
+      mutate();
     } catch (err: any) {
       toast.error(err?.response?.data?.message);
     }
@@ -122,13 +127,11 @@ function ProductList() {
               </div>
             )}
 
-            {/*
-           <Pagination
+            <Pagination
               totalPages={totalPages}
               currentPage={currentPage}
               totalItems={totalItems}
             />
-  */}
           </div>
         </section>
       )}

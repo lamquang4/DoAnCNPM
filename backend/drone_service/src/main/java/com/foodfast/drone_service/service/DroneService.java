@@ -1,21 +1,19 @@
 package com.foodfast.drone_service.service;
-
 import com.foodfast.drone_service.client.RestaurantClient;
 import com.foodfast.drone_service.dto.DroneDTO;
 import com.foodfast.drone_service.model.Drone;
 import com.foodfast.drone_service.repository.DroneRepository;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,19 +42,22 @@ public class DroneService {
     }
 
     // Lấy drone theo id
-    public Optional<DroneDTO> getDroneById(String id) {
-        return droneRepository.findById(id).map(this::toDTO);
+    public DroneDTO getDroneById(String id) {
+        return droneRepository.findById(id)
+                .map(this::toDTO)
+                .orElseThrow(() -> new NoSuchElementException("Drone không tồn tại với ID: " + id));
     }
 
     // Thêm drone mới
     public DroneDTO createDrone(Drone drone) {
         drone.setStatus(0); // mặc định rảnh
+        drone.setCreatedAt(Instant.now());
         Drone saved = droneRepository.save(drone);
         return toDTO(saved);
     }
 
     // Cập nhật drone
-    public DroneDTO updateDrone(String id, Drone newDrone) {
+        public DroneDTO updateDrone(String id, Drone newDrone) {
         Drone updated = droneRepository.findById(id)
                 .map(existing -> {
                     existing.setRestaurantId(newDrone.getRestaurantId());
@@ -64,10 +65,10 @@ public class DroneService {
                     existing.setCapacity(newDrone.getCapacity());
                     existing.setBattery(newDrone.getBattery());
                     existing.setRange(newDrone.getRange());
-                    existing.setStatus(newDrone.getStatus()); // cập nhật status
+                    existing.setStatus(newDrone.getStatus()); 
                     return droneRepository.save(existing);
                 })
-                .orElseThrow(() -> new RuntimeException("Drone không tồn tại"));
+                .orElseThrow(() -> new NoSuchElementException("Drone không tồn tại với ID: " + id));
 
         return toDTO(updated);
     }
@@ -75,19 +76,19 @@ public class DroneService {
     // Xóa drone
     public void deleteDrone(String id) {
         if (!droneRepository.existsById(id)) {
-            throw new RuntimeException("Không tìm thấy drone");
+            throw new IllegalArgumentException("Drone không tồn tại");
         }
         droneRepository.deleteById(id);
     }
 
     public void updateDroneStatus(String id, Integer status) {
-        Drone drone = droneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Drone không tồn tại"));
+    Drone drone = droneRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Drone không tồn tại"));
         drone.setStatus(status);
         droneRepository.save(drone);
     }
 
-    //  lấy drone rảnh theo restaurantId ---
+    //  lấy drone rảnh theo restaurantId
     public List<Drone> getAvailableDrones(String restaurantId) {
         return droneRepository.findByRestaurantIdAndStatus(restaurantId, 0);
     }

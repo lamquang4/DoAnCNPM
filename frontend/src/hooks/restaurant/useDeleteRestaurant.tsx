@@ -3,12 +3,12 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
-export default function useDeleteRestaurantBranch() {
+export default function useDeleteRestaurant() {
   const [isLoading, setIsLoading] = useState(false);
-  const deleteRestaurantBranch = async (id: string) => {
+  const deleteRestaurant = async (id: string) => {
     const result = await Swal.fire({
       title: `Xác nhận xóa?`,
-      text: `Bạn có chắc muốn xóa chi nhánh nhà hàng này không?`,
+      text: `Bạn có chắc muốn xóa nhà hàng này không?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Đồng ý",
@@ -35,5 +35,5 @@ export default function useDeleteRestaurantBranch() {
     }
   };
 
-  return { deleteRestaurantBranch, isLoading };
+  return { deleteRestaurant, isLoading };
 }

@@ -33,7 +33,7 @@ function Order() {
               <th className="p-[1rem]  ">Tổng tiền</th>
               <th className="p-[1rem]  ">Ngày tạo</th>
               <th className="p-[1rem] ">Tình trạng</th>
-              <th className="p-[1rem]  ">Action</th>
+              <th className="p-[1rem]  ">Hành động</th>
             </tr>
           </thead>
           <tbody>
@@ -70,8 +70,6 @@ function Order() {
                       ? "Đang giao"
                       : order.status === 2
                       ? "Giao thành công"
-                      : order.status === 3
-                      ? "Đã hủy"
                       : ""}
                   </td>
                   <td className="p-[1rem]  ">

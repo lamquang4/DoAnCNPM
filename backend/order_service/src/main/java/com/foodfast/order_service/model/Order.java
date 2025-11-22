@@ -30,7 +30,7 @@ public class Order {
      private Location location;
     private List<OrderItem> items;
     private String paymethod;
-    private Integer status; // 0: Đang xử lý, 1: Đã sẵn sàng, 2: Đang giao, 3: Giao thành công, 4: Đã hủy
+    private Integer status; // 0: Đang xử lý, 1: Đang giao, 2: Giao thành công, 3: Đã hủy
     @CreatedDate
     @Field("createdAt")
     private Instant createdAt;

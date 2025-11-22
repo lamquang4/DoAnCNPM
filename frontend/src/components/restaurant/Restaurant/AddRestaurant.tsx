@@ -5,6 +5,7 @@ import useGetProvincesVN from "../../../hooks/useGetProvincesVN";
 import useGeocodeAddress from "../../../hooks/useGeocodeAddress";
 import LeafletMap from "../../LeafletMap";
 import useAddRestaurant from "../../../hooks/restaurant/useAddRestaurant";
+import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
 
 function AddRestaurant() {
   const [data, setData] = useState({
@@ -15,6 +16,7 @@ function AddRestaurant() {
     status: "",
   });
 
+  const { user } = useGetCurrentUser("restaurant");
   const { addRestaurant, isLoading } = useAddRestaurant();
   const { provinces } = useGetProvincesVN();
 
@@ -48,6 +50,11 @@ function AddRestaurant() {
       return;
     }
 
+    if (!user?.id) {
+      toast.error("Bạn chưa đăng nhập");
+      return;
+    }
+
     try {
       await addRestaurant({
         name: data.name,
@@ -55,8 +62,8 @@ function AddRestaurant() {
         ward: data.ward,
         city: data.city,
         location: { latitude: lat, longitude: lng },
-        status: Number(data.status),
-        userId: "abc"
+        status: 1,
+        ownerId: user?.id,
       });
 
       setData({
@@ -71,9 +78,14 @@ function AddRestaurant() {
     }
   };
 
+  console.log(lat, lng);
+
   return (
-    <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-full">
-      <form className="flex flex-col gap-7 w-full" onSubmit={handleSubmit}>
+    <div className="py-[30px] sm:px-[25px] px-[15px] bg-[#F1F4F9] h-auto">
+      <form
+        className="flex flex-col gap-7 w-full h-full"
+        onSubmit={handleSubmit}
+      >
         <h2 className="text-[#74767d]">Thêm nhà hàng</h2>
 
         <div className="flex gap-[25px] w-full flex-col">
@@ -164,23 +176,6 @@ function AddRestaurant() {
               }`}
             >
               <LeafletMap lat={lat} lng={lng} fullAddress={fullAddress} />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label htmlFor="" className="text-[0.9rem] font-medium">
-                Tình trạng
-              </label>
-              <select
-                name="status"
-                value={data.status}
-                onChange={handleChange}
-                required
-                className="border border-gray-300 p-[6px_10px] text-[0.9rem] w-full outline-none focus:border-gray-400  "
-              >
-                <option value="">Chọn tình trạng</option>
-                <option value="1">Đang mở cửa</option>
-                <option value="0">Đóng cửa</option>
-              </select>
             </div>
           </div>
         </div>
