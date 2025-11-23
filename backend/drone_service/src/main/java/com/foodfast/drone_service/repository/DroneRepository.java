@@ -12,5 +12,14 @@ public interface DroneRepository extends MongoRepository<Drone, String> {
   Page<Drone> findByModelContainingIgnoreCase(String model, Pageable pageable);
   List<Drone> findByStatus(int status);
   List<Drone> findByRestaurantIdAndStatus(String restaurantId, Integer status);
+
+Page<Drone> findByRestaurantIdIn(List<String> restaurantIds, Pageable pageable);
+
+Page<Drone> findByRestaurantIdInAndModelContainingIgnoreCase(
+        List<String> restaurantIds,
+        String model,
+        Pageable pageable
+);
+
 }
 

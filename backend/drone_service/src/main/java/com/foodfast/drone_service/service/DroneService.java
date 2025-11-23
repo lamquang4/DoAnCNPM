@@ -1,6 +1,7 @@
 package com.foodfast.drone_service.service;
 import com.foodfast.drone_service.client.RestaurantClient;
 import com.foodfast.drone_service.dto.DroneDTO;
+import com.foodfast.drone_service.dto.RestaurantDTO;
 import com.foodfast.drone_service.model.Drone;
 import com.foodfast.drone_service.repository.DroneRepository;
 import org.springframework.data.domain.Page;
@@ -40,7 +41,39 @@ public class DroneService {
         return new PageImpl<>(dtoList, pageable, dronePage.getTotalElements());
     }
 
-    // Lấy drone theo id
+    public Page<DroneDTO> getDronesByUserId(String userId, String q, int page, int limit) {
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        List<RestaurantDTO> restaurants = restaurantClient.getRestaurantsByOwner(userId);
+
+        if (restaurants.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        List<String> restaurantIds = restaurants.stream()
+                .map(RestaurantDTO::getId)
+                .toList();
+
+        Page<Drone> dronePage;
+
+        if (q != null && !q.isEmpty()) {
+            dronePage = droneRepository.findByRestaurantIdInAndModelContainingIgnoreCase(
+                    restaurantIds, q, pageable
+            );
+        } else {
+            dronePage = droneRepository.findByRestaurantIdIn(
+                    restaurantIds, pageable
+            );
+        }
+
+        List<DroneDTO> dtoList = dronePage.getContent()
+                .stream()
+                .map(this::toDTO)
+                .toList();
+
+        return new PageImpl<>(dtoList, pageable, dronePage.getTotalElements());
+    }
+
     public DroneDTO getDroneById(String id) {
         return droneRepository.findById(id)
                 .map(this::toDTO)
@@ -55,7 +88,7 @@ public class DroneService {
     }
 
     // Cập nhật drone
-        public DroneDTO updateDrone(String id, Drone newDrone) {
+    public DroneDTO updateDrone(String id, Drone newDrone) {
         Drone updated = droneRepository.findById(id)
                 .map(existing -> {
                     existing.setRestaurantId(newDrone.getRestaurantId());

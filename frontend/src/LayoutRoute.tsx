@@ -38,6 +38,7 @@ import EditProductRestaurantPage from "./pages/restaurant/EditProductRestaurantP
 import AccountRestaurantPage from "./pages/restaurant/AccountRestaurantPage";
 import AccountPage from "./pages/client/AccountPage";
 import LoginRestaurantPage from "./pages/restaurant/LoginRestaurantPage";
+import DroneRestaurantPage from "./pages/restaurant/DroneRestaurantPage";
 
 function LayoutRoute() {
   return (
@@ -452,6 +453,18 @@ function LayoutRoute() {
             redirectPath="/restaurant/login"
           >
             <OrderDetailRestaurantPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/restaurant/drones"
+        element={
+          <PrivateRoute
+            type="restaurant"
+            allowedRoles={[1]}
+            redirectPath="/restaurant/login"
+          >
+            <DroneRestaurantPage />
           </PrivateRoute>
         }
       />

@@ -2,6 +2,7 @@ package com.foodfast.order_service.repository;
 
 import com.foodfast.order_service.model.Order;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,4 +30,5 @@ Page<Order> findByItemsProductIdInAndOrderCodeContainingIgnoreCase(
     Pageable pageable
 );
 
+List<Order> findByStatusAndCreatedAtBefore(Integer status, Instant createdAt);
 }

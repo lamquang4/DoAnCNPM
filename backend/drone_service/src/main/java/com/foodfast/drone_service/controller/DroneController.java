@@ -36,6 +36,22 @@ public class DroneController {
         ));
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getDronesByUserId(
+            @PathVariable String userId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "12") int limit,
+            @RequestParam(required = false) String q
+    ) {
+        Page<DroneDTO> drones = droneService.getDronesByUserId(userId, q, page, limit);
+
+        return ResponseEntity.ok(Map.of(
+                "drones", drones.getContent(),
+                "totalPages", drones.getTotalPages(),
+                "total", drones.getTotalElements()
+        ));
+    }
+
     // Lấy drone theo id
     @GetMapping("/{id}")
     public ResponseEntity<DroneDTO> getDroneById(@PathVariable String id) {
@@ -72,4 +88,6 @@ public class DroneController {
     public List<Drone> getAvailableDrones(@PathVariable String restaurantId) {
         return droneService.getAvailableDrones(restaurantId);
     }
+
+
 }
