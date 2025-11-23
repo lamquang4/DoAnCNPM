@@ -15,7 +15,7 @@ function Restaurant() {
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center flex-wrap gap-[20px]">
           <h2 className=" text-[#74767d]">Nhà hàng ({totalItems})</h2>
 
           <Link
