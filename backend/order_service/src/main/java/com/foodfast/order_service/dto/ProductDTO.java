@@ -1,15 +1,22 @@
 package com.foodfast.order_service.dto;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
     private String id;
     private String name;
+    private String image;
     private BigDecimal price;
-    private BigDecimal stock;
+    private Integer status;
+    private String restaurantId;
+    private String restaurantName;
+    private LocalDateTime createdAt;
 }
+

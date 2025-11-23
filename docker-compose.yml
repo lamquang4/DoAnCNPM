@@ -1,20 +1,16 @@
 version: "3.8"
 services:
-  mongo-db:
-    image: mongo:5.0
-    container_name: mongo-db
-    restart: always
+  api-gateway:
+    build: ./backend/api_gateway
+    container_name: api-gateway
     ports:
-      - "27020:27017"
-    volumes:
-      - mongo-data:/data/db
+      - "8090:8090"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
     networks:
       - foodfast-net
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   eureka-server:
     build: ./backend/eureka_server
@@ -24,9 +20,6 @@ services:
       - "8761:8761"
     networks:
       - foodfast-net
-    depends_on:
-      mongo-db:
-        condition: service_healthy
 
   user-service:
     build: ./backend/user_service
@@ -35,13 +28,11 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://foodfast:foodfast456@foodfast.ekg6ihg.mongodb.net/user_db?retryWrites=true&w=majority
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
         condition: service_started
-      mongo-db:
-        condition: service_healthy
     networks:
       - foodfast-net
 
@@ -52,13 +43,11 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://foodfast:foodfast456@foodfast.ekg6ihg.mongodb.net/product_db?retryWrites=true&w=majority
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
         condition: service_started
-      mongo-db:
-        condition: service_healthy
     networks:
       - foodfast-net
 
@@ -69,13 +58,11 @@ services:
     ports:
       - "8082:8082"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://foodfast:foodfast456@foodfast.ekg6ihg.mongodb.net/order_db?retryWrites=true&w=majority
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
         condition: service_started
-      mongo-db:
-        condition: service_healthy
     networks:
       - foodfast-net
 
@@ -86,13 +73,11 @@ services:
     ports:
       - "8083:8083"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://foodfast:foodfast456@foodfast.ekg6ihg.mongodb.net/payment_db?retryWrites=true&w=majority
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
         condition: service_started
-      mongo-db:
-        condition: service_healthy
     networks:
       - foodfast-net
 
@@ -103,13 +88,11 @@ services:
     ports:
       - "8085:8085"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://foodfast:foodfast456@foodfast.ekg6ihg.mongodb.net/cart_db?retryWrites=true&w=majority
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
         condition: service_started
-      mongo-db:
-        condition: service_healthy
     networks:
       - foodfast-net
 
@@ -120,13 +103,11 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://foodfast:foodfast456@foodfast.ekg6ihg.mongodb.net/drone_db?retryWrites=true&w=majority
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
         condition: service_started
-      mongo-db:
-        condition: service_healthy
     networks:
       - foodfast-net
 
@@ -137,13 +118,26 @@ services:
     ports:
       - "8086:8086"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo-db:27017/foodfast_db
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://foodfast:foodfast456@foodfast.ekg6ihg.mongodb.net/delivery_db?retryWrites=true&w=majority
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       eureka-server:
         condition: service_started
-      mongo-db:
-        condition: service_healthy
+    networks:
+      - foodfast-net
+
+  restaurant-service:
+    build: ./backend/restaurant_service
+    container_name: restaurant-service
+    restart: always
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://foodfast:foodfast456@foodfast.ekg6ihg.mongodb.net/restaurant_db?retryWrites=true&w=majority
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
     networks:
       - foodfast-net
 

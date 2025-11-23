@@ -1,12 +1,14 @@
 package com.foodfast.payment_service.controller;
-import java.util.List;
+import java.util.Map;
+
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.foodfast.payment_service.model.Payment;
+
+import com.foodfast.payment_service.dto.PaymentDTO;
 import com.foodfast.payment_service.service.PaymentService;
 
 @RestController
@@ -19,17 +21,17 @@ public class PaymentController {
     }
 
     @GetMapping
-    public List<Payment> getAllPayments() {
-        return paymentService.getAllPayments();
+    public ResponseEntity<?> getAllPayments(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "12") int limit
+    ) {
+        Page<PaymentDTO> payments = paymentService.getAllPayments(page, limit);
+
+        return ResponseEntity.ok(Map.of(
+                "payments", payments.getContent(),
+                "totalPages", payments.getTotalPages(),
+                "total", payments.getTotalElements()
+        ));
     }
 
-   @GetMapping("/{orderId}")
-    public Payment getPaymentByOrderId(@PathVariable String orderId) {
-        return paymentService.getPaymentByOrderId(orderId);
-    }
-
-    @PostMapping
-    public Payment createPayment(@RequestBody Payment payment) {
-        return paymentService.createPayment(payment);
-    }
 }

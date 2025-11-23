@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItem {
-    private String idProduct;
+    private String productId;
     private Integer quantity;
     private BigDecimal price;
 }
