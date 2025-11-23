@@ -5,6 +5,7 @@ import { IoIosArrowUp } from "react-icons/io";
 import { RiShoppingBag4Line } from "react-icons/ri";
 import { Link, useLocation } from "react-router-dom";
 import { IoFastFoodOutline, IoRestaurantOutline } from "react-icons/io5";
+import { GiDeliveryDrone } from "react-icons/gi";
 type Props = {
   menuOpen: boolean;
   toggleMenu: () => void;
@@ -52,6 +53,11 @@ function MenuSide({ menuOpen, toggleMenu }: Props) {
           icon: <RiShoppingBag4Line size={20} />,
           label: "Đơn hàng",
           path: "/restaurant/orders",
+        },
+        {
+          icon: <GiDeliveryDrone size={20} />,
+          label: "Drone",
+          path: "/restaurant/drones",
         },
       ],
     },

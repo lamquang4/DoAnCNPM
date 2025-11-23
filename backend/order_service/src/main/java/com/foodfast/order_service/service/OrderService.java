@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -137,16 +138,17 @@ public class OrderService {
     }
 
     // Lấy order theo userId 
-public Page<OrderDTO> getOrdersByUserId(String userId, int page, int limit) {
-    Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
-    Page<Order> orders = orderRepository.findByUserIdAndStatusNot(userId, -1, pageable);
+    public Page<OrderDTO> getOrdersByUserId(String userId, int page, int limit) {
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
 
-    List<OrderDTO> dtoList = orders.stream()
-            .map(this::convertToDTO)
-            .toList();
+        Page<Order> orders = orderRepository.findByUserIdAndStatusNot(userId, -1, pageable);
 
-    return new PageImpl<>(dtoList, pageable, orders.getTotalElements());
-}
+        List<OrderDTO> dtoList = orders.stream()
+                .map(this::convertToDTO)
+                .toList();
+
+        return new PageImpl<>(dtoList, pageable, orders.getTotalElements());
+    }
 
     // Tạo order mới
  public OrderDTO createOrder(Order order) {
@@ -257,4 +259,18 @@ public boolean updateStatusOrder(String orderId, Integer status) {
 
         return true;
     }
+
+    // xóa đơn hàng status = -1 sau 1 tiếng kể từ lúc createdAt
+@Scheduled(fixedRate = 600000) // mỗi 10 phút chạy
+public void deleteExpiredOrders() {
+    Instant oneHourAgo = Instant.now().minusSeconds(3600);
+
+    List<Order> expiredOrders = orderRepository
+            .findByStatusAndCreatedAtBefore(-1, oneHourAgo);
+
+    if (!expiredOrders.isEmpty()) {
+        orderRepository.deleteAll(expiredOrders);
+    }
+}
+
 }

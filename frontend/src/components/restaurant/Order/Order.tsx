@@ -90,7 +90,9 @@ function Order() {
                   </td>
 
                   <td className="p-[1rem]">
-                    {order.status === 0
+                    {order.status === -1
+                      ? "Chờ thanh toán"
+                      : order.status === 0
                       ? "Đang xử lý"
                       : order.status === 1
                       ? "Đang giao"
