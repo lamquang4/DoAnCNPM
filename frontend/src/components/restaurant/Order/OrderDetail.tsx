@@ -1,5 +1,5 @@
 import Image from "../../Image";
-import { LuArchive, LuCheck, LuStar, LuTruck } from "react-icons/lu";
+import { LuArchive, LuStar, LuTruck } from "react-icons/lu";
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { TbCancel } from "react-icons/tb";
 import Loading from "../../Loading";
