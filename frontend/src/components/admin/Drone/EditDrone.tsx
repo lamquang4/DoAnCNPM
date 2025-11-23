@@ -59,6 +59,7 @@ function EditDrone() {
         range: Number(data.range),
         battery: Number(data.battery),
         restaurantId: data.restaurantId,
+        status: 1,
       });
 
       mutate();

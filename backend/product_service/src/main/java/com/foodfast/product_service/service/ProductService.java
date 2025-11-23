@@ -1,6 +1,5 @@
 package com.foodfast.product_service.service;
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -101,7 +100,6 @@ public class ProductService {
         }
 
         if (product.getStatus() == null) product.setStatus(1);
-        product.setCreatedAt(Instant.now());
         Product saved = productRepository.save(product);
 
         if (imageFile != null && !imageFile.isEmpty()) {

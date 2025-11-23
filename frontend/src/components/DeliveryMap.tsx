@@ -5,7 +5,7 @@ import type { Order } from "../types/type";
 
 const restaurantIcon = new L.Icon({
   iconUrl: "/assets/restaurant.png",
-  iconSize: [35, 35],
+  iconSize: [50, 50],
 });
 
 const userIcon = new L.Icon({
@@ -45,36 +45,6 @@ function DeliveryMap({ order }: Props) {
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       {deliveries.map((delivery, idx) =>
-        delivery?.restaurantLocation ? (
-          <Marker
-            key={`restaurant-${idx}`}
-            position={[
-              delivery.restaurantLocation.latitude ?? 0,
-              delivery.restaurantLocation.longitude ?? 0,
-            ]}
-            icon={restaurantIcon}
-          >
-            <Popup>
-              <strong>Nhà hàng</strong>
-            </Popup>
-          </Marker>
-        ) : null
-      )}
-
-      {userLoc && userLoc.latitude != null && userLoc.longitude != null && (
-        <Marker
-          position={[userLoc.latitude, userLoc.longitude]}
-          icon={userIcon}
-        >
-          <Popup>
-            <strong>Vị trí giao</strong>
-            <br />
-            {order.speaddress}, {order.ward}, {order.city}
-          </Popup>
-        </Marker>
-      )}
-
-      {deliveries.map((delivery, idx) =>
         delivery?.currentLocation &&
         delivery.currentLocation.latitude != null &&
         delivery.currentLocation.longitude != null ? (
@@ -91,6 +61,38 @@ function DeliveryMap({ order }: Props) {
             </Popup>
           </Marker>
         ) : null
+      )}
+
+      {deliveries.map((delivery, idx) =>
+        delivery?.restaurantLocation ? (
+          <Marker
+            key={`restaurant-${idx}`}
+            position={[
+              delivery.restaurantLocation.latitude ?? 0,
+              delivery.restaurantLocation.longitude ?? 0,
+            ]}
+            icon={restaurantIcon}
+          >
+            <Popup>
+              <strong>Vị trí nhà hàng</strong>
+              <br />
+              {delivery?.restaurantName}
+            </Popup>
+          </Marker>
+        ) : null
+      )}
+
+      {userLoc && userLoc.latitude != null && userLoc.longitude != null && (
+        <Marker
+          position={[userLoc.latitude, userLoc.longitude]}
+          icon={userIcon}
+        >
+          <Popup>
+            <strong>Vị trí giao</strong>
+            <br />
+            {order.speaddress}, {order.ward}, {order.city}
+          </Popup>
+        </Marker>
       )}
     </MapContainer>
   );

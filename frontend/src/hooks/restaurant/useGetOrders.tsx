@@ -16,10 +16,12 @@ export default function useGetOrders(userId: string) {
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "12", 10);
+  const q = searchParams.get("q");
 
   const query = new URLSearchParams();
   if (page) query.set("page", page.toString());
   if (limit) query.set("limit", limit.toString());
+  if (q) query.set("q", q || "");
 
   const url = userId
     ? `${

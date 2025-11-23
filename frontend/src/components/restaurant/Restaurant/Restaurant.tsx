@@ -51,9 +51,7 @@ function Restaurant() {
             ) : restaurants.length > 0 ? (
               restaurants.map((restaurant) => (
                 <tr key={restaurant.id} className="hover:bg-[#f2f3f8]">
-                  <td className="p-[1rem]  font-semibold">
-                    {restaurant.name} {restaurant.fullname}
-                  </td>
+                  <td className="p-[1rem]  font-semibold">{restaurant.name}</td>
 
                   <td className="p-[1rem]">
                     {`${restaurant.speaddress}, ${restaurant.ward}, ${restaurant.city}`}

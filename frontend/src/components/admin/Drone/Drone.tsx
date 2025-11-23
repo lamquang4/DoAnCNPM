@@ -92,10 +92,6 @@ function Drone() {
                       : drone.status === 1
                       ? "Đang giao"
                       : drone.status === 2
-                      ? "Giao thành công"
-                      : drone.status === 3
-                      ? "Đang bay về"
-                      : drone.status === 4
                       ? "Bảo trì"
                       : ""}
                   </td>

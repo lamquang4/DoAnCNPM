@@ -1,9 +1,7 @@
 package com.foodfast.payment_service.service;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.UUID;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
@@ -134,8 +132,6 @@ private String signHmacSHA256(String data, String key) throws Exception {
             .status(1)
             .amount(amount)
             .paymethod("MOMO")
-            .createdAt(Instant.now())
-            .updatedAt(Instant.now())
             .build();
 
     paymentRepository.save(payment);

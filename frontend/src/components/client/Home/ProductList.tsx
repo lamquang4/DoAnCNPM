@@ -2,6 +2,7 @@ import { useState } from "react";
 import Image from "../../Image";
 import Loading from "../../Loading";
 import { HiOutlineMinusSmall, HiOutlinePlusSmall } from "react-icons/hi2";
+import { BiCartAdd } from "react-icons/bi";
 import { useAddItemToCart } from "../../../hooks/client/useAddItemToCart";
 import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
 import toast from "react-hot-toast";
@@ -96,20 +97,20 @@ function ProductList() {
                       <div className="flex justify-between items-center gap-3">
                         <div className="flex items-center gap-3">
                           <button
-                            className="flex items-center justify-center w-8 h-8 outline-none bg-[#F7F7F7] border-gray-300 border"
+                            className="flex items-center justify-center w-7 h-7 outline-none bg-[#F7F7F7] border-gray-300 border"
                             onClick={() => decrease(product.id)}
                           >
-                            <HiOutlineMinusSmall size={20} />
+                            <HiOutlineMinusSmall size={18} />
                           </button>
 
                           <span className="font-medium">{qty}</span>
 
                           <button
-                            className="flex items-center justify-center w-8 h-8 outline-none bg-[#F7F7F7] border-gray-300 border"
+                            className="flex items-center justify-center w-7 h-7 outline-none bg-[#F7F7F7] border-gray-300 border"
                             onClick={() => increase(product.id)}
                             disabled={qty >= max}
                           >
-                            <HiOutlinePlusSmall size={20} />
+                            <HiOutlinePlusSmall size={18} />
                           </button>
                         </div>
 
@@ -118,7 +119,7 @@ function ProductList() {
                           onClick={() => handleAddItemToCart(product.id)}
                           disabled={isLoadingAdd}
                         >
-                          Thêm
+                          <BiCartAdd size={22} />
                         </button>
                       </div>
                     </div>

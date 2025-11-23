@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -51,7 +50,6 @@ public class DroneService {
     // Thêm drone mới
     public DroneDTO createDrone(Drone drone) {
         drone.setStatus(0); // mặc định rảnh
-        drone.setCreatedAt(Instant.now());
         Drone saved = droneRepository.save(drone);
         return toDTO(saved);
     }

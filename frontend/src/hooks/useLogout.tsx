@@ -15,7 +15,7 @@ export default function useLogout() {
         window.location.href = "/login";
       } else if (type === "restaurant") {
         Cookies.remove("token-restaurant");
-        window.location.href = "/login";
+        window.location.href = "/restaurant/login";
       }
     } catch (err) {
       console.error("Lỗi:", err);

@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import java.util.NoSuchElementException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -75,7 +74,6 @@ public class UserService {
         }
 
         user.setStatus(1);
-        user.setCreatedAt(Instant.now());
         return userRepository.save(user);
     }
 

@@ -16,7 +16,6 @@ function EditRestaurant() {
     speaddress: "",
     ward: "",
     city: "",
-    status: "",
   });
 
   const { user } = useGetCurrentUser("restaurant");
@@ -40,7 +39,6 @@ function EditRestaurant() {
       speaddress: restaurant?.speaddress || "",
       city: restaurant?.city || "",
       ward: restaurant?.ward || "",
-      status: restaurant?.status?.toString() || "",
     });
   }, [isLoading, restaurant, navigate]);
 

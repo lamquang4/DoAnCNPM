@@ -15,7 +15,7 @@ function MainBanner() {
           <div className="absolute inset-0 bg-gray-200 opacity-20"></div>
 
           <div className="relative z-10 w-full px-6">
-            <div className="max-w-6xl mx-auto text-center">
+            <div className="mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
                 Hưởng thức món ngon
               </h1>

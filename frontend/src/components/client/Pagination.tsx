@@ -50,7 +50,7 @@ function Pagination({ totalPages, currentPage, totalItems }: Props) {
   if (totalItems === 0) return null;
 
   return (
-    <div className="mt-[20px] px-[15px]">
+    <div className="mt-[40px] px-[15px]">
       <div className="flex items-center justify-center w-full flex-wrap gap-2.5 text-[0.9rem]">
         <button
           type="button"

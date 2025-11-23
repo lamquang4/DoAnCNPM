@@ -8,12 +8,6 @@ function Payment() {
   const { payments, isLoading, totalItems, totalPages, currentPage, limit } =
     useGetPayments();
 
-  const array = [
-    { name: "Tát cả", value: null },
-    { name: "Thành công", value: 1 },
-    { name: "Hoàn tiền", value: 0 },
-  ];
-
   return (
     <>
       <div className="py-[1.3rem] px-[1.2rem] bg-[#f1f4f9]">
@@ -34,7 +28,7 @@ function Payment() {
               <th className="p-[1rem]  ">Mã giao dịch</th>
               <th className="p-[1rem]  ">Phương thức thanh toán</th>
               <th className="p-[1rem]  ">Số tiền</th>
-              <th className="p-[1rem]   relative">Tình trạng</th>
+              <th className="p-[1rem]">Tình trạng</th>
               <th className="p-[1rem]  ">Ngày tạo</th>
             </tr>
           </thead>

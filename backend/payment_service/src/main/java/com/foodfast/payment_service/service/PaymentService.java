@@ -41,7 +41,7 @@ public class PaymentService {
     private PaymentDTO convertToDTO(Payment payment) {
         String orderCode = null;
         try {
-            OrderDTO order = orderClient.getOrderByCode(payment.getOrderId());
+            OrderDTO order = orderClient.getOrderById(payment.getOrderId());
             if (order != null) {
                 orderCode = order.getOrderCode();
             }

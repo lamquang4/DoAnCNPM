@@ -1,6 +1,4 @@
 package com.foodfast.restaurant_service.service;
-
-import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
@@ -42,10 +40,18 @@ public class RestaurantService {
         return data.map(this::toDTO);
     }
 
-    public Page<RestaurantDTO> getRestaurantsByUserId(String userId, int page, int limit) {
+    public Page<RestaurantDTO> getRestaurantsByUserId(String userId, String q, int page, int limit) {
         Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Restaurant> data = restaurantRepository.findByOwnerId(userId, pageable);
-        return data.map(this::toDTO);
+
+        if (q != null && !q.isEmpty()) {
+            return restaurantRepository
+                    .findByOwnerIdAndNameContainingIgnoreCase(userId, q, pageable)
+                    .map(this::toDTO);
+        }
+
+        return restaurantRepository
+                .findByOwnerId(userId, pageable)
+                .map(this::toDTO);
     }
 
     public List<RestaurantDTO> getRestaurantsByUserIdSimple(String userId) {
@@ -93,8 +99,7 @@ public class RestaurantService {
             throw new IllegalArgumentException("Nhà hàng tại vị trí này đã tồn tại");
         }
 
-        restaurant.setStatus(restaurant.getStatus() != 0 ? 1 : 0);
-        restaurant.setCreatedAt(Instant.now());
+        restaurant.setStatus(restaurant.getStatus());
         return restaurantRepository.save(restaurant);
     }
 
@@ -118,11 +123,7 @@ public class RestaurantService {
                     existing.setWard(updatedRestaurant.getWard() != null ? updatedRestaurant.getWard() : existing.getWard());
                     existing.setCity(updatedRestaurant.getCity() != null ? updatedRestaurant.getCity() : existing.getCity());
                     existing.setLocation(updatedRestaurant.getLocation() != null ? updatedRestaurant.getLocation() : existing.getLocation());
-                    existing.setStatus(
-                        (updatedRestaurant.getStatus() == 0 || updatedRestaurant.getStatus() == 1)
-                        ? updatedRestaurant.getStatus()
-                        : existing.getStatus()
-                    );
+                    existing.setStatus(existing.getStatus());
 
                     return restaurantRepository.save(existing);
                 })

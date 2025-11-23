@@ -21,9 +21,7 @@ export default function useGetPayments() {
   if (page) query.set("page", page.toString());
   if (limit) query.set("limit", limit.toString());
 
-  const url = `${
-    import.meta.env.VITE_BACKEND_URL
-  }/api/payment?${query.toString()}`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/payment?${query.toString()}`;
 
   const { data, error, isLoading, mutate } = useSWR<ResponseType>(
     url,

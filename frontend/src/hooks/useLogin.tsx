@@ -13,18 +13,32 @@ export default function useLogin() {
       const res = await axios.post(url, { email, password });
       const { token, role } = res.data;
 
-      const isAdminPage = window.location.pathname.startsWith("/admin");
+      const path = window.location.pathname;
 
-      if (!isAdminPage && role === 0) {
+      const isAdminPage = path.startsWith("/admin");
+      const isRestaurantPage = path.startsWith("/restaurant");
+      const isClientPage = !isAdminPage && !isRestaurantPage;
+
+      // Admin chỉ được vào /admin
+      if (role === 0 && !isAdminPage) {
         toast.error(
-          "Bạn không thể đăng nhập bằng tài khoản quản trị viên vào trang khách hàng"
+          "Tài khoản quản trị viên chỉ được phép đăng nhập ở trang quản trị viên."
         );
         return;
       }
 
-      if (isAdminPage && (role === 1 || role === 2)) {
+      // Restaurant owner chỉ được vào /restaurant
+      if (role === 1 && !isRestaurantPage) {
         toast.error(
-          "Bạn không thể đăng nhập bằng tài khoản khách hàng hay chủ nhà hàng vào trang quản trị viên"
+          "Tài khoản nhà hàng chỉ được phép đăng nhập ở trang nhà hàng."
+        );
+        return;
+      }
+
+      // Client chỉ được vào trang khách hàng (/)
+      if (role === 2 && !isClientPage) {
+        toast.error(
+          "Tài khoản khách hàng chỉ được phép đăng nhập ở trang Khách hàng."
         );
         return;
       }

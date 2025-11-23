@@ -41,9 +41,10 @@ public class RestaurantController {
     public ResponseEntity<?> getRestaurantsByUserId(
             @PathVariable String userId,
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "12") int limit
+            @RequestParam(defaultValue = "12") int limit,
+            @RequestParam(required = false) String q
     ) {
-        Page<RestaurantDTO> restaurants = restaurantService.getRestaurantsByUserId(userId, page, limit);
+        Page<RestaurantDTO> restaurants = restaurantService.getRestaurantsByUserId(userId, q, page, limit);
 
         return ResponseEntity.ok(Map.of(
                 "restaurants", restaurants.getContent(),

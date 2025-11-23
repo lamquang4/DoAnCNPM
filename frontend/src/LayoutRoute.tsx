@@ -37,6 +37,7 @@ import AccountAdminPage from "./pages/admin/AccountAdminPage";
 import EditProductRestaurantPage from "./pages/restaurant/EditProductRestaurantPage";
 import AccountRestaurantPage from "./pages/restaurant/AccountRestaurantPage";
 import AccountPage from "./pages/client/AccountPage";
+import LoginRestaurantPage from "./pages/restaurant/LoginRestaurantPage";
 
 function LayoutRoute() {
   return (
@@ -335,12 +336,21 @@ function LayoutRoute() {
       />
 
       <Route
+        path="/restaurant/login"
+        element={
+          <PublicRoute type="restaurant" redirectPath="/restaurant/account">
+            <LoginRestaurantPage />
+          </PublicRoute>
+        }
+      />
+
+      <Route
         path="/restaurant/account"
         element={
           <PrivateRoute
             type="restaurant"
             allowedRoles={[1]}
-            redirectPath="/login"
+            redirectPath="/restaurant/login"
           >
             <AccountRestaurantPage />
           </PrivateRoute>
@@ -353,7 +363,7 @@ function LayoutRoute() {
           <PrivateRoute
             type="restaurant"
             allowedRoles={[1]}
-            redirectPath="/login"
+            redirectPath="/restaurant/login"
           >
             <ProductRestaurantPage />
           </PrivateRoute>
@@ -365,7 +375,7 @@ function LayoutRoute() {
           <PrivateRoute
             type="restaurant"
             allowedRoles={[1]}
-            redirectPath="/login"
+            redirectPath="/restaurant/login"
           >
             <AddProductRestaurantPage />
           </PrivateRoute>
@@ -377,7 +387,7 @@ function LayoutRoute() {
           <PrivateRoute
             type="restaurant"
             allowedRoles={[1]}
-            redirectPath="/login"
+            redirectPath="/restaurant/login"
           >
             <EditProductRestaurantPage />
           </PrivateRoute>
@@ -390,7 +400,7 @@ function LayoutRoute() {
           <PrivateRoute
             type="restaurant"
             allowedRoles={[1]}
-            redirectPath="/login"
+            redirectPath="/restaurant/login"
           >
             <OwnRestaurantPage />
           </PrivateRoute>
@@ -402,7 +412,7 @@ function LayoutRoute() {
           <PrivateRoute
             type="restaurant"
             allowedRoles={[1]}
-            redirectPath="/login"
+            redirectPath="/restaurant/login"
           >
             <AddRestaurantPage />
           </PrivateRoute>
@@ -414,7 +424,7 @@ function LayoutRoute() {
           <PrivateRoute
             type="restaurant"
             allowedRoles={[1]}
-            redirectPath="/login"
+            redirectPath="/restaurant/login"
           >
             <EditRestaurantPage />
           </PrivateRoute>
@@ -427,7 +437,7 @@ function LayoutRoute() {
           <PrivateRoute
             type="restaurant"
             allowedRoles={[1]}
-            redirectPath="/login"
+            redirectPath="/restaurant/login"
           >
             <OrderRestaurantPage />
           </PrivateRoute>
@@ -439,7 +449,7 @@ function LayoutRoute() {
           <PrivateRoute
             type="restaurant"
             allowedRoles={[1]}
-            redirectPath="/login"
+            redirectPath="/restaurant/login"
           >
             <OrderDetailRestaurantPage />
           </PrivateRoute>

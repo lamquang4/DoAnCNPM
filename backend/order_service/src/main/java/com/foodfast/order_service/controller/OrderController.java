@@ -65,19 +65,20 @@ public class OrderController {
     }
 
     @GetMapping("/owner/{ownerId}")
-public ResponseEntity<?> getOrdersForRestaurantOwner(
-        @PathVariable String ownerId,
-        @RequestParam(defaultValue = "1") int page,
-        @RequestParam(defaultValue = "12") int limit
-) {
-    Page<OrderDTO> orders = orderService.getOrdersForRestaurantOwner(ownerId, page, limit);
+    public ResponseEntity<?> getOrdersForRestaurantOwner(
+            @PathVariable String ownerId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "12") int limit,
+            @RequestParam(required = false) String q
+    ) {
+        Page<OrderDTO> orders = orderService.getOrdersForRestaurantOwner(ownerId, q, page, limit);
 
-    return ResponseEntity.ok(Map.of(
-            "orders", orders.getContent(),
-            "totalPages", orders.getTotalPages(),
-            "total", orders.getTotalElements()
-    ));
-}
+        return ResponseEntity.ok(Map.of(
+                "orders", orders.getContent(),
+                "totalPages", orders.getTotalPages(),
+                "total", orders.getTotalElements()
+        ));
+    }
 
     @GetMapping("/code/{orderCode}")
     public ResponseEntity<OrderDTO> getOrderByCode(@PathVariable String orderCode) {

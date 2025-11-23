@@ -156,7 +156,6 @@ public Page<OrderDTO> getOrdersByUserId(String userId, int page, int limit) {
         }
         order.setOrderCode(orderCode);
         order.setStatus(-1);
-        order.setCreatedAt(Instant.now());
 
         Order savedOrder = orderRepository.save(order);
 
@@ -187,7 +186,6 @@ public Page<OrderDTO> getOrdersByUserId(String userId, int page, int limit) {
                         restaurant.getLocation().getLatitude(),
                         restaurant.getLocation().getLongitude()
                 ));
-                delivery.setCreatedAt(Instant.now());
 
                 deliveryClient.createDelivery(delivery);
             }
@@ -202,35 +200,41 @@ public Page<OrderDTO> getOrdersByUserId(String userId, int page, int limit) {
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy order với code: " + orderCode));
     }
 
-public Page<OrderDTO> getOrdersForRestaurantOwner(String ownerId, int page, int limit) {
+    public Page<OrderDTO> getOrdersForRestaurantOwner(String ownerId, String q, int page, int limit) {
 
-    List<Restaurant> restaurants = restaurantClient.getRestaurantsByOwnerId(ownerId);
-    if (restaurants.isEmpty()) {
-        return Page.empty();
+        List<Restaurant> restaurants = restaurantClient.getRestaurantsByOwnerId(ownerId);
+        if (restaurants.isEmpty()) {
+            return Page.empty();
+        }
+
+        List<String> restaurantIds = restaurants.stream()
+                .map(Restaurant::getId)
+                .toList();
+
+        List<String> productIds = restaurantIds.stream()
+                .flatMap(id -> productClient.getProductsByRestaurantId(id).stream())
+                .map(Product::getId)
+                .toList();
+
+        if (productIds.isEmpty()) {
+            return Page.empty();
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
+        Page<Order> orders;
+
+        if (q != null && !q.isBlank()) {
+            orders = orderRepository.findByItemsProductIdInAndOrderCodeContainingIgnoreCase(productIds, q, pageable);
+        } else {
+            orders = orderRepository.findByItemsProductIdIn(productIds, pageable);
+        }
+
+        List<OrderDTO> dtoList = orders.stream()
+                .map(this::convertToDTO)
+                .toList();
+
+        return new PageImpl<>(dtoList, pageable, orders.getTotalElements());
     }
-
-    List<String> restaurantIds = restaurants.stream()
-            .map(Restaurant::getId)
-            .toList();
-
-    List<String> productIds = restaurantIds.stream()
-            .flatMap(id -> productClient.getProductsByRestaurantId(id).stream())
-            .map(Product::getId)
-            .toList();
-
-    if (productIds.isEmpty()) {
-        return Page.empty();
-    }
-
-    Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
-    Page<Order> orders = orderRepository.findByItemsProductIdIn(productIds, pageable);
-
-    List<OrderDTO> dtoList = orders.stream()
-            .map(this::convertToDTO)
-            .toList();
-
-    return new PageImpl<>(dtoList, pageable, orders.getTotalElements());
-}
 
 public boolean updateStatusOrder(String orderId, Integer status) {
         Order order = orderRepository.findById(orderId)

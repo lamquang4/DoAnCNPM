@@ -12,7 +12,7 @@ type Props = {
 
 const restaurantIcon = new L.Icon({
   iconUrl: "/assets/restaurant.png",
-  iconSize: [35, 35],
+  iconSize: [50, 50],
 });
 const userIcon = new L.Icon({
   iconUrl: "/assets/location.png",
@@ -23,7 +23,7 @@ function LeafletMap({ lat, lng, fullAddress, restaurants }: Props) {
   return (
     <MapContainer
       center={[10.762622, 106.660172]}
-      zoom={15}
+      zoom={10}
       className="w-full h-[400px] z-5"
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
