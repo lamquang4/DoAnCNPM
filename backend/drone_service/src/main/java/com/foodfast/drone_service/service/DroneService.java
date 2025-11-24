@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class DroneService {
 
-    private final DroneRepository droneRepository;
+    private final DroneRepositorys droneRepository;
     private final RestaurantClient restaurantClient;
 
     public DroneService(DroneRepository droneRepository, RestaurantClient restaurantClient) {
