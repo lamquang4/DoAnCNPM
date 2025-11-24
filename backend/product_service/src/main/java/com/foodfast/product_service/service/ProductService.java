@@ -123,6 +123,7 @@ public class ProductService {
 
             existing.setName(product.getName() != null ? product.getName() : existing.getName());
             existing.setPrice(product.getPrice() != null ? product.getPrice() : existing.getPrice());
+            existing.setRestaurantId(product.getRestaurantId() != null ? product.getRestaurantId() : existing.getRestaurantId());
             existing.setStatus(product.getStatus() != null ? product.getStatus() : existing.getStatus());
 
             if (imageFile != null && !imageFile.isEmpty()) {

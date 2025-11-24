@@ -64,34 +64,18 @@ public class OrderController {
         return ResponseEntity.ok(createdOrder);
     }
 
-    @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<?> getOrdersForRestaurantOwner(
-            @PathVariable String ownerId,
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "12") int limit,
-            @RequestParam(required = false) String q
-    ) {
-        Page<OrderDTO> orders = orderService.getOrdersForRestaurantOwner(ownerId, q, page, limit);
-
-        return ResponseEntity.ok(Map.of(
-                "orders", orders.getContent(),
-                "totalPages", orders.getTotalPages(),
-                "total", orders.getTotalElements()
-        ));
-    }
-
     @GetMapping("/code/{orderCode}")
     public ResponseEntity<OrderDTO> getOrderByCode(@PathVariable String orderCode) {
         OrderDTO order = orderService.getOrderByOrderCode(orderCode);
         return ResponseEntity.ok(order);
     }
 
-@PutMapping("/{id}/status")
-public ResponseEntity<?> updateOrderStatus(
-        @PathVariable String id,
-        @RequestParam Integer status
-) {
-    boolean updated = orderService.updateStatusOrder(id, status);
-    return ResponseEntity.ok(Map.of("updated", updated));
-}
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateOrderStatus(
+            @PathVariable String id,
+            @RequestParam Integer status
+    ) {
+        boolean updated = orderService.updateStatusOrder(id, status);
+        return ResponseEntity.ok(Map.of("updated", updated));
+    }
 }

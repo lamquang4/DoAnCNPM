@@ -202,75 +202,39 @@ public class OrderService {
                 .orElseThrow(() -> new NoSuchElementException("Không tìm thấy order với code: " + orderCode));
     }
 
-    public Page<OrderDTO> getOrdersForRestaurantOwner(String ownerId, String q, int page, int limit) {
+    public boolean updateStatusOrder(String orderId, Integer status) {
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new NoSuchElementException("Không tìm thấy order với ID: " + orderId));
 
-        List<Restaurant> restaurants = restaurantClient.getRestaurantsByOwnerId(ownerId);
-        if (restaurants.isEmpty()) {
-            return Page.empty();
-        }
+            order.setStatus(status);
+            order.setUpdatedAt(Instant.now());
+            orderRepository.save(order);
 
-        List<String> restaurantIds = restaurants.stream()
-                .map(Restaurant::getId)
-                .toList();
-
-        List<String> productIds = restaurantIds.stream()
-                .flatMap(id -> productClient.getProductsByRestaurantId(id).stream())
-                .map(Product::getId)
-                .toList();
-
-        if (productIds.isEmpty()) {
-            return Page.empty();
-        }
-
-        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by("createdAt").descending());
-        Page<Order> orders;
-
-        if (q != null && !q.isBlank()) {
-            orders = orderRepository.findByItemsProductIdInAndOrderCodeContainingIgnoreCase(productIds, q, pageable);
-        } else {
-            orders = orderRepository.findByItemsProductIdIn(productIds, pageable);
-        }
-
-        List<OrderDTO> dtoList = orders.stream()
-                .map(this::convertToDTO)
-                .toList();
-
-        return new PageImpl<>(dtoList, pageable, orders.getTotalElements());
-    }
-
-public boolean updateStatusOrder(String orderId, Integer status) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new NoSuchElementException("Không tìm thấy order với ID: " + orderId));
-
-        order.setStatus(status);
-        order.setUpdatedAt(Instant.now());
-        orderRepository.save(order);
-
-        if (status == 1) {
-            List<DeliveryDTO> deliveries = deliveryClient.getDeliveriesByOrderId(orderId);
-            for (DeliveryDTO delivery : deliveries) {
-                if (delivery.getRestaurantId() != null && delivery.getDroneId() != null) {
-                    droneClient.updateDroneStatus(delivery.getDroneId(), 1);
+            if (status == 1) {
+                List<DeliveryDTO> deliveries = deliveryClient.getDeliveriesByOrderId(orderId);
+                for (DeliveryDTO delivery : deliveries) {
+                    if (delivery.getRestaurantId() != null && delivery.getDroneId() != null) {
+                        droneClient.updateDroneStatus(delivery.getDroneId(), 1);
+                    }
                 }
+
+            deliveryClient.startDeliveryFlight(deliveries);
             }
 
-        deliveryClient.startDeliveryFlight(deliveries);
-        }
-
-        return true;
+            return true;
     }
 
     // xóa đơn hàng status = -1 sau 1 tiếng kể từ lúc createdAt
-@Scheduled(fixedRate = 600000) // mỗi 10 phút chạy
-public void deleteExpiredOrders() {
-    Instant oneHourAgo = Instant.now().minusSeconds(3600);
+    @Scheduled(fixedRate = 600000) // mỗi 10 phút chạy
+    public void deleteExpiredOrders() {
+        Instant oneHourAgo = Instant.now().minusSeconds(3600);
 
-    List<Order> expiredOrders = orderRepository
-            .findByStatusAndCreatedAtBefore(-1, oneHourAgo);
+        List<Order> expiredOrders = orderRepository
+                .findByStatusAndCreatedAtBefore(-1, oneHourAgo);
 
-    if (!expiredOrders.isEmpty()) {
-        orderRepository.deleteAll(expiredOrders);
+        if (!expiredOrders.isEmpty()) {
+            orderRepository.deleteAll(expiredOrders);
+        }
     }
-}
 
 }
