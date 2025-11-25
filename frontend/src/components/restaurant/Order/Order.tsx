@@ -7,11 +7,12 @@ import { Link } from "react-router-dom";
 import { SiTicktick } from "react-icons/si";
 import useUpdateStatusOrder from "../../../hooks/useUpdateStatusOrder";
 import toast from "react-hot-toast";
-import useGetOrders from "../../../hooks/restaurant/useGetOrders";
 import useGetCurrentUser from "../../../hooks/useGetCurrentUser";
+import useGetOrders from "../../../hooks/admin/useGetOrders";
 
 function Order() {
   const { user } = useGetCurrentUser("restaurant");
+  // do lỗi không lấy được đơn hàng của các nhà hàng thuộc tài khoản chủ nhà hàng
   const {
     orders,
     mutate,
@@ -20,9 +21,11 @@ function Order() {
     totalPages,
     limit,
     currentPage,
-  } = useGetOrders(user?.id || "");
+  } = useGetOrders();
   const { updateStatusOrder, isLoading: isLoadingUpdate } =
     useUpdateStatusOrder();
+
+  console.log(orders);
 
   const handleUpdateStatus = async (id: string, status: number) => {
     if (!id && !status) {
